@@ -12,13 +12,13 @@
   - 余缨子
   - 吴一帆
 
-- 项目地址
+- 项目地址： <https://github.com/Shmiwy/soul-knight>
 
 - 项目进度时间线
 
 ## 项目开发文档
 
-- 选用引擎：**Cocos2d- 3.17.2**
+- 选用引擎：**Cocos2d-x 3.17.2**
 
 - 辅助软件：NULL
 
