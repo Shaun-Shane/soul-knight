@@ -17,10 +17,10 @@ void SafeScene::update(float delta) {
 
   if (posX2 <= -mapSize.width / 2.0) posX2 += mapSize.width * 2 + mapSize.width / 2;
 
-
   bgSprite1->setPositionX(posX1);
 
   bgSprite2->setPositionX(posX2);
+
 }
 
 bool SafeScene::init() {
@@ -32,7 +32,7 @@ bool SafeScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->BindSprite(Sprite::create("Character//Knight.png"));
+  this->knight->bindSprite(Sprite::create("Character//Knight.png"));
 
   this->knight->setScaleX(0.4);
   this->knight->setScaleY(0.4);
