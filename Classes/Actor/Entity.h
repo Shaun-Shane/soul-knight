@@ -7,10 +7,14 @@ USING_NS_CC;
 class Entity : public Node {
 public : 
   Entity();
+  Entity(INT32, INT32, float);
   Entity(Sprite* sprite);
 
-  Sprite* GetSprite();
-  void BindSprite(Sprite* sprite);
+  Sprite* getSprite();
+  void bindSprite(Sprite* sprite);
+
+  INT32 getHP(); // return HP of this entity
+  void deductHP(INT32); //¿ÛÑª
 
   ~Entity();
 
@@ -18,9 +22,8 @@ private:
   Sprite* sprite;
 protected:
   INT32 attack = 3;
-  INT32 armor = 5;
   INT32 HP = 5;
-  INT32 MP = 200;
+  float attackSpeed;  //¹¥»÷ËÙ¶È
 };
 
 #endif;
