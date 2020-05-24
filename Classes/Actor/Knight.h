@@ -11,6 +11,10 @@ class Knight : public Entity{
   ~Knight();
   CREATE_FUNC(Knight);
   virtual bool init();
+
+ private:
+  INT32 armor;
+  INT32 MP;
 };
 
 #endif
