@@ -1,4 +1,4 @@
-#include "Entity.h"
+ï»¿#include "Entity.h"
 
 Entity::Entity() : attack(0), HP(0), attackSpeed(.0) { this->sprite = nullptr; }
 
@@ -20,7 +20,7 @@ void Entity::bindSprite(Sprite* sprite) {
   this->sprite = sprite;
   this->addChild(this->sprite);
 
-  //½«entityÖÐÐÄºÍspriteÖÐÐÄÖØºÏ
+  //å°†entityä¸­å¿ƒå’Œspriteä¸­å¿ƒé‡åˆ
   /*Size size = this->sprite->getContentSize();
   this->sprite->setPosition(Point(size.width / 2, size.height / 2));
   this->setContentSize(size);*/

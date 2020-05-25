@@ -1,4 +1,4 @@
-#ifndef _BATTLEROOM_H
+ï»¿#ifndef _BATTLEROOM_H
 #define _BATTLEROOM_H
 
 #include "cocos2d.h"
@@ -19,15 +19,15 @@ class BattleRoom : public Node {
   INT32 getX();
   INT32 getY();
 
-  void createMap(); //Éú³É¸Ã·¿¼äµØÍ¼
+  void createMap(); //ç”Ÿæˆè¯¥æˆ¿é—´åœ°å›¾
 
-  void setCenter(float, float); // ÉèÖÃÖĞĞÄ
+  void setCenter(float, float); // è®¾ç½®ä¸­å¿ƒ
 
   void connect(BattleRoom*);
 
  private:
   float centerX, centerY;
-  INT32 x, y;  // row and column in 7 * 7 BattleRoom matrix
+  INT32 x, y;  // row and column in SIZEMTX * SIZEMTX BattleRoom matrix
   INT32 visTime; //maybe not needed
   INT32 nextDIR;
   bool visDir[CNTDIR] = {false};
@@ -39,7 +39,9 @@ class BattleRoom : public Node {
   EnemyController* enemyCtr = nullptr;
 
  private:
-  Vector<Sprite*> vecBG;
+  Vector<Sprite*> vecFloor; //open door can be considered as floor
+  Vector<Sprite*> vecWall;
+  Vector<Sprite*> vecDoor;
 };
 
 #endif

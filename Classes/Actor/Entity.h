@@ -1,4 +1,4 @@
-#ifndef _ENTITY_H_
+ï»¿#ifndef _ENTITY_H_
 #define _ENTITY_H_
 #include "cocos2d.h"
 
@@ -14,7 +14,7 @@ public :
   void bindSprite(Sprite* sprite);
 
   INT32 getHP(); // return HP of this entity
-  void deductHP(INT32); //¿ÛÑª
+  void deductHP(INT32); //æ‰£è¡€
 
   ~Entity();
 
@@ -23,7 +23,7 @@ private:
 protected:
   INT32 attack = 3;
   INT32 HP = 5;
-  float attackSpeed;  //¹¥»÷ËÙ¶È
+  float attackSpeed;  //æ”»å‡»é€Ÿåº¦
 };
 
 #endif;

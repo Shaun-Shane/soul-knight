@@ -1,4 +1,4 @@
-#ifndef _SAfESCENE_H
+﻿#ifndef _SAfESCENE_H
 #define _SAfESCENE_H
 #include "cocos2d.h"
 

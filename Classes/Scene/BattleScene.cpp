@@ -1,4 +1,4 @@
-#include "BattleScene.h"
+﻿#include "BattleScene.h"
 #include "Enemy\EnemyController.h"
 #include <vector>
 
@@ -6,7 +6,7 @@ using std::vector;
 
 Scene* BattleScene::createScene() { return BattleScene::create(); }
 
-void BattleScene::getNextRoomDir(INT32 x, INT32 y, BattleRoom*& curRoom, queue<BattleRoom*>& q) {
+void BattleScene::getNextRoom(INT32 x, INT32 y, BattleRoom* curRoom, queue<BattleRoom*>& q) {
   log("%d %d", curRoom->x, curRoom->y);
     
   if (cntRoom >= MAXROOM) {
@@ -30,31 +30,37 @@ void BattleScene::getNextRoomDir(INT32 x, INT32 y, BattleRoom*& curRoom, queue<B
     vecDir.push_back(dir); //directions can go
   }
 
+  log("vecSize: %d", vecDir.size());
+
   INT32 dir = vecDir.at(rand() % vecDir.size());
   INT32 toX = x + DIRX[dir], toY = y + DIRY[dir];
 
-  if (battleRoom[toX][toY] != nullptr) {
+  BattleRoom* toRoom = battleRoom[toX][toY];
+
+  if (toRoom != nullptr && toRoom != beginRoom) {
+    // room was built, no not need to build again
+    // just connect them if toRoom is not beginRoom
     curRoom->visDir[dir] = true;
-    battleRoom[toX][toY]->visDir[(dir + 2) % CNTDIR] = true;
-    return;  // room was built, no not need to build again;
+    toRoom->visDir[(dir + 2) % CNTDIR] = true;
+    return;  
   }
   
-  battleRoom[toX][toY] = BattleRoom::create();
+  toRoom = BattleRoom::create();
 
-  battleRoom[toX][toY]->x = toX;
-  battleRoom[toX][toY]->y = toY;
+  toRoom->x = toX;
+  toRoom->y = toY;
 
-  battleRoom[toX][toY]->setCenter(curRoom->centerX + DIRX[dir] * CENTERDIS,
+  toRoom->setCenter(curRoom->centerX + DIRX[dir] * CENTERDIS,
                                     curRoom->centerY + DIRY[dir] * CENTERDIS);
 
   curRoom->visDir[dir] = true;
-  battleRoom[toX][toY]->visDir[(dir + 2) % CNTDIR] = true;
+  toRoom->visDir[(dir + 2) % CNTDIR] = true;
 
-  battleRoom[toX][toY]->createMap();
-  this->addChild(battleRoom[toX][toY], 0);
-  q.push(battleRoom[toX][toY]);
+  toRoom->createMap();
+  this->addChild(toRoom, 0);
+  q.push(toRoom);
   cntRoom++;
-  assert(battleRoom[toX][toY] != nullptr);
+  assert(toRoom != nullptr);
 }
 
 void BattleScene::update(float delta) {
@@ -97,15 +103,9 @@ bool BattleScene::init() {
   this->addChild(this->knight, 4);
   //add knight to scene
 
-  //add enemyContoller into scene
-  //EnemyController* enemyCtr = EnemyController::create();
-  //this->addChild(enemyCtr, 4);
-  //enemyCtr->bindKnight(knight);
-  //add enemyContoller into scene
-
   initRoom();
 
-  this->scheduleUpdate(); //update, 60fps
+  //this->scheduleUpdate(); //update, 60fps
 
   return true;
 }
@@ -121,13 +121,9 @@ void BattleScene::initRoom() {
     }
   }
   //25 rooms
- 
-  auto floorSprite = Sprite::create("Map//floor1.png");
-  auto wallSprite = Sprite::create("Map//wall1.png");
 
   srand(time(nullptr));
-  //INT32 stX = rand() % SIZEMTX, stY = rand() % SIZEMTX;
-  randomGenerate(2, 2);
+  randomGenerate(rand() % SIZEMTX, rand() % SIZEMTX);
   //assert(battleRoom[stX][stY] != nullptr);
 }
 
@@ -135,17 +131,20 @@ void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
   Size visibleSize = Director::getInstance()->getVisibleSize();
 
   queue<BattleRoom*> q;
-  battleRoom[stX][stY] = BattleRoom::create();
 
-  battleRoom[stX][stY]->x = stX;
-  battleRoom[stX][stY]->y = stY;
+  BattleRoom* curRoom = battleRoom[stX][stY];
+  curRoom = BattleRoom::create();
 
-  battleRoom[stX][stY]->setCenter(visibleSize.width / 2,
+  curRoom->x = stX;
+  curRoom->y = stY;
+
+  curRoom->setCenter(visibleSize.width / 2,
                                   visibleSize.height / 2);
-  battleRoom[stX][stY]->createMap();
-  this->addChild(battleRoom[stX][stY], 0);
+  curRoom->createMap();
+  this->addChild(curRoom, 0);
+  this->beginRoom = curRoom;
 
-  q.push(battleRoom[stX][stY]);
+  q.push(curRoom);
   cntRoom++;
 
   while (!q.empty()) {
@@ -153,7 +152,7 @@ void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
     q.pop();
     assert(curRoom != nullptr);
     // getNextRoomDirection
-    getNextRoomDir(curRoom->x, curRoom->y, curRoom, q); 
+    getNextRoom(curRoom->x, curRoom->y, curRoom, q); 
   }
   log("%d", cntRoom);
 }

@@ -1,12 +1,12 @@
-#include "BattleRoom.h"
+ï»¿#include "BattleRoom.h"
 
 bool BattleRoom::init() {
   centerX = .0f, centerY = .0f;
   x = 0, y = 0;
-  visTime = 0, nextDIR = 0; //Ä¬ÈÏÏòÓÒ
+  visTime = 0, nextDIR = 0; //é»˜è®¤å‘å³
   nextRoom = nullptr, prevRoom = nullptr;
   
-  memset(visDir, 0, sizeof(visDir));
+  memset(visDir, false, sizeof(visDir));
   
   enemyCtr = EnemyController::create(); //controll enemy behaviors
   return true; 
@@ -23,6 +23,8 @@ INT32 BattleRoom::getX() { return x; }
 INT32 BattleRoom::getY() { return y; }
 
 void BattleRoom::createMap() {
+  srand(time(nullptr));
+
   const float X = centerX - FLOORWIDTH * (SIZEROOM / 2);
   const float Y = centerY + FLOORWIDTH * (SIZEROOM / 2);
 
@@ -30,19 +32,30 @@ void BattleRoom::createMap() {
   for (INT32 y = SIZEROOM - 1; y >= 0; y--) {
     for (INT32 x = 0; x < SIZEROOM; x++) {
       Sprite* tmpSprite = nullptr;
+      Value imageName("");
       if (y == 0 || y == SIZEROOM - 1 || x == 0 || x == SIZEROOM - 1) {
-        tmpSprite = Sprite::create("Map//wall1.png");
+        if ((rand() % 6) == 0)
+          imageName = "Map//wall2.png";
+        else
+          imageName = "Map//wall1.png";
+
+        tmpSprite = Sprite::create(imageName.asString().c_str());
         this->addChild(tmpSprite, 1);
+        vecWall.pushBack(tmpSprite);
       }
       else {
-        tmpSprite = Sprite::create("Map//floor1.png");
+        if ((rand() % 6) == 0)
+          imageName = "Map//floor2.png";
+        else
+          imageName = "Map//floor1.png";
+
+        tmpSprite = Sprite::create(imageName.asString().c_str());
         this->addChild(tmpSprite, 0);
+        vecFloor.pushBack(tmpSprite);
       }
 
       //assert(tmpSprite == nullptr);
       tmpSprite->setPosition(Point(curX, curY));
-      
-      vecBG.pushBack(tmpSprite);
       curX += FLOORWIDTH;
     }
     curX = X, curY -= FLOORHEIGHT;

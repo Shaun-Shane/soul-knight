@@ -1,4 +1,4 @@
-#include "SafeScene.h"
+﻿#include "SafeScene.h"
 
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 

@@ -1,4 +1,4 @@
-#ifndef _KNIGHT_H_
+﻿#ifndef _KNIGHT_H_
 #define _KNIGHT_H_
 #include "cocos2d.h"
 #include "Entity.h"

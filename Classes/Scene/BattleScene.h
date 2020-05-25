@@ -1,4 +1,4 @@
-#ifndef _BATTLESCENE_H_
+﻿#ifndef _BATTLESCENE_H_
 #define _BATTLESCENE_H_
 
 #include "Actor\Knight.h"
@@ -14,7 +14,7 @@ using std::queue;
 class BattleScene : public Scene {
   friend class BattleRoom;
   static constexpr INT32 SIZEMTX = 5;
-  static constexpr INT32 MAXROOM = 5; // temporarily make it 5
+  static constexpr INT32 MAXROOM = 6; // temporarily make it 5
 
  public:
   static Scene* createScene();
@@ -25,7 +25,7 @@ class BattleScene : public Scene {
  private:
   void initRoom(); //generate room randomly
 
-  void getNextRoomDir(INT32, INT32, BattleRoom*&, queue<BattleRoom*>&);
+  void getNextRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
 
  private:
@@ -35,14 +35,14 @@ class BattleScene : public Scene {
   
  // temporarily just one kind of map floor and wall
  private:
-  Sprite* floorSprite = nullptr;
-  Sprite* wallSprite = nullptr;
-
   Vector<Sprite*> vecFloor;
   Vector<Sprite*> vecWall;
+  Vector<Sprite*> vecDoor;
 
   Vector<Enemy*> vecEnemy;
 
+  BattleRoom* beginRoom = nullptr;
+  BattleRoom* endRoom = nullptr;
   BattleRoom* battleRoom[SIZEMTX][SIZEMTX] = {nullptr};  // room
 };
 
