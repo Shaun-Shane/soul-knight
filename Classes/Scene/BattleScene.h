@@ -3,6 +3,7 @@
 
 #include "Actor\Knight.h"
 #include "Enemy\Enemy.h"
+#include "Enemy\EnemyController.h"
 #include "BattleRoom.h"
 #include "Const\Const.h"
 #include "cocos2d.h"
@@ -25,7 +26,7 @@ class BattleScene : public Scene {
  private:
   void initRoom(); //generate room randomly
 
-  void getNextRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
+  void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
 
  private:
