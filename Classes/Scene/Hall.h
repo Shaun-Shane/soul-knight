@@ -16,9 +16,9 @@ class Hall : public Node{
 
   virtual void createMap();  //生成走廊地图
 
-  void generateFloor(float, float);
+  void generateFloor(float, float, INT32);
 
-  void generateWall(float, float);
+  void generateWall(float, float, INT32);
 
  private:
   INT32 dir; //direction of this hall
