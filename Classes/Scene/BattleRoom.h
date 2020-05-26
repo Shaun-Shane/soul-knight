@@ -20,7 +20,7 @@ class BattleRoom : public Hall {
 
   void setCenter(float, float); // 设置中心
 
-  void generateDoor(float, float);
+  void generateDoor(float, float, INT32 layer);
 
   void closeDoor();
 
