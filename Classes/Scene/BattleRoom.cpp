@@ -16,53 +16,20 @@ bool BattleRoom::init() {
 
 void BattleRoom::setCenter(float X, float Y) { centerX = X, centerY = Y; }
 
-float BattleRoom::getCenterX() { return centerX; }
-
-float BattleRoom::getCenterY() { return centerY; }
-
-INT32 BattleRoom::getX() { return x; }
-
-INT32 BattleRoom::getY() { return y; }
-
-void BattleRoom::generateFloor(float X, float Y) {
-  INT32 randomNum = rand();
-  Sprite* tmpSprite = nullptr;
-  Value imageName("");
-
-  if (randomNum % 6 == 0)
-    imageName = "Map//floor3.png";
-  else if (randomNum % 5 == 0)
-    imageName = "Map//floor2.png";
-  else imageName = "Map//floor1.png";
-
-  tmpSprite = Sprite::create(imageName.asString().c_str());
-  this->addChild(tmpSprite, 1);
-  tmpSprite->setPosition(Point(X, Y));
-  vecFloor.pushBack(tmpSprite);
-}
-
-void BattleRoom::generateWall(float X, float Y) {
-  INT32 randomNum = rand();
-  Sprite* tmpSprite = nullptr;
-  Value imageName("");
-
-  if (randomNum % 6 == 0)
-    imageName = "Map//wall2.png";
-  else
-    imageName = "Map//wall1.png";
-
-  tmpSprite = Sprite::create(imageName.asString().c_str());
-  this->addChild(tmpSprite, 2);
-  tmpSprite->setPosition(Point(X, Y + (WALLHEIGHT - FLOORHEIGHT) / 2));
-  vecWall.pushBack(tmpSprite);
-}
-
 void BattleRoom::generateDoor(float X, float Y) {
   Sprite* tmpSprite = Sprite::create("Map//doorOpen.png");
   this->addChild(tmpSprite, 2);
   vecDoorOpen.pushBack(tmpSprite);
 
   tmpSprite->setPosition(Point(X, Y));
+  tmpSprite->setVisible(true);
+
+  tmpSprite = Sprite::create("Map//doorClose.png");
+  this->addChild(tmpSprite, 2);
+  vecDoorClose.pushBack(tmpSprite);
+
+  tmpSprite->setPosition(Point(X, Y + FLOORHEIGHT / 2));
+  tmpSprite->setVisible(false); //closeDoor images are not visible at first
 }
 
 void BattleRoom::createMap() {
@@ -91,7 +58,7 @@ void BattleRoom::createMap() {
 
             ((H == sizeHeight - 1) && visDir[UP] && (sizeWidth / 2 - 2 <= W) &&
              (W <= sizeWidth / 2 - 2 + SIZEHALL - 3))) {
-          log("%d %d", H, W);
+          
           generateDoor(curX, curY);
         } else generateWall(curX, curY);
       } else
@@ -105,30 +72,25 @@ void BattleRoom::createMap() {
   }
 }
 
-void BattleRoom::addDoor() {
-  for (INT32 dir = 0; dir < CNTDIR; dir++) {
-    if (visDir[dir] == false) continue;
-    log("st dir %d", dir);
-    if (dir % 2 == 1) {
-      const float X = centerX - FLOORWIDTH * (SIZEHALL / 2 - 1);
-      const float Y = centerY + DIRY[dir] * FLOORHEIGHT * (sizeHeight / 2);
-      
-      float curX = X;
-      for (INT32 W = 0; W < SIZEHALL - 2; W++) {
-        generateDoor(curX, Y);
-        curX += FLOORWIDTH;
-      }
-    }
-    else {
-      const float X = centerX + DIRX[dir] * FLOORWIDTH * (sizeWidth / 2);
-      const float Y = centerY + FLOORHEIGHT * (SIZEHALL / 2 - 1);
+void BattleRoom::closeDoor() { //doorClose sptires are visible
+  for (auto sprite : vecDoorOpen) {
+    sprite->setVisible(false);
+  }
 
-      float curY = Y;
-      for (INT32 H = SIZEHALL - 3; H >=0; H--) {
-        generateDoor(X, curY);
-        curY -= FLOORHEIGHT;
-      }
-    }
+  for (auto sprite : vecDoorClose) {
+    sprite->setVisible(true);
   }
 }
+
+void BattleRoom::openDoor() { //doorOpen sptires are visible
+  for (auto sprite : vecDoorOpen) {
+    sprite->setVisible(true);
+  }
+
+  for (auto sprite : vecDoorClose) {
+    sprite->setVisible(false);
+  }
+}
+
+
 
