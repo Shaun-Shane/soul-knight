@@ -17,4 +17,8 @@ constexpr INT32 WALLHEIGHT = 60;
 constexpr INT32 SIZEHALL = 7;
 
 constexpr INT32 CENTERDIS = 39 * 40;
+
+constexpr INT32 SIZECENTERDIS = 39; //两房间相距格子数
+
+constexpr INT32 SIZEROOM = 19;
 #endif  // !_CONST_H_
