@@ -11,7 +11,7 @@ public :
   Entity(Sprite* sprite);
 
   Sprite* getSprite();
-  void bindSprite(Sprite* sprite);
+  void bindSprite(Sprite* sprite, INT32 layer);
 
   INT32 getHP(); // return HP of this entity
   void deductHP(INT32); //扣血
