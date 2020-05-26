@@ -32,14 +32,14 @@ bool SafeScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight.png"));
+  this->knight->bindSprite(Sprite::create("Character//Knight.png"), 10);
 
   this->knight->setScaleX(0.4);
   this->knight->setScaleY(0.4);
 
 
   this->knight->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
-  this->addChild(this->knight, 3);
+  this->addChild(this->knight, 10);
 
   initBG();
 
