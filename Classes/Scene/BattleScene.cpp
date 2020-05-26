@@ -16,15 +16,25 @@ void BattleScene::update(float delta) {
 
       float curX = battleRoom[x][y]->getPositionX();
       float curY = battleRoom[x][y]->getPositionY();
-      battleRoom[x][y]->setPositionX(curX - iSpeed);
+      //battleRoom[x][y]->setPositionX(curX - iSpeed);
       battleRoom[x][y]->setPositionY(curY - iSpeed);
+
+      BattleRoom* curRoom = battleRoom[x][y];
+      {
+        float xx = knight->getPositionX(), yy = knight->getPositionY();
+        if ( xx >= curRoom->upLeftX && xx <= curRoom->downRightX && yy <= curRoom->upLeftY && yy >= curRoom->downRightY) {
+          curRoom->closeDoor();
+        } else
+          curRoom->openDoor();
+      }
+
     }
   }
 
   for (auto hall : vecHall) {
     float curX = hall->getPositionX();
     float curY = hall->getPositionY();
-    hall->setPositionX(curX - iSpeed);
+    //hall->setPositionX(curX - iSpeed);
     hall->setPositionY(curY - iSpeed);
   }
 }
@@ -34,13 +44,11 @@ bool BattleScene::init() {
     return false;
   }
 
-  cntRoom = 0;
-
   Size visibleSize = Director::getInstance()->getVisibleSize();
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight.png"));
+  this->knight->bindSprite(Sprite::create("Character//Knight.png"), 10);
 
   this->knight->setPosition(
       Point(visibleSize.width / 2, visibleSize.height / 2));
@@ -48,12 +56,13 @@ bool BattleScene::init() {
   this->knight->setScaleX(0.3f);
   this->knight->setScaleY(0.3f);
 
-  this->addChild(this->knight, 4);
+
+  this->addChild(this->knight);
   // add knight to scene
 
-  initRoom();
+  initRoom(); //战斗房间初始化
 
-  this->scheduleUpdate(); //update, 60fps
+  this->scheduleUpdate(); //60帧跟新
 
   return true;
 }
@@ -61,6 +70,8 @@ bool BattleScene::init() {
 void BattleScene::initRoom() {
   Size visibleSize = Director::getInstance()->getVisibleSize();
 
+  cntRoom = 0;
+  
   // 25 rooms
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
@@ -71,6 +82,8 @@ void BattleScene::initRoom() {
 
   srand(time(nullptr));
   INT32 stX = rand() % SIZEMTX, stY = rand() % SIZEMTX;
+
+  //在5 * 5的矩阵中随机选取MAXROOM个房间
   randomGenerate(stX, stY);
   
   for (INT32 y = 0; y < SIZEMTX; y++) {
@@ -79,11 +92,12 @@ void BattleScene::initRoom() {
       battleRoom[x][y]->createMap();
     }
   }
-
+  //从起始房间开始联通房间
   connectRoom(battleRoom[stX][stY]);
 }
 
 void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
+  //从一个房间开始向四周扩展 类似bfs
   Size visibleSize = Director::getInstance()->getVisibleSize();
 
   queue<BattleRoom*> q;
@@ -96,7 +110,7 @@ void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
   log("curRoom %d %d", room->x, room->y);
   log("beginRoom %d %d", beginRoom->x, beginRoom->y);
   room->setCenter(visibleSize.width / 2, visibleSize.height / 2);
-  this->addChild(room, 2);
+  this->addChild(room, 0);
   
   q.push(room);
   cntRoom++;
@@ -150,6 +164,7 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
   }
 
   toRoom = BattleRoom::create();
+  this->endRoom = toRoom;
 
   toRoom->x = toX, toRoom->y = toY;
   log("%d %d", toX, toY);
@@ -159,18 +174,18 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
   curRoom->visDir[dir] = true;
   toRoom->visDir[(dir + 2) % CNTDIR] = true;
 
-  this->addChild(toRoom, 2);
+  this->addChild(toRoom, 0);
   q.push(toRoom);
   cntRoom++;
 
   assert(battleRoom[toX][toY] != nullptr);
   assert(battleRoom[toX][toY] != beginRoom);
 }
-
+// 确定走廊的宽度 顶点
 void BattleScene::setHallWithWidth(Hall* hall, BattleRoom* fromRoom,
                                    BattleRoom* toRoom) {
   hall->sizeWidth =
-      SIZECENTERDIS - fromRoom->sizeWidth / 2 - toRoom->sizeWidth / 2;
+      SIZECENTERDIS - fromRoom->sizeWidth / 2 - toRoom->sizeWidth / 2 - 1;
 
   hall->upLeftX =
       fromRoom->centerX + FLOORWIDTH * (fromRoom->sizeWidth / 2 + 1);
@@ -180,11 +195,11 @@ void BattleScene::setHallWithWidth(Hall* hall, BattleRoom* fromRoom,
   hall->downRightY = toRoom->centerY - FLOORHEIGHT * (SIZEHALL / 2 - 1);
   hall->createMap();
 }
-
+// 确定走廊的高度 顶点
 void BattleScene::setHallWithHeight(Hall* hall, BattleRoom* fromRoom,
                                     BattleRoom* toRoom) {
   hall->sizeHeight =
-      SIZECENTERDIS - fromRoom->sizeHeight / 2 - toRoom->sizeHeight / 2;
+      SIZECENTERDIS - fromRoom->sizeHeight / 2 - toRoom->sizeHeight / 2 - 1;
 
   hall->upLeftX = fromRoom->centerX - FLOORWIDTH * (SIZEHALL / 2 - 1);
   hall->upLeftY =
@@ -195,11 +210,11 @@ void BattleScene::setHallWithHeight(Hall* hall, BattleRoom* fromRoom,
       toRoom->centerY + FLOORHEIGHT * (toRoom->sizeHeight / 2 + 1);
   hall->createMap();
 }
-
+//dfs联通房间
 void BattleScene::connectRoom(BattleRoom* curRoom) {
   assert(curRoom != nullptr);
 
-  for (INT32 dir = 0; dir < CNTDIR; dir++) {
+  for (INT32 dir = 0; dir < CNTDIR; dir++) { //4 directions
     if (curRoom->visDir[dir] == false) continue;
     INT32 toX = curRoom->x + DIRX[dir];
     INT32 toY = curRoom->y + DIRY[dir];
@@ -224,9 +239,9 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
         break;
     }
 
-    this->addChild(hall);
+    this->addChild(hall, 0);
     vecHall.pushBack(hall);
-
+    //标记不能来回访问
     curRoom->visDir[dir] = false;
     toRoom->visDir[(dir + 2) % CNTDIR] = false;
 
