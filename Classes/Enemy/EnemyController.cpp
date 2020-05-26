@@ -17,7 +17,7 @@ void EnemyController::createEnemy() {
   
   for (int i = 0; i < maxI; i++) {
     enemy = Enemy::create();
-    enemy->bindSprite(Sprite::create("Enemy//shooter.png"));
+    enemy->bindSprite(Sprite::create("Enemy//shooter.png"), 5);
     enemy->reset();
 
     this->addChild(enemy);
