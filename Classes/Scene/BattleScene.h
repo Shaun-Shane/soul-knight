@@ -5,6 +5,7 @@
 #include "Enemy\Enemy.h"
 #include "Enemy\EnemyController.h"
 #include "BattleRoom.h"
+#include "Hall.h"
 #include "Const\Const.h"
 #include "cocos2d.h"
 #include <queue>
@@ -29,6 +30,10 @@ class BattleScene : public Scene {
   void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
 
+  void setHallWithWidth(Hall*, BattleRoom*, BattleRoom*);
+  void setHallWithHeight(Hall*, BattleRoom*, BattleRoom*);
+  void connectRoom(BattleRoom*);
+
  private:
   INT32 cntRoom = 0;
  private:
@@ -41,6 +46,7 @@ class BattleScene : public Scene {
   Vector<Sprite*> vecDoor;
 
   Vector<Enemy*> vecEnemy;
+  Vector<Hall*> vecHall;
 
   BattleRoom* beginRoom = nullptr;
   BattleRoom* endRoom = nullptr;

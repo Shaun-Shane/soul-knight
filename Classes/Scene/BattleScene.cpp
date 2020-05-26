@@ -17,8 +17,15 @@ void BattleScene::update(float delta) {
       float curX = battleRoom[x][y]->getPositionX();
       float curY = battleRoom[x][y]->getPositionY();
       battleRoom[x][y]->setPositionX(curX - iSpeed);
-       battleRoom[x][y]->setPositionY(curY - iSpeed);
+      battleRoom[x][y]->setPositionY(curY - iSpeed);
     }
+  }
+
+  for (auto hall : vecHall) {
+    float curX = hall->getPositionX();
+    float curY = hall->getPositionY();
+    hall->setPositionX(curX - iSpeed);
+    hall->setPositionY(curY - iSpeed);
   }
 }
 
@@ -46,7 +53,7 @@ bool BattleScene::init() {
 
   initRoom();
 
-   this->scheduleUpdate(); //update, 60fps
+  this->scheduleUpdate(); //update, 60fps
 
   return true;
 }
@@ -63,8 +70,8 @@ void BattleScene::initRoom() {
   // 25 rooms
 
   srand(time(nullptr));
-  randomGenerate(rand() % SIZEMTX, rand() % SIZEMTX);
-  // assert(battleRoom[stX][stY] != nullptr);
+  INT32 stX = rand() % SIZEMTX, stY = rand() % SIZEMTX;
+  randomGenerate(stX, stY);
   
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
@@ -72,6 +79,8 @@ void BattleScene::initRoom() {
       battleRoom[x][y]->createMap();
     }
   }
+
+  connectRoom(battleRoom[stX][stY]);
 }
 
 void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
@@ -156,4 +165,74 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
 
   assert(battleRoom[toX][toY] != nullptr);
   assert(battleRoom[toX][toY] != beginRoom);
+}
+
+void BattleScene::setHallWithWidth(Hall* hall, BattleRoom* fromRoom,
+                                   BattleRoom* toRoom) {
+  hall->sizeWidth =
+      SIZECENTERDIS - fromRoom->sizeWidth / 2 - toRoom->sizeWidth / 2;
+
+  hall->upLeftX =
+      fromRoom->centerX + FLOORWIDTH * (fromRoom->sizeWidth / 2 + 1);
+  hall->upLeftY = fromRoom->centerY + FLOORHEIGHT * (SIZEHALL / 2 - 1);
+
+  hall->downRightX = toRoom->centerX - FLOORWIDTH * (toRoom->sizeWidth / 2 + 1);
+  hall->downRightY = toRoom->centerY - FLOORHEIGHT * (SIZEHALL / 2 - 1);
+  hall->createMap();
+}
+
+void BattleScene::setHallWithHeight(Hall* hall, BattleRoom* fromRoom,
+                                    BattleRoom* toRoom) {
+  hall->sizeHeight =
+      SIZECENTERDIS - fromRoom->sizeHeight / 2 - toRoom->sizeHeight / 2;
+
+  hall->upLeftX = fromRoom->centerX - FLOORWIDTH * (SIZEHALL / 2 - 1);
+  hall->upLeftY =
+      fromRoom->centerY - FLOORHEIGHT * (fromRoom->sizeHeight / 2 + 1);
+
+  hall->downRightX = toRoom->centerX + FLOORWIDTH * (SIZEHALL / 2 - 1);
+  hall->downRightY =
+      toRoom->centerY + FLOORHEIGHT * (toRoom->sizeHeight / 2 + 1);
+  hall->createMap();
+}
+
+void BattleScene::connectRoom(BattleRoom* curRoom) {
+  assert(curRoom != nullptr);
+
+  for (INT32 dir = 0; dir < CNTDIR; dir++) {
+    if (curRoom->visDir[dir] == false) continue;
+    INT32 toX = curRoom->x + DIRX[dir];
+    INT32 toY = curRoom->y + DIRY[dir];
+
+    BattleRoom* toRoom = battleRoom[toX][toY];
+
+    Hall* hall = Hall::create();
+    hall->dir = dir;
+
+    switch (dir) {
+      case RIGHT:
+        setHallWithWidth(hall, curRoom, toRoom);
+        break;
+      case UP:
+        setHallWithHeight(hall, toRoom, curRoom);
+        break;
+      case LEFT:
+        setHallWithWidth(hall, toRoom, curRoom);
+        break;
+      case DOWN:
+        setHallWithHeight(hall, curRoom, toRoom);
+        break;
+    }
+
+    this->addChild(hall);
+    vecHall.pushBack(hall);
+
+    curRoom->visDir[dir] = false;
+    toRoom->visDir[(dir + 2) % CNTDIR] = false;
+
+    connectRoom(toRoom);
+    //back trace
+    curRoom->visDir[dir] = true;
+    toRoom->visDir[(dir + 2) % CNTDIR] = true;
+  }
 }
