@@ -7,7 +7,7 @@
 USING_NS_CC;
 
 class BattleRoom : public Node {
-  static constexpr INT32 SIZEROOM = 19;
+  static constexpr INT32 SIZEROOM = 17;
   friend class BattleScene;
  public:
   CREATE_FUNC(BattleRoom);
@@ -23,25 +23,34 @@ class BattleRoom : public Node {
 
   void setCenter(float, float); // 设置中心
 
+  void generateFloor(float, float);
+
+  void generateWall(float, float);
+
+  void generateDoor(float, float);
+
+  void addDoor();
+
   void connect(BattleRoom*);
 
  private:
   float centerX, centerY;
+  float upLeftX, upLeftY;
+  float downRightX, downRightY;
+
   INT32 x, y;  // row and column in SIZEMTX * SIZEMTX BattleRoom matrix
-  INT32 visTime; //maybe not needed
-  INT32 nextDIR;
+  INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
+
   bool visDir[CNTDIR] = {false};
 
  private:
-  BattleRoom* nextRoom = nullptr;
-  BattleRoom* prevRoom = nullptr;
-
   EnemyController* enemyCtr = nullptr;
 
  private:
   Vector<Sprite*> vecFloor; //open door can be considered as floor
   Vector<Sprite*> vecWall;
-  Vector<Sprite*> vecDoor;
+
+  Vector<Sprite*> vecDoorOpen, vecDoorClose; 
 };
 
 #endif
