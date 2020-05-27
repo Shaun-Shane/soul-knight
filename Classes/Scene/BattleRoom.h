@@ -16,7 +16,7 @@ class BattleRoom : public Hall {
   virtual bool init();
   //virtual void update(float delta);
 
-  virtual void createMap(); //生成该房间地图
+  void createMap() override; //生成该房间地图
 
   void setCenter(float, float); // 设置中心
 
@@ -35,6 +35,8 @@ class BattleRoom : public Hall {
 
  private:
   EnemyController* enemyCtr = nullptr;
+
+  Sprite* portal = nullptr; //传送门
 
  private:
   Vector<Sprite*> vecDoorOpen, vecDoorClose; 

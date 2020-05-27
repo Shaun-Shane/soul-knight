@@ -22,9 +22,12 @@ private:
   void createEnemy();
 
 private:
+  bool enemyAllKilled();
+
+private:
   Knight* knight = nullptr;
 
- private:
+private:
   Vector<Enemy*> vecEnemy;
 };
 

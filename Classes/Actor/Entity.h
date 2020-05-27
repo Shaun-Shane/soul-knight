@@ -7,7 +7,7 @@ USING_NS_CC;
 class Entity : public Node {
 public : 
   Entity();
-  Entity(INT32, INT32, float);
+  Entity(INT32, INT32, float, float);
   Entity(Sprite* sprite);
 
   Sprite* getSprite();
@@ -24,6 +24,7 @@ protected:
   INT32 attack = 3;
   INT32 HP = 5;
   float attackSpeed;  //攻击速度
+  float moveSpeed;  //移动速度
 };
 
 #endif;

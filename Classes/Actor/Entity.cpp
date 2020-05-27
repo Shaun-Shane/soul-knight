@@ -1,9 +1,9 @@
 ﻿#include "Entity.h"
 
-Entity::Entity() : attack(0), HP(0), attackSpeed(.0) { this->sprite = nullptr; }
+Entity::Entity() : attack(0), HP(0), attackSpeed(.0f), moveSpeed(.0f) { this->sprite = nullptr; }
 
-Entity::Entity(INT32 _attack, INT32 _HP, float _attackSpeed)
-    : attack(_attack), HP(_HP), attackSpeed(_attackSpeed) {
+Entity::Entity(INT32 _attack, INT32 _HP, float _attackSpeed, float _moveSpeed)
+    : attack(_attack), HP(_HP), attackSpeed(_attackSpeed), moveSpeed(_moveSpeed) {
   this->sprite = nullptr;
 }
 

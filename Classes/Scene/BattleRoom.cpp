@@ -4,13 +4,13 @@ bool BattleRoom::init() {
   centerX = .0f, centerY = .0f;
   upLeftX = .0f, upLeftY = .0f;
   downRightX = .0f, downRightY = .0f;
-
   x = 0, y = 0;
   sizeHeight = SIZEROOM, sizeWidth = SIZEROOM;
 
   memset(visDir, false, sizeof(visDir));
   
   enemyCtr = EnemyController::create(); //controll enemy behaviors
+  portal = nullptr;
   return true; 
 }
 

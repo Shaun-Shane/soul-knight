@@ -16,7 +16,7 @@ using std::queue;
 class BattleScene : public Scene {
   friend class BattleRoom;
   static constexpr INT32 SIZEMTX = 5;
-  static constexpr INT32 MAXROOM = 6; // temporarily make it 5
+  static constexpr INT32 MAXROOM = 5; // temporarily make it 5
 
  public:
   static Scene* createScene();
@@ -30,8 +30,8 @@ class BattleScene : public Scene {
   void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
 
-  void setHallWithWidth(Hall*, BattleRoom*, BattleRoom*);
-  void setHallWithHeight(Hall*, BattleRoom*, BattleRoom*);
+  void setHallWithWidth(Hall*, const BattleRoom*, const BattleRoom*);
+  void setHallWithHeight(Hall*, const BattleRoom*, const BattleRoom*);
   void connectRoom(BattleRoom*);
 
  private:

@@ -13,11 +13,7 @@ void BattleScene::update(float delta) {
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
       if (battleRoom[x][y] == nullptr) continue;
-
-      float curX = battleRoom[x][y]->getPositionX();
-      float curY = battleRoom[x][y]->getPositionY();
-      //battleRoom[x][y]->setPositionX(curX - iSpeed);
-      battleRoom[x][y]->setPositionY(curY - iSpeed);
+      battleRoom[x][y]->changePositionBy(-iSpeed, 0);
 
       BattleRoom* curRoom = battleRoom[x][y];
       {
@@ -32,10 +28,7 @@ void BattleScene::update(float delta) {
   }
 
   for (auto hall : vecHall) {
-    float curX = hall->getPositionX();
-    float curY = hall->getPositionY();
-    //hall->setPositionX(curX - iSpeed);
-    hall->setPositionY(curY - iSpeed);
+    hall->changePositionBy(-iSpeed, 0);
   }
 }
 
@@ -88,8 +81,23 @@ void BattleScene::initRoom() {
   
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
-      if (battleRoom[x][y] == nullptr) continue;
-      battleRoom[x][y]->createMap();
+      BattleRoom* curRoom = battleRoom[x][y];
+      if (curRoom == nullptr) continue;
+
+      if (curRoom == endRoom) { // add portal to endRoom
+        curRoom->sizeWidth -= 8, curRoom->sizeHeight -= 8;
+        curRoom->createMap();
+
+        Sprite* portal = Sprite::create("Map//portal3.png");
+        portal->setPosition(Point(curRoom->centerX, curRoom->centerY));
+        curRoom->addChild(portal);
+        portal->setGlobalZOrder(4);
+
+        curRoom->portal = portal;
+      } else {
+        curRoom->createMap();
+      } 
+      
     }
   }
   //从起始房间开始联通房间
@@ -164,7 +172,7 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
   }
 
   toRoom = BattleRoom::create();
-  this->endRoom = toRoom;
+  this->endRoom = toRoom; //set endRoom
 
   toRoom->x = toX, toRoom->y = toY;
   log("%d %d", toX, toY);
@@ -182,8 +190,8 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
   assert(battleRoom[toX][toY] != beginRoom);
 }
 // 确定走廊的宽度 顶点
-void BattleScene::setHallWithWidth(Hall* hall, BattleRoom* fromRoom,
-                                   BattleRoom* toRoom) {
+void BattleScene::setHallWithWidth(Hall* hall, const BattleRoom* fromRoom,
+                                   const BattleRoom* toRoom) {
   hall->sizeWidth =
       SIZECENTERDIS - fromRoom->sizeWidth / 2 - toRoom->sizeWidth / 2 - 1;
 
@@ -196,8 +204,8 @@ void BattleScene::setHallWithWidth(Hall* hall, BattleRoom* fromRoom,
   hall->createMap();
 }
 // 确定走廊的高度 顶点
-void BattleScene::setHallWithHeight(Hall* hall, BattleRoom* fromRoom,
-                                    BattleRoom* toRoom) {
+void BattleScene::setHallWithHeight(Hall* hall, const BattleRoom* fromRoom,
+                                    const BattleRoom* toRoom) {
   hall->sizeHeight =
       SIZECENTERDIS - fromRoom->sizeHeight / 2 - toRoom->sizeHeight / 2 - 1;
 

@@ -43,3 +43,5 @@ void EnemyController::update(float delta) {
 }
 
 void EnemyController::bindKnight(Knight* knight) { this->knight = knight; }
+
+bool EnemyController::enemyAllKilled() { return vecEnemy.empty(); }

@@ -67,3 +67,11 @@ void Hall::createMap() {
     curX = X, curY -= FLOORHEIGHT;
   }
 }
+
+void Hall::changePositionBy(float deltaX, float deltaY) {
+  upLeftX += deltaX, upLeftY += deltaY;
+  downRightX += deltaX, downRightY += deltaY;
+
+  float curX = getPositionX(), curY = getPositionY();
+  setPositionX(curX + deltaX), setPositionY(curY + deltaY);
+}
