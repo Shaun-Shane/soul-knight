@@ -7,6 +7,7 @@ cocos2d/
 proj.android
 proj.ios_mac
 proj.linux
+proj.win32
 proj.win32/CMakeFiles/
 proj.win32/engine/
 proj.win32/game.rc
