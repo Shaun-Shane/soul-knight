@@ -18,8 +18,8 @@ void BattleRoom::setCenter(float X, float Y) { centerX = X, centerY = Y; }
 
 void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
   Sprite* tmpSprite = Sprite::create("Map//doorOpen.png");
-  this->addChild(tmpSprite, layer);
-  tmpSprite->setGlobalZOrder(layer);
+  this->addChild(tmpSprite, LayerPlayer - 1);
+  tmpSprite->setGlobalZOrder(LayerPlayer - 1);
   vecDoorOpen.pushBack(tmpSprite);
 
   tmpSprite->setPosition(Point(X, Y));
@@ -61,17 +61,22 @@ void BattleRoom::createMap() {
 
             ((H == sizeHeight - 1) && visDir[UP] && (sizeWidth / 2 - 2 <= W) &&
              (W <= sizeWidth / 2 - 2 + SIZEHALL - 3))) {
-          generateDoor(curX, curY, 2);
-        } else if (H == sizeHeight - 1 && (W == sizeWidth / 2 - 3 ||
-                    W == sizeWidth / 2 - 2 + SIZEHALL - 2)) {
-          generateWall(curX, curY, 3);
-        } 
+          if (H != sizeHeight - 1)
+            generateDoor(curX, curY, LayerPlayer + 1);
+          else
+            generateDoor(curX, curY, LayerPlayer - 1);
+        } else if (H != sizeHeight - 1 || W == 0 || W == sizeWidth - 1) {
+          generateWall(curX, curY, LayerPlayer + 1);
+        } else if (visDir[UP] && H == sizeHeight - 1 &&
+                   (W == sizeWidth / 2 - 3 || W == sizeWidth / 2 + SIZEHALL - 4)) {
+          generateWall(curX, curY, LayerPlayer + 2);
+        }
         else {
-          generateWall(curX, curY, 2);
+          generateWall(curX, curY, LayerPlayer - 1);
         }
       }
       else {
-        generateFloor(curX, curY, 1);
+        generateFloor(curX, curY, LayerPlayer - 2);
       }
       // randomly generate floor and Wall
 
