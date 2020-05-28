@@ -13,7 +13,7 @@ void BattleScene::update(float delta) {
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
       if (battleRoom[x][y] == nullptr) continue;
-      battleRoom[x][y]->changePositionBy(-iSpeed, 0);
+      battleRoom[x][y]->changePositionBy(0, -iSpeed);
 
       BattleRoom* curRoom = battleRoom[x][y];
       {
@@ -28,7 +28,7 @@ void BattleScene::update(float delta) {
   }
 
   for (auto hall : vecHall) {
-    hall->changePositionBy(-iSpeed, 0);
+    hall->changePositionBy(0, -iSpeed);
   }
 }
 
@@ -41,7 +41,7 @@ bool BattleScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight.png"), 10);
+  this->knight->bindSprite(Sprite::create("Character//Knight.png"), LayerPlayer);
 
   this->knight->setPosition(
       Point(visibleSize.width / 2, visibleSize.height / 2));
