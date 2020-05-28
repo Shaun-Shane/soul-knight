@@ -55,11 +55,14 @@ void Hall::createMap() {
   for (INT32 H = sizeHeight - 1; H >= 0; H--) {  // for height and width
     for (INT32 W = 0; W <= sizeWidth - 1; W++) {
       if ((dir % 2 == 0) && (H == 0 || H == sizeHeight - 1)) {
-        generateWall(curX, curY, 2);
+        if (H == 0) generateWall(curX, curY, LayerPlayer + 1);
+        else generateWall(curX, curY, LayerPlayer - 1);
       } else if ((dir % 2 == 1) && (W == 0 || W == sizeWidth - 1)) {
-        generateWall(curX, curY, 2);
-      } else
-        generateFloor(curX, curY, 1);
+        generateWall(curX, curY, LayerPlayer + 1);
+      }
+      else {
+        generateFloor(curX, curY, LayerPlayer - 2);
+      }
       // randomly generate floor and Wall
 
       curX += FLOORWIDTH;
