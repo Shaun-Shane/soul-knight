@@ -112,7 +112,7 @@ void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
 
   if (knightX >= upLeftX && knightX <= downRightX && knightY <= upLeftY + FLOORHEIGHT &&
       knightY >= downRightY) {
-    log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
+    //log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
     if (enemyCtr->enemyAllKilled()) openDoor(); //怪物全部击杀开门
     else closeDoor();  
 

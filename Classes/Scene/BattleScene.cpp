@@ -38,8 +38,6 @@ void BattleScene::update(float delta) {
   float ispeedX = knight->moveSpeedX;
   float ispeedY = knight->moveSpeedY;
 
-  float knightX = knight->getPositionX(), knightY = knight->getPositionY();
-
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
       if (battleRoom[x][y] == nullptr) continue;
