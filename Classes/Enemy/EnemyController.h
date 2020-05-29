@@ -14,15 +14,13 @@ class EnemyController : public Node {
   CREATE_FUNC(EnemyController);
 
   virtual bool init();
-  virtual void update(float delta);
 
   void bindKnight(Knight* knight);
 
-private:
-  void createEnemy();
+  bool enemyAllKilled();
 
 private:
-  bool enemyAllKilled();
+  void createEnemy();
 
 private:
   Knight* knight = nullptr;
