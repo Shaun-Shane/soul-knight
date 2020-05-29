@@ -55,12 +55,13 @@ void Hall::createMap() {
   for (INT32 H = sizeHeight - 1; H >= 0; H--) {  // for height and width
     for (INT32 W = 0; W <= sizeWidth - 1; W++) {
       if ((dir % 2 == 0) && (H == 0 || H == sizeHeight - 1)) {
-        if (H == 0) generateWall(curX, curY, LayerPlayer + 1);
-        else generateWall(curX, curY, LayerPlayer - 1);
+        if (H == 0)
+          generateWall(curX, curY, LayerPlayer + 1);
+        else
+          generateWall(curX, curY, LayerPlayer - 1);
       } else if ((dir % 2 == 1) && (W == 0 || W == sizeWidth - 1)) {
         generateWall(curX, curY, LayerPlayer + 1);
-      }
-      else {
+      } else {
         generateFloor(curX, curY, LayerPlayer - 2);
       }
       // randomly generate floor and Wall
@@ -77,4 +78,27 @@ void Hall::changePositionBy(float deltaX, float deltaY) {
 
   float curX = getPositionX(), curY = getPositionY();
   setPositionX(curX + deltaX), setPositionY(curY + deltaY);
+}
+
+void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
+  float knightX = knight->getPositionX();
+  float knightY = knight->getPositionY();
+
+  if (dir % 2 == 1) {
+    if (knightX >= upLeftX && knightX <= downRightX &&
+        knightY <= upLeftY + FLOORHEIGHT * 2 && knightY >= downRightY - FLOORHEIGHT * 2) {
+      if (ispeedX > 0 && knightX >= downRightX)
+        ispeedX = .0f;
+      else if (ispeedX < 0 && knightX <= upLeftX)
+        ispeedX = .0f;
+    }
+  } else {
+    if (knightX >= upLeftX - FLOORWIDTH * 2 && knightX <= downRightX + FLOORWIDTH * 2 &&
+        knightY <= upLeftY + FLOORHEIGHT / 2 && knightY >= downRightY) {
+      if (ispeedY > 0 && knightY >= upLeftY + FLOORHEIGHT / 2)
+        ispeedY = .0f;
+      else if (ispeedY < 0 && knightY <= downRightY)
+        ispeedY = .0f;
+    }
+  }
 }

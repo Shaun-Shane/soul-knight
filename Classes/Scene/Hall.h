@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Const/Const.h"
+#include "Actor/Knight.h"
 USING_NS_CC;
 
 class Hall : public Node{
@@ -17,6 +18,8 @@ class Hall : public Node{
   virtual void createMap();  //生成走廊地图
 
   virtual void changePositionBy(float, float);
+
+  virtual void checkPlayerPosition(Knight*, float&, float&);
 
   void generateFloor(float, float, INT32);
 
