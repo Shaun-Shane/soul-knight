@@ -6,32 +6,6 @@ using std::vector;
 
 Scene* BattleScene::createScene() { return BattleScene::create(); }
 
-void BattleScene::update(float delta) {
-  float ispeedX = knight->moveSpeedX;
-  float ispeedY = knight->moveSpeedY;
-
-  for (INT32 y = 0; y < SIZEMTX; y++) {
-    for (INT32 x = 0; x < SIZEMTX; x++) {
-      if (battleRoom[x][y] == nullptr) continue;
-      battleRoom[x][y]->changePositionBy(-ispeedX, -ispeedY);
-
-      BattleRoom* curRoom = battleRoom[x][y];
-      {
-        float xx = knight->getPositionX(), yy = knight->getPositionY();
-        if ( xx >= curRoom->upLeftX && xx <= curRoom->downRightX && yy <= curRoom->upLeftY && yy >= curRoom->downRightY) {
-          curRoom->closeDoor();
-        } else
-          curRoom->openDoor();
-      }
-
-    }
-  }
-
-  for (auto hall : vecHall) {
-    hall->changePositionBy(-ispeedX, -ispeedY);
-  }
-}
-
 bool BattleScene::init() {
   if (!Scene::init()) {
     return false;
@@ -58,6 +32,36 @@ bool BattleScene::init() {
   this->scheduleUpdate(); //60帧跟新
 
   return true;
+}
+
+void BattleScene::update(float delta) {
+  float ispeedX = knight->moveSpeedX;
+  float ispeedY = knight->moveSpeedY;
+
+  float knightX = knight->getPositionX(), knightY = knight->getPositionY();
+
+  for (INT32 y = 0; y < SIZEMTX; y++) {
+    for (INT32 x = 0; x < SIZEMTX; x++) {
+      if (battleRoom[x][y] == nullptr) continue;
+      BattleRoom* curRoom = battleRoom[x][y];
+
+      curRoom->checkPlayerPosition(knight, ispeedX, ispeedY);
+    }
+  }
+  for (auto hall : vecHall) {
+    hall->checkPlayerPosition(knight, ispeedX, ispeedY);
+  }
+
+  for (INT32 y = 0; y < SIZEMTX; y++) {
+    for (INT32 x = 0; x < SIZEMTX; x++) {
+      if (battleRoom[x][y] == nullptr) continue;
+      BattleRoom* curRoom = battleRoom[x][y];
+      curRoom->changePositionBy(-ispeedX, -ispeedY);
+    }
+  }
+  for (auto hall : vecHall) {
+    hall->changePositionBy(-ispeedX, -ispeedY);
+  }
 }
 
 void BattleScene::initRoom() {
