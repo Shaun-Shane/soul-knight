@@ -19,21 +19,21 @@ void Knight::registerKeyboardEvent() {
   listener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event*) {
     switch (code) {
       case EventKeyboard::KeyCode::KEY_D:
-        moveSpeedX = moveSpeed, moveSpeedY = .0f;
+        moveSpeedX = moveSpeed;
         getSprite()->setFlippedX(false);
         break;
 
       case EventKeyboard::KeyCode::KEY_W:
-        moveSpeedX = .0f, moveSpeedY = moveSpeed;
+        moveSpeedY = moveSpeed;
         break;
 
       case EventKeyboard::KeyCode::KEY_A:
-        moveSpeedX = -moveSpeed, moveSpeedY = .0f;
+        moveSpeedX = -moveSpeed;
         getSprite()->setFlippedX(true);
         break;
 
       case EventKeyboard::KeyCode::KEY_S:
-        moveSpeedX = .0f, moveSpeedY = -moveSpeed;
+        moveSpeedY = -moveSpeed;
         break;
     }
   };
