@@ -18,6 +18,8 @@ class BattleRoom : public Hall {
 
   void createMap() override; //生成该房间地图
 
+  void checkPlayerPosition(Knight*, float&, float&) override;
+
   void setCenter(float, float); // 设置中心
 
   void generateDoor(float, float, INT32 layer);

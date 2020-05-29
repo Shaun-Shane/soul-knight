@@ -8,10 +8,10 @@ bool BattleRoom::init() {
   sizeHeight = SIZEROOM, sizeWidth = SIZEROOM;
 
   memset(visDir, false, sizeof(visDir));
-  
-  enemyCtr = EnemyController::create(); //controll enemy behaviors
+
+  enemyCtr = EnemyController::create();  // controll enemy behaviors
   portal = nullptr;
-  return true; 
+  return true;
 }
 
 void BattleRoom::setCenter(float X, float Y) { centerX = X, centerY = Y; }
@@ -31,7 +31,7 @@ void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
   vecDoorClose.pushBack(tmpSprite);
 
   tmpSprite->setPosition(Point(X, Y + FLOORHEIGHT / 2));
-  tmpSprite->setVisible(false); //closeDoor images are not visible at first
+  tmpSprite->setVisible(false);  // closeDoor images are not visible at first
 }
 
 void BattleRoom::createMap() {
@@ -68,14 +68,13 @@ void BattleRoom::createMap() {
         } else if (H != sizeHeight - 1 || W == 0 || W == sizeWidth - 1) {
           generateWall(curX, curY, LayerPlayer + 1);
         } else if (visDir[UP] && H == sizeHeight - 1 &&
-                   (W == sizeWidth / 2 - 3 || W == sizeWidth / 2 + SIZEHALL - 4)) {
+                   (W == sizeWidth / 2 - 3 ||
+                    W == sizeWidth / 2 + SIZEHALL - 4)) {
           generateWall(curX, curY, LayerPlayer + 2);
-        }
-        else {
+        } else {
           generateWall(curX, curY, LayerPlayer - 1);
         }
-      }
-      else {
+      } else {
         generateFloor(curX, curY, LayerPlayer - 2);
       }
       // randomly generate floor and Wall
@@ -86,7 +85,7 @@ void BattleRoom::createMap() {
   }
 }
 
-void BattleRoom::closeDoor() { //doorClose sptires are visible
+void BattleRoom::closeDoor() {  // doorClose sptires are visible
   for (auto sprite : vecDoorOpen) {
     sprite->setVisible(false);
   }
@@ -96,7 +95,7 @@ void BattleRoom::closeDoor() { //doorClose sptires are visible
   }
 }
 
-void BattleRoom::openDoor() { //doorOpen sptires are visible
+void BattleRoom::openDoor() {  // doorOpen sptires are visible
   for (auto sprite : vecDoorOpen) {
     sprite->setVisible(true);
   }
@@ -106,5 +105,48 @@ void BattleRoom::openDoor() { //doorOpen sptires are visible
   }
 }
 
+void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
+                                     float& ispeedY) {
+  float knightX = knight->getPositionX();
+  float knightY = knight->getPositionY();
 
+  if (knightX >= upLeftX && knightX <= downRightX && knightY <= upLeftY + FLOORHEIGHT &&
+      knightY >= downRightY) {
+    log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
+    if (enemyCtr->enemyAllKilled()) openDoor(); //怪物全部击杀开门
+    else closeDoor();  
 
+    if (enemyCtr->enemyAllKilled() == false) {
+      if (ispeedX > 0 && knightX >= downRightX)
+        ispeedX = .0f;
+      else if (ispeedX < 0 && knightX <= upLeftX)
+        ispeedX = .0f;
+      else if (ispeedY > 0 && knightY >= upLeftY + 20)
+        ispeedY = .0f;
+      else if (ispeedY < 0 && knightY <= downRightY)
+        ispeedY = .0f;
+    } else {
+      if (((upLeftY + FLOORHEIGHT / 2 - FLOORHEIGHT * (sizeHeight / 2 - 3)) >=
+               knightY &&
+           knightY >= (downRightY + FLOORHEIGHT * (sizeHeight / 2 - 3)))) {
+        if (ispeedX > 0 && knightX >= downRightX && !visDir[RIGHT])
+          ispeedX = .0f;
+        if (ispeedX < 0 && knightX <= upLeftX && !visDir[LEFT]) ispeedX = 0.f;
+      } else if (upLeftX + FLOORHEIGHT * (sizeHeight / 2 - 3) <= knightX &&
+                 knightX <= downRightX - FLOORHEIGHT * (sizeHeight / 2 - 3)) {
+        if (ispeedY > 0 && knightY >= upLeftY && !visDir[UP]) ispeedY = .0f;
+        if (ispeedY < 0 && knightY <= downRightY && !visDir[DOWN])
+          ispeedY = 0.f;
+      } else {
+        if (ispeedX > 0 && knightX >= downRightX)
+          ispeedX = .0f;
+        else if (ispeedX < 0 && knightX <= upLeftX)
+          ispeedX = .0f;
+        else if (ispeedY > 0 && knightY >= upLeftY + 20)
+          ispeedY = .0f;
+        else if (ispeedY < 0 && knightY <= downRightY)
+          ispeedY = .0f;
+      }
+    }
+  }
+}
