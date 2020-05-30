@@ -37,11 +37,20 @@ void Hall::generateWall(float X, float Y, INT32 layer) {
   else
     imageName = "Map//wall1.png";
 
-  tmpSprite = Sprite::create(imageName.asString().c_str());
+  tmpSprite = Sprite::create(imageName.asString().c_str(), Rect(0, 0, 40, 35));
   this->addChild(tmpSprite, layer);
   tmpSprite->setGlobalZOrder(layer);
-  tmpSprite->setPosition(Point(X, Y + (WALLHEIGHT - FLOORHEIGHT) / 2));
+  tmpSprite->setPosition(Point(X, Y + (WALLHEIGHT - FLOORHEIGHT)));
   vecWall.pushBack(tmpSprite);
+  //Upside of whe wall
+
+  tmpSprite = Sprite::create(imageName.asString().c_str(), Rect(0, 35, 40, 25));
+  this->addChild(tmpSprite, LayerPlayer - 1);
+  tmpSprite->setGlobalZOrder(LayerPlayer - 1);
+  tmpSprite->setPosition(Point(X, Y + (WALLHEIGHT - FLOORHEIGHT) - 30));
+  vecWall.pushBack(tmpSprite);
+
+  
 }
 
 void Hall::createMap() {

@@ -110,11 +110,13 @@ void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
   float knightX = knight->getPositionX();
   float knightY = knight->getPositionY();
 
-  if (knightX >= upLeftX && knightX <= downRightX && knightY <= upLeftY + FLOORHEIGHT &&
-      knightY >= downRightY) {
-    //log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
-    if (enemyCtr->enemyAllKilled()) openDoor(); //怪物全部击杀开门
-    else closeDoor();  
+  if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
+      knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
+    // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
+    if (enemyCtr->enemyAllKilled())
+      openDoor();  //怪物全部击杀开门
+    else
+      closeDoor();
 
     if (enemyCtr->enemyAllKilled() == false) {
       if (ispeedX > 0 && knightX >= downRightX)
@@ -134,7 +136,7 @@ void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
         if (ispeedX < 0 && knightX <= upLeftX && !visDir[LEFT]) ispeedX = 0.f;
       } else if (upLeftX + FLOORHEIGHT * (sizeHeight / 2 - 3) <= knightX &&
                  knightX <= downRightX - FLOORHEIGHT * (sizeHeight / 2 - 3)) {
-        if (ispeedY > 0 && knightY >= upLeftY && !visDir[UP]) ispeedY = .0f;
+        if (ispeedY > 0 && knightY >= upLeftY + FLOORHEIGHT / 2 && !visDir[UP]) ispeedY = .0f;
         if (ispeedY < 0 && knightY <= downRightY && !visDir[DOWN])
           ispeedY = 0.f;
       } else {
