@@ -28,6 +28,10 @@ class BattleRoom : public Hall {
 
   void openDoor();
 
+  /*回调函数*/
+  void menuCloseCallbackEnd(cocos2d::Ref* pSender);
+  void menuCloseCallbackSet(cocos2d::Ref* pSender);
+
  private:
   float centerX, centerY;
 

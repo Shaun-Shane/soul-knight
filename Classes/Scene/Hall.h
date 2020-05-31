@@ -25,7 +25,9 @@ class Hall : public Node{
 
   void generateWall(float, float, INT32);
 
-  
+  /*回调函数*/
+  void menuCloseCallbackEnd(cocos2d::Ref* pSender);
+  void menuCloseCallbackSet(cocos2d::Ref* pSender);
 
  private:
   INT32 dir; //direction of this hall
@@ -37,6 +39,7 @@ class Hall : public Node{
 
   Vector<Sprite*> vecFloor;
   Vector<Sprite*> vecWall;
+
 };
 
 #endif  // _HALL_H_

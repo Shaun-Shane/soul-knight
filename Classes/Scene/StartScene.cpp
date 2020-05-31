@@ -94,6 +94,10 @@ void StartScene::menuCloseCallbackStart(Ref* pSender)
 /*进入设置面板*/
 void StartScene::menuCloseCallbackSet(Ref* pSender)
 {
-	Director::getInstance()->replaceScene(TransitionFade::create(3.0f, SetScene::createScene()));
+	CCScheduler* defaultScheduler = CCDirector::sharedDirector()->getScheduler();
+	defaultScheduler->pauseTarget(this);
+	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
+	defaultScheduler->resumeTarget(this);
 }
+
 

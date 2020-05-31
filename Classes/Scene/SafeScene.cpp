@@ -1,4 +1,5 @@
 ﻿#include "SafeScene.h"
+#include"SetScene.h"
 
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 
@@ -29,6 +30,25 @@ bool SafeScene::init() {
   }
 
   Size visibleSize = Director::getInstance()->getVisibleSize();
+
+  /*创建关闭按钮以及设置按钮*/
+  auto setImg = MenuItemImage::create(
+	  "set.png",
+	  "set.png",
+	  CC_CALLBACK_1(SafeScene::menuCloseCallbackSet, this));
+  auto exitImg = MenuItemImage::create(
+	  "exit.png",
+	  "exit01.png",
+	  CC_CALLBACK_1(SafeScene::menuCloseCallbackEnd, this));
+
+  auto Menu01 = Menu::create(setImg, NULL);
+  auto Menu02 = Menu::create(exitImg, NULL);
+
+  Menu01->setPosition(1060, 660);
+  Menu02->setPosition(1200, 660);
+
+  this->addChild(Menu01, 1);
+  this->addChild(Menu02, 1);
 
   // add knight to scene
   this->knight = Knight::create();
@@ -73,4 +93,19 @@ void SafeScene::initBG() {
       visibleSize.width + visibleSize.width / 2, visibleSize.height / 2));
 
   this->addChild(this->bgSprite2, 0);
+}
+
+/*退出游戏*/
+void SafeScene::menuCloseCallbackEnd(Ref* pSender)
+{
+	Director::getInstance()->end();
+}
+
+/*进入设置面板*/
+void SafeScene::menuCloseCallbackSet(Ref* pSender)
+{
+	CCScheduler* defaultScheduler = CCDirector::sharedDirector()->getScheduler();
+	defaultScheduler->pauseTarget(this);
+	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
+	defaultScheduler->resumeTarget(this);
 }
