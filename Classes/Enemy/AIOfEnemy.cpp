@@ -3,7 +3,7 @@
 AIOfEnemy::AIOfEnemy() {
 	myEnemy = nullptr;
 	paceCount = 0;
-	wayOfPace = -1;//-1´ú±íÎ´È·¶¨·½Ïò
+	wayOfPace = -1;//-1ä»£è¡¨æœªç¡®å®šæ–¹å‘
 }
 
 AIOfEnemy::~AIOfEnemy() {}
@@ -22,29 +22,30 @@ void AIOfEnemy::patrolRoute(const BattleRoom* battleRoom,Knight* knight, const s
 		return;
 	}
 
-	paceCount = 1;//ÉèÖÃÎª1£¬±ÜÃâÏÂÒ»ÂÖ±»paceCount%40Ê¶±ğÎªfalse
+	paceCount = 1;//è®¾ç½®ä¸º1ï¼Œé¿å…ä¸‹ä¸€è½®è¢«paceCount%40è¯†åˆ«ä¸ºfalse
 	wayCanBeSelected.clear();
 	for (INT32 i = 0; i <= 3; i++) {
 		if (enemyPos.x + DIRX[i] * 40 < boundaryOfRoom[RIGHT] && enemyPos.x + DIRX[i] * 40 > boundaryOfRoom[LEFT]
 			&& enemyPos.y + DIRY[i] * 40 <= boundaryOfRoom[UP]&& enemyPos.y + DIRY[i] * 40 >= boundaryOfRoom[DOWN]) {
 			wayCanBeSelected.push_back(i);
 		}
-	}//Ñ¡È¡¿ÉÒÔ×ßµÄ·½Ïò
+	}//é€‰å–å¯ä»¥èµ°çš„æ–¹å‘
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 	wayOfPace = wayCanBeSelected[rand()% wayCanBeSelected.size()];
 	myEnemy->setPosition(Point(enemyPos.x + DIRX[wayOfPace] - knight->getMoveSpeedX(), enemyPos.y + DIRY[wayOfPace] - knight->getMoveSpeedY()));
 	myEnemy->makeCoinside();
 
-}//ÔÚÃ»Ì½²âµ½ÆïÊ¿µÄÊ±ºòÕı³£µÄÑ²ÂßÂ·Ïß
+}//åœ¨æ²¡æ¢æµ‹åˆ°éª‘å£«çš„æ—¶å€™æ­£å¸¸çš„å·¡é€»è·¯çº¿
 
 void AIOfEnemy::aiOfEnemy(Knight* knight, BattleRoom* battleRoom, const std::vector<float>& boundaryOfRoom) {
 	if (knight == nullptr || battleRoom == nullptr) {
 		return;
 	}
+
 	const Point enemyPos = myEnemy->getPosition();
 	const Point knightPos = knight->getPosition();
-	const INT32 disBetweenEnemyAndKnight = enemyPos.getDistance(knightPos);//»ñÈ¡¶şÕß¾àÀë£¬ÓÃÓÚºóĞøÅĞ¶Ï
+	const INT32 disBetweenEnemyAndKnight = enemyPos.getDistance(knightPos);//è·å–äºŒè€…è·ç¦»ï¼Œç”¨äºåç»­åˆ¤æ–­
 
 	if (disBetweenEnemyAndKnight > SIGHTRANGE) {
 		patrolRoute(battleRoom,knight,boundaryOfRoom);
@@ -75,6 +76,6 @@ void AIOfEnemy::attackTheKnight(Knight* knight, INT32 disBetweenEnemyAndKnight) 
 		myEnemy->setPosition(Point(enemyPos.x + 2 * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight - knight->getMoveSpeedX(),
 			enemyPos.y + 2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight - knight->getMoveSpeedY()));
 		myEnemy->makeCoinside();
-	}//µÈÎäÆ÷ÄÇÒ»¿é³öÀ´¼ÓÉÏÎäÆ÷
+	}//ç­‰æ­¦å™¨é‚£ä¸€å—å‡ºæ¥åŠ ä¸Šæ­¦å™¨
 }
 
