@@ -19,6 +19,9 @@ class Knight : public Entity{
 
   void registerKeyboardEvent();
 
+  float getMoveSpeedX();
+  float getMoveSpeedY();
+
  private:
   INT32 armor;
   INT32 MP;
