@@ -96,15 +96,15 @@ void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   if (dir % 2 == 1) {
     if (knightX >= upLeftX && knightX <= downRightX &&
         knightY <= upLeftY + FLOORHEIGHT + FLOORHEIGHT / 2 &&
-        knightY >= downRightY - FLOORHEIGHT - FLOORHEIGHT / 2) {
+        knightY >= downRightY - FLOORHEIGHT - FLOORHEIGHT / 4) {
       if (ispeedX > 0 && knightX >= downRightX)
         ispeedX = .0f;
       else if (ispeedX < 0 && knightX <= upLeftX)
         ispeedX = .0f;
     }
   } else {
-    if (knightX >= upLeftX - FLOORWIDTH - FLOORWIDTH / 2 &&
-        knightX <= downRightX + FLOORWIDTH + FLOORWIDTH / 2 &&
+    if (knightX >= upLeftX - FLOORWIDTH - FLOORWIDTH / 4 &&
+        knightX <= downRightX + FLOORWIDTH + FLOORWIDTH / 4 &&
         knightY <= upLeftY + FLOORHEIGHT / 2 && knightY >= downRightY) {
       if (ispeedY > 0 && knightY >= upLeftY + FLOORHEIGHT / 2)
         ispeedY = .0f;
