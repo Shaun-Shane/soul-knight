@@ -7,16 +7,16 @@
 class AIOfEnemy {
 	static constexpr INT32 SIGHTRANGE = 300;
 	static constexpr INT32 ATTACKRANGE = 100;
-	static constexpr INT32 LEFT = 0;
+	static constexpr INT32 RIGHT = 0;
 	static constexpr INT32 UP = 1;
-	static constexpr INT32 RIGHT = 2;
+	static constexpr INT32 LEFT = 2;
 	static constexpr INT32 DOWN = 3;
 
 public:
 	AIOfEnemy();
 	~AIOfEnemy();
 	void bindEnemy(Enemy* enemy);
-	void aiOfEnemy(Knight* knight,BattleRoom* battleRoom,const std::vector<float>& boundaryOfRoom);//boundaryOfRoomÊÇÒ»¸ö·â×°ÁË±ß½çµÄvector£¬°´Ë³ĞòÒÀ´ÎÓ¦Îª×ó±ß½ç¡¢ÉÏ¡¢ÓÒ¡¢ÏÂ
+	void aiOfEnemy(Knight* knight,BattleRoom* battleRoom,const std::vector<float>& boundaryOfRoom);//boundaryOfRoomæ˜¯ä¸€ä¸ªå°è£…äº†è¾¹ç•Œçš„vectorï¼ŒæŒ‰é¡ºåºä¾æ¬¡åº”ä¸ºå³è¾¹ç•Œã€ä¸Šã€å·¦ã€ä¸‹
 
 private:
 	void patrolRoute(const BattleRoom* battleRoom,Knight* knight,const std::vector<float>& boundaryOfRoom);
@@ -24,8 +24,8 @@ private:
 
 private:
 	Enemy* myEnemy;
-	INT32 paceCount;//ÓÃÓÚ±£Ö¤ÖÁÉÙ20²½¶¼ÔÚ×ßÍ¬Ò»·½Ïò
-	INT32 wayOfPace;//Ñ¡Ôñ×ßµÄ·½Ïò
-	std::vector<INT32> wayCanBeSelected;//¿É¹©Ñ¡ÔñµÄĞĞ×ß·½Ïò
+	INT32 paceCount;//ç”¨äºä¿è¯è‡³å°‘20æ­¥éƒ½åœ¨èµ°åŒä¸€æ–¹å‘
+	INT32 wayOfPace;//é€‰æ‹©èµ°çš„æ–¹å‘
+	std::vector<INT32> wayCanBeSelected;//å¯ä¾›é€‰æ‹©çš„è¡Œèµ°æ–¹å‘
 };
 #endif // _AIOFENEMY_H_
