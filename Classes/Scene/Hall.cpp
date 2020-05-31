@@ -1,6 +1,26 @@
 ﻿#include "Hall.h"
+#include"SetScene.h"
 
 bool Hall::init() {
+	/*创建关闭按钮以及设置按钮*/
+	auto setImg = MenuItemImage::create(
+		"set.png",
+		"set.png",
+		CC_CALLBACK_1(Hall::menuCloseCallbackSet, this));
+	auto exitImg = MenuItemImage::create(
+		"exit.png",
+		"exit01.png",
+		CC_CALLBACK_1(Hall::menuCloseCallbackEnd, this));
+
+	auto Menu01 = Menu::create(setImg, NULL);
+	auto Menu02 = Menu::create(exitImg, NULL);
+
+	Menu01->setPosition(1060, 660);
+	Menu02->setPosition(1200, 660);
+
+	this->addChild(Menu01, 1);
+	this->addChild(Menu02, 1);
+
   upLeftX = .0f, upLeftY = .0f;
   downRightX = .0f, downRightY = .0f;
 
@@ -112,4 +132,19 @@ void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
         ispeedY = .0f;
     }
   }
+}
+
+/*退出游戏*/
+void Hall::menuCloseCallbackEnd(Ref* pSender)
+{
+	Director::getInstance()->end();
+}
+
+/*进入设置面板*/
+void Hall::menuCloseCallbackSet(Ref* pSender)
+{
+	CCScheduler* defaultScheduler = CCDirector::sharedDirector()->getScheduler();
+	defaultScheduler->pauseTarget(this);
+	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
+	defaultScheduler->resumeTarget(this);
 }

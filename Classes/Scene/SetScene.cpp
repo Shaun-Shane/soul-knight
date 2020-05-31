@@ -65,7 +65,7 @@ bool SetScene::init()
 /*关闭设置面板的回调*/
 void SetScene::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->replaceScene(TransitionFade::create(3.0f, StartScene::createScene()));
+	Director::getInstance()->popScene();
 }
 
 /*改变背景音乐播放状态的回调*/

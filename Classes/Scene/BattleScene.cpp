@@ -1,4 +1,5 @@
 ﻿#include "BattleScene.h"
+#include"SetScene.h"
 
 #include <vector>
 
@@ -12,6 +13,25 @@ bool BattleScene::init() {
   }
 
   Size visibleSize = Director::getInstance()->getVisibleSize();
+
+  /*创建关闭按钮以及设置按钮*/
+  auto setImg = MenuItemImage::create(
+	  "set.png",
+	  "set.png",
+	  CC_CALLBACK_1(BattleScene::menuCloseCallbackSet, this));
+  auto exitImg = MenuItemImage::create(
+	  "exit.png",
+	  "exit01.png",
+	  CC_CALLBACK_1(BattleScene::menuCloseCallbackEnd, this));
+
+  auto Menu01 = Menu::create(setImg, NULL);
+  auto Menu02 = Menu::create(exitImg, NULL);
+
+  Menu01->setPosition(1060, 660);
+  Menu02->setPosition(1200, 660);
+
+  this->addChild(Menu01, 1);
+  this->addChild(Menu02, 1);
 
   // add knight to scene
   this->knight = Knight::create();
@@ -260,4 +280,19 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     curRoom->visDir[dir] = true;
     toRoom->visDir[(dir + 2) % CNTDIR] = true;
   }
+}
+
+/*退出游戏*/
+void BattleScene::menuCloseCallbackEnd(Ref* pSender)
+{
+	Director::getInstance()->end();
+}
+
+/*进入设置面板*/
+void BattleScene::menuCloseCallbackSet(Ref* pSender)
+{
+	CCScheduler* defaultScheduler = CCDirector::sharedDirector()->getScheduler();
+	defaultScheduler->pauseTarget(this);
+	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
+	defaultScheduler->resumeTarget(this);
 }

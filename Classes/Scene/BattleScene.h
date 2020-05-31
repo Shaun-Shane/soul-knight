@@ -24,6 +24,10 @@ class BattleScene : public Scene {
   virtual void update(float delta);
   CREATE_FUNC(BattleScene);
 
+  /*回调函数*/
+  void menuCloseCallbackEnd(cocos2d::Ref* pSender);
+  void menuCloseCallbackSet(cocos2d::Ref* pSender);
+
  private:
   void initRoom(); //generate room randomly
 
