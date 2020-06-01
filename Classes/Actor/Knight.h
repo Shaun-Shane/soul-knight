@@ -7,6 +7,7 @@ USING_NS_CC;
 
 class Knight : public Entity{
   friend class BattleScene;
+  friend class SafeScene;
   static constexpr float moveSpeed = 5.0f;
 
  public:

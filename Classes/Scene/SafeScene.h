@@ -17,8 +17,8 @@ class SafeScene : public Scene {
   void initBG();
 
  private:
-  Sprite* bgSprite1 = nullptr;
-  Sprite* bgSprite2 = nullptr;
+  Sprite* backGround = nullptr;
+  Sprite* portal = nullptr;
 
   Knight* knight = nullptr;
 };
