@@ -44,6 +44,7 @@ class HelloWorld : public cocos2d::Scene {
   /*回调函数*/
   void menuCloseCallbackEnd(cocos2d::Ref* pSender);
   void menuCloseCallbackSet(cocos2d::Ref* pSender);
+
 };
 
 #endif  // __HELLOWORLD_SCENE_H__

@@ -26,7 +26,7 @@
 #include "Scene\HelloWorldScene.h"
 #include "Scene\SafeScene.h"
 #include "Scene\BattleScene.h"
-#include"StartScene.h"
+#include"Scene/StartScene.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1

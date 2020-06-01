@@ -426,4 +426,3 @@ void HelloWorld::menuCloseCallbackSet(Ref* pSender)
 	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
 	defaultScheduler->resumeTarget(this);
 }
-
