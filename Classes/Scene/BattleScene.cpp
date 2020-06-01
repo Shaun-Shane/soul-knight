@@ -30,8 +30,22 @@ bool BattleScene::init() {
   Menu01->setPosition(1060, 660);
   Menu02->setPosition(1200, 660);
 
-  this->addChild(Menu01, 1);
-  this->addChild(Menu02, 1);
+  this->addChild(Menu01);
+  this->addChild(Menu02);
+
+  /*添加两个精灵使两个菜单的图片得到显示*/
+  auto setSprite = Sprite::create("set.png");
+  auto exitSprite = Sprite::create("exit.png");
+
+  setSprite->setPosition(1060, 660);
+  exitSprite->setPosition(1200, 660);
+
+  this->addChild(setSprite);
+  this->addChild(exitSprite);
+
+  /*图片置顶*/
+  setSprite->setGlobalZOrder(TOP);
+  exitSprite->setGlobalZOrder(TOP);
 
   // add knight to scene
   this->knight = Knight::create();
@@ -293,6 +307,6 @@ void BattleScene::menuCloseCallbackSet(Ref* pSender)
 {
 	CCScheduler* defaultScheduler = CCDirector::sharedDirector()->getScheduler();
 	defaultScheduler->pauseTarget(this);
-	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
+	Director::getInstance()->pushScene(TransitionFade::create(1.0f, SetScene::createScene()));
 	defaultScheduler->resumeTarget(this);
 }

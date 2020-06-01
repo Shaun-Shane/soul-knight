@@ -1,27 +1,20 @@
 ﻿#include "SafeScene.h"
 #include"SetScene.h"
+#include"BattleScene.h"
 
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 
 void SafeScene::update(float delta) { 
-  float posX1 = bgSprite1->getPositionX();
-  float posX2 = bgSprite2->getPositionX();
-     
-  float iSpeed = 3;
+	float ispeedX = knight->moveSpeedX;
+	float ispeedY = knight->moveSpeedY;
 
-  posX1 -= iSpeed;
-  posX2 -= iSpeed;
-  
-  Size mapSize = bgSprite1->getContentSize();
+	float curX = knight->getPositionX(), curY = knight->getPositionY();
+	knight->setPosition(Point(curX + ispeedX, curY + ispeedY));
 
-  if (posX1 <= -mapSize.width / 2.0) posX1 += mapSize.width * 2 + mapSize.width / 2;
-
-  if (posX2 <= -mapSize.width / 2.0) posX2 += mapSize.width * 2 + mapSize.width / 2;
-
-  bgSprite1->setPositionX(posX1);
-
-  bgSprite2->setPositionX(posX2);
-
+	/*若位于传送门处进入战斗界面*/
+	if (isInDoor()) {
+		Director::getInstance()->pushScene(TransitionFade::create(1.0f, BattleScene::createScene()));
+	}
 }
 
 bool SafeScene::init() {
@@ -54,12 +47,15 @@ bool SafeScene::init() {
   this->knight = Knight::create();
   this->knight->bindSprite(Sprite::create("Character//Knight.png"), 10);
 
-  this->knight->setScaleX(0.4);
-  this->knight->setScaleY(0.4);
-
-
-  this->knight->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+  this->knight->setPosition(Point(visibleSize.width / 2, 40));
   this->addChild(this->knight, 10);
+
+  this->knight->setScaleX(0.3f);
+  this->knight->setScaleY(0.3f);
+
+  this->portal = Sprite::create("Map//portal3.png");
+  this->addChild(portal, 1);
+  this->portal->setPosition(Point(visibleSize.width / 2 + 50, visibleSize.height - 80));
 
   initBG();
 
@@ -72,27 +68,16 @@ void SafeScene::initBG() {
   Size visibleSize = Director::getInstance()->getVisibleSize();
   
   //background sprite1
-  this->bgSprite1 = Sprite::create("Scene//SafeScene.png");
+  this->backGround = Sprite::create("Scene//SafeScene.png");
 
-  Size bgSize1 = this->bgSprite1->boundingBox().size;
-  this->bgSprite1->setScale(visibleSize.width / bgSize1.width,
-                            visibleSize.height / bgSize1.height);
+  Size bgSize1 = this->backGround->boundingBox().size;
+  this->backGround->setScale(visibleSize.width / bgSize1.width,
+	  visibleSize.height / bgSize1.height);
 
-  this->bgSprite1->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+  this->backGround->setPosition(
+	  Point(visibleSize.width / 2, visibleSize.height / 2));
 
-  this->addChild(this->bgSprite1, 0);
-
-  // background sprite2
-  this->bgSprite2 = Sprite::create("Scene//SafeScene.png");
-   
-  Size bgSize2 = this->bgSprite2->boundingBox().size;
-  this->bgSprite2->setScale(visibleSize.width / bgSize2.width,
-                            visibleSize.height / bgSize2.height);
-
-  this->bgSprite2->setPosition(Point(
-      visibleSize.width + visibleSize.width / 2, visibleSize.height / 2));
-
-  this->addChild(this->bgSprite2, 0);
+  this->addChild(this->backGround, 0);
 }
 
 /*退出游戏*/
@@ -108,4 +93,17 @@ void SafeScene::menuCloseCallbackSet(Ref* pSender)
 	defaultScheduler->pauseTarget(this);
 	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
 	defaultScheduler->resumeTarget(this);
+}
+
+/*判断是否位于传送门处*/
+bool SafeScene::isInDoor() {
+	float CurX = knight->getPositionX(), CurY = knight->getPositionY();
+
+	/*位置界定*/
+	if (CurX >= 565 && CurX <= 715 && CurY >= 640 && CurY <= 720) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
 }

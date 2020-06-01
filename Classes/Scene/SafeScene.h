@@ -20,9 +20,11 @@ class SafeScene : public Scene {
  private:
   void initBG();
 
+  /*判断角色是否进入传送门*/
+  bool isInDoor();
  private:
-  Sprite* bgSprite1 = nullptr;
-  Sprite* bgSprite2 = nullptr;
+	 Sprite* backGround = nullptr;
+	 Sprite* portal = nullptr;
 
   Knight* knight = nullptr;
 };

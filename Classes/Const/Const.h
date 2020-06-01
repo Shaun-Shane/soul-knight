@@ -23,4 +23,6 @@ constexpr INT32 SIZECENTERDIS = 39; //两房间相距格子数
 constexpr INT32 SIZEROOM = 19;
 
 constexpr INT32 LayerPlayer = 6;
+
+constexpr INT32 TOP = 100;
 #endif  // !_CONST_H_
