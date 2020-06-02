@@ -9,12 +9,12 @@ USING_NS_CC;
 
 class BattleRoom : public Hall {
   friend class BattleScene;
+  static void createRoom(BattleRoom*&, BattleRoom*, INT32, INT32, INT32);
 
  public:
   CREATE_FUNC(BattleRoom);
 
   virtual bool init();
-  //virtual void update(float delta);
 
   void createMap() override; //生成该房间地图
 

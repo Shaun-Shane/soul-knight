@@ -61,7 +61,11 @@ bool BattleScene::init() {
   this->addChild(this->knight);
   // add knight to scene
 
+  miniMap = MiniMap::create(); //添加小地图
+  this->addChild(miniMap);
+
   initRoom(); //战斗房间初始化
+  initMiniMap();
 
   this->scheduleUpdate(); //60帧跟新
 
@@ -110,10 +114,9 @@ void BattleScene::initRoom() {
   // 25 rooms
 
   srand(time(nullptr));
-  INT32 stX = rand() % SIZEMTX, stY = rand() % SIZEMTX;
 
   //在5 * 5的矩阵中随机选取MAXROOM个房间
-  randomGenerate(stX, stY);
+  randomGenerate(SIZEMTX / 2, 1 + rand() % 3);
   
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
@@ -137,11 +140,11 @@ void BattleScene::initRoom() {
     }
   }
   //从起始房间开始联通房间
-  connectRoom(battleRoom[stX][stY]);
+  connectRoom(beginRoom);
 }
 
 void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
-  //从一个房间开始向四周扩展 类似bfs
+  //从一个房间开始向四周扩展
   Size visibleSize = Director::getInstance()->getVisibleSize();
 
   queue<BattleRoom*> q;
@@ -167,12 +170,10 @@ void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
   }
 }
 
+//随机生成下一个房间
 void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
                               queue<BattleRoom*>& q) {
-  if (cntRoom >= MAXROOM) {
-    log("ok, rooms are built");
-    return;
-  }
+  if (cntRoom >= MAXROOM) return;
 
   srand(time(nullptr));
 
@@ -189,42 +190,58 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
 
   if (vecDir.empty()) return;
 
-  if (curRoom != beginRoom) q.push(curRoom);  // beginRoom just connect one room
-
   // randomly choose direction
-  INT32 dir = vecDir.at(rand() % vecDir.size());  
+  INT32 dirIndex = rand() % vecDir.size();
+  INT32 dir = vecDir.at(dirIndex);  
+  vecDir.erase(vecDir.begin() + dirIndex);
   INT32 toX = x + DIRX[dir], toY = y + DIRY[dir];
 
   if (battleRoom[toX][toY] == beginRoom) return;
 
-  BattleRoom*& toRoom = battleRoom[toX][toY]; // the pointer will be changed
+  BattleRoom*& toRoom1 = battleRoom[toX][toY]; // the pointer will be changed
+  BattleRoom::createRoom(toRoom1, curRoom, dir, toX, toY);
 
-  if (toRoom != nullptr) {
-    // room was built, no not need to build again
-    curRoom->visDir[dir] = true;
-    toRoom->visDir[(dir + 2) % CNTDIR] = true;
-    // just connect them if toRoom is not beginRoom
-    return;
-  }
+  this->addChild(toRoom1, 0);
+  q.push(toRoom1);
+  endRoom = toRoom1;
+  cntRoom++;
+  
+  if (cntRoom >= MAXROOM || curRoom == beginRoom || vecDir.empty()) return;
 
-  toRoom = BattleRoom::create();
-  this->endRoom = toRoom; //set endRoom
+  dir = vecDir.at(rand() % vecDir.size());
+  toX = x + DIRX[dir], toY = y + DIRY[dir];
 
-  toRoom->x = toX, toRoom->y = toY;
-  log("%d %d", toX, toY);
-  toRoom->setCenter(curRoom->centerX + DIRX[dir] * CENTERDIS,
-                    curRoom->centerY + DIRY[dir] * CENTERDIS);
+  if (battleRoom[toX][toY] == beginRoom) return;
 
-  curRoom->visDir[dir] = true;
-  toRoom->visDir[(dir + 2) % CNTDIR] = true;
+  BattleRoom*& toRoom2 = battleRoom[toX][toY];  // the pointer will be changed
+  BattleRoom::createRoom(toRoom2, curRoom, dir, toX, toY);
 
-  this->addChild(toRoom, 0);
-  q.push(toRoom);
+  this->addChild(toRoom2, 0);
   cntRoom++;
 
   assert(battleRoom[toX][toY] != nullptr);
   assert(battleRoom[toX][toY] != beginRoom);
 }
+
+void BattleScene::initMiniMap() {
+  for (int x = 0; x < SIZEMTX; x++) {
+    for (int y = 0; y < SIZEMTX; y++) {
+      if (battleRoom[x][y] == nullptr) continue;
+      Color4F color;
+      if (battleRoom[x][y] == beginRoom)
+        color = Color4F(.0f, 0.9f, .0f, 0.5f);
+      else if (battleRoom[x][y] == endRoom)
+        color = Color4F(.0f, .0f, 1.0f, 0.7f);
+      else
+        color = Color4F(0.9f, 0.9f, 0.9f, 0.35f);
+
+      miniMap->miniRoom[x][y] = MiniRoom::create();
+      miniMap->miniRoom[x][y]->createRoom(x, y, color);
+      miniMap->addChild(miniMap->miniRoom[x][y]);
+    }
+  }
+}
+
 // 确定走廊的宽度 顶点
 void BattleScene::setHallWithWidth(Hall* hall, const BattleRoom* fromRoom,
                                    const BattleRoom* toRoom) {
@@ -239,6 +256,7 @@ void BattleScene::setHallWithWidth(Hall* hall, const BattleRoom* fromRoom,
   hall->downRightY = toRoom->centerY - FLOORHEIGHT * (SIZEHALL / 2 - 1);
   hall->createMap();
 }
+
 // 确定走廊的高度 顶点
 void BattleScene::setHallWithHeight(Hall* hall, const BattleRoom* fromRoom,
                                     const BattleRoom* toRoom) {
@@ -254,6 +272,7 @@ void BattleScene::setHallWithHeight(Hall* hall, const BattleRoom* fromRoom,
       toRoom->centerY + FLOORHEIGHT * (toRoom->sizeHeight / 2 + 1);
   hall->createMap();
 }
+
 //dfs联通房间
 void BattleScene::connectRoom(BattleRoom* curRoom) {
   assert(curRoom != nullptr);
