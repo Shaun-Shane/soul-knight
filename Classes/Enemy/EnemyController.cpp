@@ -4,7 +4,9 @@
 
 bool EnemyController::init() {
   createEnemy();
-  //this->scheduleUpdate();
+  if (vecEnemy.size() != 0) {
+    log("vecEnemyErr");
+  }
   return true;
 }
 
@@ -31,4 +33,4 @@ void EnemyController::createEnemy() {
 
 void EnemyController::bindKnight(Knight* knight) { this->knight = knight; }
 
-bool EnemyController::enemyAllKilled() { return vecEnemy.empty(); }
+bool EnemyController::enemyAllKilled() { return true; }
