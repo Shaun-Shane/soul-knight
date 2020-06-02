@@ -10,9 +10,9 @@ bool MiniMap::init() {
 
   auto backGround = DrawNode::create();
   backGround->drawSolidRect(Vec2(0, 0), Vec2(NIMIMPAWIDTH, NIMIMPAWIDTH),
-                    Color4F(0.9f, 0.9f, 0.9f, 0.15f));
+                    Color4F(0.9f, 0.9f, 0.9f, 0.2f));
   this->addChild(backGround);
-  backGround->setGlobalZOrder(100);
+  backGround->setGlobalZOrder(TOP);
 
   this->setPosition(Point(visibleSize.width * 0.82f , visibleSize.height * 3 / 5));
   return true;
