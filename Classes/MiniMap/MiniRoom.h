@@ -6,30 +6,20 @@
 USING_NS_CC;
 
 class MiniRoom : public DrawNode {
+  friend class BattleScene;
 
-public:
+ public:
   CREATE_FUNC(MiniRoom);
 
-  //virtual bool init();
+  void createRoom(float, float, Color4F);
 
  private:
-  INT32 x, y;  // row and column in SIZEMTX * SIZEMTX MiniMap matrix
+  float downLeftX = .0f, downLeftY = .0f;  // DrawNode的顶点信息
+  float upRightX = .0f, upRightY = .0f;
+
+  INT32 x = 0, y = 0;  // row and column in SIZEMTX * SIZEMTX MiniMap matrix
 
   DrawNode* miniHall[CNTDIR] = {nullptr};
-
-  void setColorWhite() { 
-     this->setColor(Color3B(245, 245, 245)); //烟白色
-  }
-
-  void setColorGrey() { 
-     this->setColor(Color3B(128, 128, 128)); //灰色
-     this->setColor(Color3B(105, 105, 105)); //深灰色
-  }
-
-  void setColorBlack() { 
-     this->setColor(Color3B(0, 0, 0));//纯黑
-  }
-
 };
 
 #endif
