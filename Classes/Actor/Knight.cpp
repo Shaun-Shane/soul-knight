@@ -45,3 +45,6 @@ void Knight::registerKeyboardEvent() {
   _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
+float Knight::getMoveSpeedX() { return moveSpeedX; }
+
+float Knight::getMoveSpeedY() { return moveSpeedY; }

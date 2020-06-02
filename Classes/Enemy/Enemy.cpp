@@ -41,3 +41,7 @@ bool Enemy::isCollideWithKnight(Knight * knight) {
   //判断bounding box 和 怪物中心点是否有交集
   return entityRec.containsPoint(enemyPos);
 }
+
+void Enemy::makeCoinside() {
+    this->getSprite()->setPosition(this->getPosition());
+}//将精灵位置跟enemy类Node位置调统一
