@@ -66,6 +66,7 @@ bool BattleScene::init() {
 
   initRoom(); //战斗房间初始化
   initMiniMap();
+  connectRoom(beginRoom); //从起始房间开始联通房间
 
   this->scheduleUpdate(); //60帧跟新
 
@@ -80,8 +81,28 @@ void BattleScene::update(float delta) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
       if (battleRoom[x][y] == nullptr) continue;
       BattleRoom* curRoom = battleRoom[x][y];
+      MiniRoom* curMiniRoom = miniMap->miniRoom[x][y];
 
-      curRoom->checkPlayerPosition(knight, ispeedX, ispeedY);
+      bool inRoom = curRoom->checkPlayerPosition(knight, ispeedX, ispeedY);
+      if (inRoom) { //修改小地图状态
+        curMiniRoom->setVisible(true);
+        if (curRoom != beginRoom && curRoom != endRoom)
+          curMiniRoom->setColorWhite();
+        curRoom->playerVisited = true;
+        
+        for (INT32 dir = 0; dir < CNTDIR; dir++) {
+          if (curRoom->visDir[dir] == false) continue;
+          BattleRoom* toRoom = battleRoom[x + DIRX[dir]][y + DIRY[dir]];
+          MiniRoom* toMiniRoom =
+              miniMap->miniRoom[x + DIRX[dir]][y + DIRY[dir]];
+          if (toRoom->playerVisited == false) toMiniRoom->setVisible(true);
+          
+          if (curMiniRoom->miniHall[dir]->isVisible() == false)
+            curMiniRoom->miniHall[dir]->setVisible(true);
+        }
+      }
+      else if (curRoom->playerVisited && curRoom != beginRoom && curRoom != endRoom)
+        curMiniRoom->setColorGrey();
     }
   }
   for (auto hall : vecHall) {
@@ -102,16 +123,13 @@ void BattleScene::update(float delta) {
 
 void BattleScene::initRoom() {
   Size visibleSize = Director::getInstance()->getVisibleSize();
-
   cntRoom = 0;
   
-  // 25 rooms
-  for (INT32 y = 0; y < SIZEMTX; y++) {
+  for (INT32 y = 0; y < SIZEMTX; y++) { // 25 rooms
     for (INT32 x = 0; x < SIZEMTX; x++) {
       battleRoom[x][y] = nullptr;
     }
-  }
-  // 25 rooms
+  } // 25 roomss
 
   srand(time(nullptr));
 
@@ -139,8 +157,6 @@ void BattleScene::initRoom() {
       
     }
   }
-  //从起始房间开始联通房间
-  connectRoom(beginRoom);
 }
 
 void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
@@ -233,7 +249,7 @@ void BattleScene::initMiniMap() {
       else if (battleRoom[x][y] == endRoom)
         color = Color4F(.0f, .0f, 1.0f, 0.7f);
       else
-        color = Color4F(0.9f, 0.9f, 0.9f, 0.35f);
+        color = Color4F(0.0f, 0.0f, 0.0f, 0.75f);
 
       miniMap->miniRoom[x][y] = MiniRoom::create();
       miniMap->miniRoom[x][y]->createRoom(x, y, color);
@@ -243,7 +259,8 @@ void BattleScene::initMiniMap() {
 }
 
 // 确定走廊的宽度 顶点
-void BattleScene::setHallWithWidth(Hall* hall, const BattleRoom* fromRoom,
+void BattleScene::setHallWithWidth(Hall* hall, DrawNode* miniHall,
+                                   const BattleRoom* fromRoom,
                                    const BattleRoom* toRoom) {
   hall->sizeWidth =
       SIZECENTERDIS - fromRoom->sizeWidth / 2 - toRoom->sizeWidth / 2 - 1;
@@ -255,10 +272,18 @@ void BattleScene::setHallWithWidth(Hall* hall, const BattleRoom* fromRoom,
   hall->downRightX = toRoom->centerX - FLOORWIDTH * (toRoom->sizeWidth / 2 + 1);
   hall->downRightY = toRoom->centerY - FLOORHEIGHT * (SIZEHALL / 2 - 1);
   hall->createMap();
+  //确定小地图绘制顶点
+  float downLeftX = miniMap->miniRoom[fromRoom->x][fromRoom->y]->upRightX;
+  float downLeftY = miniMap->miniRoom[fromRoom->x][fromRoom->y]->downLeftY + 7;
+  float upRightX = miniMap->miniRoom[toRoom->x][toRoom->y]->downLeftX;
+  float upRightY = miniMap->miniRoom[toRoom->x][toRoom->y]->upRightY - 7;
+  miniHall->drawSolidRect(Vec2(downLeftX, downLeftY), Vec2(upRightX, upRightY),
+                          Color4F(0.9f, 0.9f, 0.9f, 0.3f));
 }
 
 // 确定走廊的高度 顶点
-void BattleScene::setHallWithHeight(Hall* hall, const BattleRoom* fromRoom,
+void BattleScene::setHallWithHeight(Hall* hall, DrawNode* miniHall,
+                                    const BattleRoom* fromRoom,
                                     const BattleRoom* toRoom) {
   hall->sizeHeight =
       SIZECENTERDIS - fromRoom->sizeHeight / 2 - toRoom->sizeHeight / 2 - 1;
@@ -271,6 +296,13 @@ void BattleScene::setHallWithHeight(Hall* hall, const BattleRoom* fromRoom,
   hall->downRightY =
       toRoom->centerY + FLOORHEIGHT * (toRoom->sizeHeight / 2 + 1);
   hall->createMap();
+  //确定小地图绘制顶点
+  float downLeftX = miniMap->miniRoom[toRoom->x][toRoom->y]->downLeftX + 7;
+  float downLeftY = miniMap->miniRoom[toRoom->x][toRoom->y]->upRightY;
+  float upRightX = miniMap->miniRoom[fromRoom->x][fromRoom->y]->upRightX - 7;
+  float upRightY = miniMap->miniRoom[fromRoom->x][fromRoom->y]->downLeftY;
+  miniHall->drawSolidRect(Vec2(downLeftX, downLeftY), Vec2(upRightX, upRightY),
+                          Color4F(0.9f, 0.9f, 0.9f, 0.3f));
 }
 
 //dfs联通房间
@@ -282,35 +314,44 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     INT32 toX = curRoom->x + DIRX[dir];
     INT32 toY = curRoom->y + DIRY[dir];
 
-    BattleRoom* toRoom = battleRoom[toX][toY];
+    auto toRoom = battleRoom[toX][toY];
+    auto curMiniRoom = miniMap->miniRoom[curRoom->x][curRoom->y];
+    auto toMiniRoom = miniMap->miniRoom[toX][toY];
+    
+    auto miniHall = DrawNode::create(); //生成小地图走廊
+    miniHall->setGlobalZOrder(TOP);
+    miniHall->setVisible(false);
 
-    Hall* hall = Hall::create();
+    auto hall = Hall::create(); //生成地图走廊
     hall->dir = dir;
 
     switch (dir) {
       case RIGHT:
-        setHallWithWidth(hall, curRoom, toRoom);
+        setHallWithWidth(hall, miniHall, curRoom, toRoom);
         break;
       case UP:
-        setHallWithHeight(hall, toRoom, curRoom);
+        setHallWithHeight(hall, miniHall, toRoom, curRoom);
         break;
       case LEFT:
-        setHallWithWidth(hall, toRoom, curRoom);
+        setHallWithWidth(hall, miniHall, toRoom, curRoom);
         break;
       case DOWN:
-        setHallWithHeight(hall, curRoom, toRoom);
+        setHallWithHeight(hall, miniHall, curRoom, toRoom);
         break;
     }
 
-    this->addChild(hall, 0);
+    this->addChild(hall);
+    miniMap->addChild(miniHall);
     vecHall.pushBack(hall);
-    //标记不能来回访问
-    curRoom->visDir[dir] = false;
-    toRoom->visDir[(dir + 2) % CNTDIR] = false;
+    
+    curRoom->visDir[dir] = false; //标记不能来回连接
+    curMiniRoom->miniHall[dir] = miniHall;
+    toRoom->visDir[(dir + 2) % CNTDIR] = false; //标记不能来回连接
+    toMiniRoom->miniHall[(dir + 2) % CNTDIR] = miniHall;
 
     connectRoom(toRoom);
-    //back trace
-    curRoom->visDir[dir] = true;
+    
+    curRoom->visDir[dir] = true; //back trace
     toRoom->visDir[(dir + 2) % CNTDIR] = true;
   }
 }

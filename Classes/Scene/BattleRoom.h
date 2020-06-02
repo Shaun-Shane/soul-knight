@@ -18,7 +18,7 @@ class BattleRoom : public Hall {
 
   void createMap() override; //生成该房间地图
 
-  void checkPlayerPosition(Knight*, float&, float&) override;
+  bool checkPlayerPosition(Knight*, float&, float&) override;
 
   void setCenter(float, float); // 设置中心
 
@@ -34,6 +34,8 @@ class BattleRoom : public Hall {
   INT32 x, y;  // row and column in SIZEMTX * SIZEMTX BattleRoom matrix
 
   bool visDir[CNTDIR] = {false};
+
+  bool playerVisited = false;
 
  private:
   EnemyController* enemyCtr = nullptr;

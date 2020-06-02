@@ -89,7 +89,7 @@ void Hall::changePositionBy(float deltaX, float deltaY) {
   setPositionX(curX + deltaX), setPositionY(curY + deltaY);
 }
 
-void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
+bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   float knightX = knight->getPositionX();
   float knightY = knight->getPositionY();
 
@@ -101,7 +101,9 @@ void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
         ispeedX = .0f;
       else if (ispeedX < 0 && knightX <= upLeftX)
         ispeedX = .0f;
+      return true; //在走廊内
     }
+    return false;
   } else {
     if (knightX >= upLeftX - FLOORWIDTH - FLOORWIDTH / 4 &&
         knightX <= downRightX + FLOORWIDTH + FLOORWIDTH / 4 &&
@@ -110,6 +112,8 @@ void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
         ispeedY = .0f;
       else if (ispeedY < 0 && knightY <= downRightY)
         ispeedY = .0f;
+      return true; //在走廊内
     }
+    return false;
   }
 }

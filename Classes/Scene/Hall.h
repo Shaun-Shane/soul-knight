@@ -19,7 +19,7 @@ class Hall : public Node{
 
   virtual void changePositionBy(float, float);
 
-  virtual void checkPlayerPosition(Knight*, float&, float&);
+  virtual bool checkPlayerPosition(Knight*, float&, float&);
 
   void generateFloor(float, float, INT32);
 

@@ -36,8 +36,8 @@ class BattleScene : public Scene {
   void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
 
-  void setHallWithWidth(Hall*, const BattleRoom*, const BattleRoom*);
-  void setHallWithHeight(Hall*, const BattleRoom*, const BattleRoom*);
+  void setHallWithWidth(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
+  void setHallWithHeight(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void connectRoom(BattleRoom*);
 
  private:

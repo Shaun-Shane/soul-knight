@@ -8,6 +8,7 @@ bool BattleRoom::init() {
   sizeHeight = SIZEROOM, sizeWidth = SIZEROOM;
 
   memset(visDir, false, sizeof(visDir));
+  playerVisited = false;
 
   enemyCtr = EnemyController::create();  // controll enemy behaviors
   portal = nullptr;
@@ -125,7 +126,7 @@ void BattleRoom::openDoor() {  // doorOpen sptires are visible
   }
 }
 
-void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
+bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
                                      float& ispeedY) {
   float knightX = knight->getPositionX();
   float knightY = knight->getPositionY();
@@ -133,10 +134,8 @@ void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
   if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
       knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
-    if (enemyCtr->enemyAllKilled())
-      openDoor();  //怪物全部击杀开门
-    else
-      closeDoor();
+    if (enemyCtr->enemyAllKilled()) openDoor();  //怪物全部击杀开门
+    else closeDoor();
 
     if (enemyCtr->enemyAllKilled() == false) {
       if (ispeedX > 0 && knightX >= downRightX)
@@ -170,5 +169,8 @@ void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
           ispeedY = .0f;
       }
     }
+
+    return true;
   }
+  return false;
 }
