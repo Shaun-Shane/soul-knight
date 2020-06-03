@@ -45,8 +45,8 @@ void Hall::generateWall(float X, float Y, INT32 layer) {
   //Upside of whe wall
 
   tmpSprite = Sprite::create(imageName.asString().c_str(), Rect(0, 35, 40, 25));
-  this->addChild(tmpSprite, LayerPlayer - 1);
-  tmpSprite->setGlobalZOrder(LayerPlayer - 1);
+  this->addChild(tmpSprite, LayerPlayer - 2);
+  tmpSprite->setGlobalZOrder(LayerPlayer - 2);
   tmpSprite->setPosition(Point(X, Y + (WALLHEIGHT - FLOORHEIGHT) - 30));
   vecWall.pushBack(tmpSprite);
 
@@ -85,8 +85,10 @@ void Hall::changePositionBy(float deltaX, float deltaY) {
   upLeftX += deltaX, upLeftY += deltaY;
   downRightX += deltaX, downRightY += deltaY;
 
-  float curX = getPositionX(), curY = getPositionY();
-  setPositionX(curX + deltaX), setPositionY(curY + deltaY);
+  for (auto child : getChildren()) {
+    float curX = child->getPositionX(), curY = child->getPositionY();
+    child->setPosition(Point(curX + deltaX, curY + deltaY));
+  }
 }
 
 bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
@@ -101,9 +103,7 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
         ispeedX = .0f;
       else if (ispeedX < 0 && knightX <= upLeftX)
         ispeedX = .0f;
-      return true; //在走廊内
     }
-    return false;
   } else {
     if (knightX >= upLeftX - FLOORWIDTH - FLOORWIDTH / 4 &&
         knightX <= downRightX + FLOORWIDTH + FLOORWIDTH / 4 &&
@@ -112,8 +112,11 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
         ispeedY = .0f;
       else if (ispeedY < 0 && knightY <= downRightY)
         ispeedY = .0f;
-      return true; //在走廊内
     }
-    return false;
   }
+
+  if (knightX > upLeftX - FLOORWIDTH && knightX < downRightX + FLOORWIDTH &&
+      knightY < upLeftY + FLOORHEIGHT && knightY > downRightY - FLOORHEIGHT)
+    return true;
+  return false;
 }

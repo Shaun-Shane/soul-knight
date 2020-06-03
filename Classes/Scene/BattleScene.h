@@ -3,7 +3,6 @@
 
 #include "Actor\Knight.h"
 #include "Enemy\Enemy.h"
-#include "Enemy\EnemyController.h"
 #include "BattleRoom.h"
 #include "Hall.h"
 #include "Const\Const.h"
@@ -30,6 +29,8 @@ class BattleScene : public Scene {
   void menuCloseCallbackSet(cocos2d::Ref* pSender);
 
  private:
+  void updatePlayerPos();
+
   void initRoom(); //generate room randomly
   void initMiniMap();
 

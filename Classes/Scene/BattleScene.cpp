@@ -73,7 +73,9 @@ bool BattleScene::init() {
   return true;
 }
 
-void BattleScene::update(float delta) {
+void BattleScene::update(float delta) { updatePlayerPos(); }
+
+void BattleScene::updatePlayerPos() {
   float ispeedX = knight->moveSpeedX;
   float ispeedY = knight->moveSpeedY;
 
@@ -84,29 +86,32 @@ void BattleScene::update(float delta) {
       MiniRoom* curMiniRoom = miniMap->miniRoom[x][y];
 
       bool inRoom = curRoom->checkPlayerPosition(knight, ispeedX, ispeedY);
-      if (inRoom) { //修改小地图状态
-        curMiniRoom->setVisible(true);
+      if (inRoom) { 
+        knight->bindBattleRoom(curRoom), knight->bindHall(nullptr); 
+
+        curMiniRoom->setVisible(true);  //修改小地图状态
         if (curRoom != beginRoom && curRoom != endRoom)
           curMiniRoom->setColorWhite();
         curRoom->playerVisited = true;
-        
+
         for (INT32 dir = 0; dir < CNTDIR; dir++) {
           if (curRoom->visDir[dir] == false) continue;
           BattleRoom* toRoom = battleRoom[x + DIRX[dir]][y + DIRY[dir]];
           MiniRoom* toMiniRoom =
               miniMap->miniRoom[x + DIRX[dir]][y + DIRY[dir]];
           if (toRoom->playerVisited == false) toMiniRoom->setVisible(true);
-          
+
           if (curMiniRoom->miniHall[dir]->isVisible() == false)
             curMiniRoom->miniHall[dir]->setVisible(true);
         }
-      }
-      else if (curRoom->playerVisited && curRoom != beginRoom && curRoom != endRoom)
+      } else if (curRoom->playerVisited && curRoom != beginRoom &&
+                 curRoom != endRoom)
         curMiniRoom->setColorGrey();
     }
   }
   for (auto hall : vecHall) {
-    hall->checkPlayerPosition(knight, ispeedX, ispeedY);
+    bool inHall = hall->checkPlayerPosition(knight, ispeedX, ispeedY);
+    if (inHall) knight->bindBattleRoom(nullptr), knight->bindHall(hall); 
   }
 
   for (INT32 y = 0; y < SIZEMTX; y++) {
@@ -135,26 +140,19 @@ void BattleScene::initRoom() {
 
   //在5 * 5的矩阵中随机选取MAXROOM个房间
   randomGenerate(SIZEMTX / 2, 1 + rand() % 3);
-  
-  for (INT32 y = 0; y < SIZEMTX; y++) {
+
+  for (INT32 y = 0; y < SIZEMTX; y++) { //判断房间类型并生成地图
     for (INT32 x = 0; x < SIZEMTX; x++) {
       BattleRoom* curRoom = battleRoom[x][y];
       if (curRoom == nullptr) continue;
 
-      if (curRoom == endRoom) { // add portal to endRoom
-        curRoom->sizeWidth -= 8, curRoom->sizeHeight -= 8;
-        curRoom->createMap();
+      if (curRoom == beginRoom)
+        curRoom->roomType = BEGIN;
+      else if (curRoom == endRoom)
+        curRoom->roomType = END;
+      else curRoom->roomType = NORMAL;
 
-        Sprite* portal = Sprite::create("Map//portal3.png");
-        portal->setPosition(Point(curRoom->centerX, curRoom->centerY));
-        curRoom->addChild(portal);
-        portal->setGlobalZOrder(4);
-
-        curRoom->portal = portal;
-      } else {
-        curRoom->createMap();
-      } 
-      
+      curRoom->createMap();
     }
   }
 }

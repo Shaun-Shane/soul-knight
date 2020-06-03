@@ -25,13 +25,13 @@ class Hall : public Node{
 
   void generateWall(float, float, INT32);
 
-  
-
  private:
   INT32 dir; //direction of this hall
  protected:
   float upLeftX, upLeftY;
   float downRightX, downRightY;
+
+  Knight* knight = nullptr;
 
   INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
 
