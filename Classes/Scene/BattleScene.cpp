@@ -152,6 +152,7 @@ void BattleScene::initRoom() {
         curRoom->roomType = END;
       else curRoom->roomType = NORMAL;
 
+      curRoom->knight = knight;
       curRoom->createMap();
     }
   }
@@ -321,6 +322,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     miniHall->setVisible(false);
 
     auto hall = Hall::create(); //生成地图走廊
+    hall->knight = knight;
     hall->dir = dir;
 
     switch (dir) {
