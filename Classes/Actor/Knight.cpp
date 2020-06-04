@@ -92,8 +92,11 @@ void Knight::useUltimateSkill() {
 
     auto fadeIn = FadeIn::create(0.2f); 
     auto fadeOut = FadeOut::create(0.3f);
-    auto sequence = Sequence::create(fadeIn, fadeOut,
-                                     RemoveSelf::create(true), NULL);
+    auto blink = Blink::create(0.5f, 2);
+
+    auto sequence = Sequence::create(
+        Spawn::create(Sequence::create(fadeIn, fadeOut, NULL), blink, NULL),
+        RemoveSelf::create(), NULL);
 
     if (this->atBattleRoom == nullptr) {
       assert(atHall != nullptr);

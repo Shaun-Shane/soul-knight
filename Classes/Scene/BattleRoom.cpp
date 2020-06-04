@@ -12,7 +12,29 @@ bool BattleRoom::init() {
   playerVisited = false;
 
   portal = nullptr, knight = nullptr;
+
+  this->scheduleUpdate();
   return true;
+}
+
+void BattleRoom::update(float delta) {
+  for (auto playerBullet : vecPlayerBullet) {
+    if (playerBullet->getParent() == nullptr) continue;
+    // if (...);
+    // do something
+  }
+
+  for (auto enemyBullet : vecEnemyBullet) {
+    if (enemyBullet->getParent() == nullptr) continue;
+    // if (...);
+    // do something
+  }
+
+  for (auto enemy : vecEnemy) {
+    if (enemy->getParent() == nullptr) continue;
+    // if (...);
+    //enemy AI do something
+  }
 }
 
 void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {

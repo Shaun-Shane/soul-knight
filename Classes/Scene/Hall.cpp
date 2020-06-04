@@ -5,7 +5,18 @@ bool Hall::init() {
   downRightX = .0f, downRightY = .0f;
 
   sizeHeight = SIZEHALL, sizeWidth = SIZEHALL;
+
+  this->scheduleUpdate();
   return true;
+}
+
+void Hall::update(float delta) {
+  for (auto playerBullet : vecPlayerBullet) {
+    if (playerBullet->getParent() == nullptr) continue;
+
+    // if (...);
+    //do something
+  }
 }
 
 void Hall::generateFloor(float X, float Y, INT32 layer) {

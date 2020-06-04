@@ -13,7 +13,8 @@ class Hall : public Node{
   CREATE_FUNC(Hall);
 
   virtual bool init();
-  // virtual void update(float delta);
+  
+  virtual void update(float delta);
 
   virtual void createMap();  //生成走廊地图
 
@@ -34,6 +35,8 @@ class Hall : public Node{
   Knight* knight = nullptr;
 
   INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
+  
+  Vector<Sprite*> vecPlayerBullet; //储存场景子弹 Sprite改为子弹类名
 
   Vector<Sprite*> vecFloor;
   Vector<Sprite*> vecWall;
