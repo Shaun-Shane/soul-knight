@@ -47,9 +47,9 @@ bool SetScene::init()
 	 Menu03 = Menu::create(exitImg, NULL);
 
 	 /*设置坐标*/
-	bkMusicLab->setPosition(600, visibleSize.height / 2);
-	Menu01->setPosition(Point(950, visibleSize.height / 2));
-	Menu02->setPosition(Point(950, visibleSize.height / 2));
+	bkMusicLab->setPosition(600, 440);
+	Menu01->setPosition(Point(950,440));
+	Menu02->setPosition(Point(950, 440));
 	Menu03->setPosition(1200, 660);
 
 	this->addChild(bkMusicLab, 1);
@@ -58,6 +58,28 @@ bool SetScene::init()
 	this->addChild(Menu03, 1);
 
 	Menu02->setVisible(false);
+
+	/*音量控制按钮*/
+	auto volumeLab = Label::createWithTTF("Volume : ", "fonts/Marker Felt.ttf", 72);
+	volumeNumLab = Label::createWithTTF("50", "fonts/Marker Felt.ttf", 72);
+	auto volumeHigherLab = Label::createWithTTF("+", "fonts/Marker Felt.ttf", 150);
+	auto volumeLowerLab = Label::createWithTTF("-", "fonts/Marker Felt.ttf", 150);
+
+	auto volumeHigherMenu = MenuItemLabel::create(volumeHigherLab, CC_CALLBACK_1(SetScene::menuCloseCallbackVolumeHigher, this));
+	auto volumeLowerMenu = MenuItemLabel::create(volumeLowerLab, CC_CALLBACK_1(SetScene::menuCloseCallbackVolumeLower, this));
+
+	MenuHigherVolume = Menu::create(volumeHigherMenu, NULL);
+	MenuLowerVolume = Menu::create(volumeLowerMenu, NULL);
+
+	volumeLab->setPosition(500, 260);
+	volumeNumLab->setPosition(710, 260);
+	MenuHigherVolume->setPosition(850, 250);
+	MenuLowerVolume->setPosition(960, 260);
+
+	this->addChild(volumeLab, 1);
+	this->addChild(volumeNumLab, 1);
+	this->addChild(MenuHigherVolume, 1);
+	this->addChild(MenuLowerVolume, 1);
 
 	return true;
 }
@@ -83,6 +105,46 @@ void SetScene::menuCloseCallbackChange(Ref* pSender)
 	}
 	else {
 		audio->stopBackgroundMusic();
+	}
+}
+
+/*升高音量*/
+void SetScene::menuCloseCallbackVolumeHigher(Ref* pSender) {
+	/*检测是否达到最大值*/
+	if (volume == 100) {
+		return;
+	}
+
+	/*修改音量*/
+	volume += 10;
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->setBackgroundMusicVolume(volume/100.0f);
+
+	/*标签变化*/
+	volumeNumLab->setString(Value(volume).asString());
+	MenuLowerVolume->setOpacity(255);
+	if (volume == 100) {
+		MenuHigherVolume->setOpacity(100);
+	}
+}
+
+/*降低音量*/
+void SetScene::menuCloseCallbackVolumeLower(Ref* pSender) {
+	/*检测是否达到最大值*/
+	if (volume == 0) {
+		return;
+	}
+
+	/*修改音量*/
+	volume -= 10;
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->setBackgroundMusicVolume(volume/100.0f);
+
+	/*标签变化*/
+	volumeNumLab->setString(Value(volume).asString());
+	MenuHigherVolume->setOpacity(255);
+	if (volume == 0) {
+		MenuLowerVolume->setOpacity(100);
 	}
 }
 

@@ -19,19 +19,19 @@ class Hall : public Node{
 
   virtual void changePositionBy(float, float);
 
-  virtual void checkPlayerPosition(Knight*, float&, float&);
+  virtual bool checkPlayerPosition(Knight*, float&, float&);
 
   void generateFloor(float, float, INT32);
 
   void generateWall(float, float, INT32);
-
-  
 
  private:
   INT32 dir; //direction of this hall
  protected:
   float upLeftX, upLeftY;
   float downRightX, downRightY;
+
+  Knight* knight = nullptr;
 
   INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
 

@@ -17,6 +17,8 @@ class Enemy : public Entity{
   bool isAlive();
   bool isCollideWithKnight(Knight* knight);
 
+  void makeCoinside();
+
  private:
   bool enemyIsAlive;
 };
