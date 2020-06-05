@@ -12,6 +12,7 @@ public:
     virtual bool init();
 
     void setSpeed(Vec2 speed);
+    Vec2 getSpeed();
 
     
 private:

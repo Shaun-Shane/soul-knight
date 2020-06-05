@@ -16,3 +16,8 @@ void Bullet::setSpeed(Vec2 speed)
 	this->speed = speed;
 }
 
+Vec2 Bullet::getSpeed()
+{
+	return speed;
+}
+
