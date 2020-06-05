@@ -19,7 +19,7 @@ void Weapon::bindWeapon(Weapon* weapon)
 
 
 
-Bullet* Weapon::createBullet(Vec2 speed, Vec2 curPos)  //to do再添加两个参数 atBattleRoom和atHall
+Bullet* Weapon::createBullet(Vec2 speed, Vec2 curPos, BattleRoom* atBattleRoom, Hall* atHall)  //to do再添加两个参数 atBattleRoom和atHall
 {
     Bullet* bullet = Bullet::create();
     bullet->bindSprite(Sprite::create("bullet.png"));

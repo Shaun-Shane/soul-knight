@@ -1,6 +1,7 @@
 ﻿#include "Knight.h"
 #include "Scene\Hall.h"
 #include "Scene\BattleRoom.h"
+#include "Attack\Weapon.h"
 
 Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(5) {}
 
@@ -147,6 +148,10 @@ float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
 
+BattleRoom* Knight::getAtBattleRoom() { return atBattleRoom; }
+
+Hall* Knight::getAtHall() { return atHall; }
+
 
 void Knight::weaponAttack(EventKeyboard::KeyCode last) {
     Vec2 curPos = this->getPosition();
@@ -155,22 +160,22 @@ void Knight::weaponAttack(EventKeyboard::KeyCode last) {
     switch (last) {
     case EventKeyboard::KeyCode::KEY_D:
         speed.set(weapon->getSpeed(), 0);
-        bullet= weapon->createBullet(speed, curPos);
+        bullet= weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_W:
         speed.set(0, weapon->getSpeed());
-        bullet = weapon->createBullet(speed, curPos);
+        bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_A:
         speed.set(-(weapon->getSpeed()), 0);
-        bullet =weapon ->createBullet(speed, curPos);
+      bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_S:
         speed.set(0, -(weapon->getSpeed()));
-        bullet = weapon->createBullet(speed, curPos);
+      bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
     }
   

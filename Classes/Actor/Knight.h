@@ -2,12 +2,12 @@
 #define _KNIGHT_H_
 #include "cocos2d.h"
 #include "Entity.h"
-#include"Attack/Weapon.h"
 
 USING_NS_CC;
 
 class Hall;
 class BattleRoom;
+class Weapon;
 
 class Knight : public Entity {
   friend class BattleScene;
@@ -32,6 +32,9 @@ class Knight : public Entity {
 
   float getMoveSpeedX();
   float getMoveSpeedY();
+
+  BattleRoom* getAtBattleRoom();
+  Hall* getAtHall();
 
  private:
   INT32 armor;
