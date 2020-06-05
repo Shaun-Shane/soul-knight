@@ -25,7 +25,6 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "cocos-ext.h"
-#include"SetScene.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -55,25 +54,6 @@ bool HelloWorld::init() {
   if (!Scene::init()) {
     return false;
   }
-
-  /*创建关闭按钮以及设置按钮*/
-  auto setImg = MenuItemImage::create(
-	  "set.png",
-	  "set.png",
-	  CC_CALLBACK_1(HelloWorld::menuCloseCallbackSet, this));
-  auto exitImg = MenuItemImage::create(
-	  "exit.png",
-	  "exit01.png",
-	  CC_CALLBACK_1(HelloWorld::menuCloseCallbackEnd, this));
-
-  auto Menu01 = Menu::create(setImg, NULL);
-  auto Menu02 = Menu::create(exitImg, NULL);
-
-  Menu01->setPosition(1060, 660);
-  Menu02->setPosition(1200, 660);
-
-  this->addChild(Menu01, 1);
-  this->addChild(Menu02, 1);
 
 //Original helloWorld init code is at bottom, just change ifndef to ifdef
 #ifndef Test_One_By_One_Touch
@@ -410,19 +390,4 @@ void HelloWorld::menuCloseCallback(Ref* pSender) {
 
   // EventCustom customEndEvent("game_scene_close_event");
   //_eventDispatcher->dispatchEvent(&customEndEvent);
-}
-
-/*退出游戏*/
-void HelloWorld::menuCloseCallbackEnd(Ref* pSender)
-{
-	Director::getInstance()->end();
-}
-
-/*进入设置面板*/
-void HelloWorld::menuCloseCallbackSet(Ref* pSender)
-{
-	CCScheduler* defaultScheduler = CCDirector::sharedDirector()->getScheduler();
-	defaultScheduler->pauseTarget(this);
-	Director::getInstance()->pushScene(TransitionFade::create(3.0f, SetScene::createScene()));
-	defaultScheduler->resumeTarget(this);
 }
