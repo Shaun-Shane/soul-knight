@@ -10,6 +10,7 @@ public:
     ~Bullet();
     CREATE_FUNC(Bullet);
     virtual bool init();
+    bool isInScreen();
 
     void setSpeed(Vec2 speed);
     Vec2 getSpeed();

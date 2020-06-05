@@ -14,7 +14,7 @@ public:
     virtual bool init();
 
     void bindWeapon(Weapon* weapon);
-    Bullet* createBullet(Vec2 speed,Vec2 curPos, BattleRoom*, Hall*);  //to do再添加两个参数 atBattleRoom和atHall
+    Bullet*& createBullet(Vec2 speed,Vec2 curPos, BattleRoom*, Hall*);  //to do再添加两个参数 atBattleRoom和atHall
     float getSpeed();
     void setSpeed(float m);
     ~Weapon();

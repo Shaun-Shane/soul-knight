@@ -144,6 +144,7 @@ void Knight::bindBattleRoom(BattleRoom* battleRoom) {
 
 void Knight::bindHall(Hall* hall) { atHall = hall; }
 
+
 float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
@@ -156,35 +157,67 @@ Hall* Knight::getAtHall() { return atHall; }
 void Knight::weaponAttack(EventKeyboard::KeyCode last) {
     Vec2 curPos = this->getPosition();
     Vec2 speed;
-    Bullet* bullet;
+    Bullet* bullet=nullptr;
     switch (last) {
     case EventKeyboard::KeyCode::KEY_D:
         weapon->getSpeed();
         speed.set(weapon->getSpeed(), 0);
-        CCLOG("attack (1,0)");
         bullet= weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_W:
         
         speed.set(0, weapon->getSpeed());
-        CCLOG("attack (0,1)");
         bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_A:
         
         speed.set(-(weapon->getSpeed()), 0);
-        CCLOG("attack(-1,0)");
       bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_S:
         
         speed.set(0, -(weapon->getSpeed()));
-        CCLOG("attack(0,-1)");
       bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
     }
   
+}
+
+void Knight::update()  ///////////////先暂时分开，之后改写为宏函数将上下 合二为一,还需要怪物的碰撞检测
+{
+    if (atBattleRoom == nullptr) {
+        assert(atHall != nullptr);
+        for (int i = 0; i < atHall->getVecPlayerBullet().size(); i++)
+        {
+            auto bullet = atHall->getVecPlayerBullet().at(i);
+            Vec2 pos = bullet->getPosition();
+            pos.y += bullet->getSpeed().y;
+            pos.x += bullet->getSpeed().x;
+            bullet->setPosition(pos);
+            if (bullet->isInScreen() == false) {
+                bullet->removeFromParent();
+                atHall->getVecPlayerBullet().eraseObject(bullet);
+                --i;
+            }
+        }
+    }
+    else {
+        assert(atBattleRoom != nullptr);
+        for (int i = 0; i < atBattleRoom->getVecPlayerBullet().size(); i++)
+        {
+            auto bullet = atBattleRoom->getVecPlayerBullet().at(i);
+            Vec2 pos = bullet->getPosition();
+            pos.y += bullet->getSpeed().x;
+            bullet->setPosition(pos);
+            if (bullet->isInScreen() == false) {
+                bullet->removeFromParent();
+                atBattleRoom->getVecPlayerBullet().eraseObject(bullet);
+                --i;
+            }
+        }
+
+      } 
 }
