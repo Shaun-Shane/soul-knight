@@ -31,3 +31,4 @@ INT32 Entity2::getAttack()
 	
 	return this->attack;
 }
+

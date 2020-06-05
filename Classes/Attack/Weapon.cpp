@@ -4,6 +4,7 @@ Weapon::Weapon(){}
 
 bool Weapon::init()
 {
+  
     return true;
 }
 
@@ -25,8 +26,18 @@ Bullet* Weapon::createBullet(Vec2 speed, Vec2 curPos, BattleRoom* atBattleRoom, 
     bullet->bindSprite(Sprite::create("bullet.png"));
     bullet->setPosition(curPos);
     bullet->setSpeed(speed);
-
-    //to do
+    bullet->getSprite()->setZOrder(TOP);
+    if (atBattleRoom == nullptr) {
+        assert(atHall != nullptr);
+        atHall->addChild(bullet);
+        atHall->getVecPlayerBullet().pushBack(bullet);
+    }
+    else {
+        assert(atBattleRoom != nullptr);
+        atBattleRoom->addChild(bullet);
+        atBattleRoom->getVecPlayerBullet().pushBack(bullet);
+    }
+    
     
     return bullet;
 }
@@ -34,6 +45,11 @@ Bullet* Weapon::createBullet(Vec2 speed, Vec2 curPos, BattleRoom* atBattleRoom, 
 float Weapon::getSpeed()
 {
 	return this->speed;
+}
+
+void Weapon::setSpeed(float m)
+{
+    this->speed = m;
 }
 
 Weapon::~Weapon() {}

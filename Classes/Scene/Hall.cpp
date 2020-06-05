@@ -132,4 +132,4 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   return false;
 }
 
-Vector<Sprite*>& Hall::getVecPlayerBullet() { return vecPlayerBullet; }
+Vector<Bullet*>& Hall::getVecPlayerBullet() { return vecPlayerBullet; }

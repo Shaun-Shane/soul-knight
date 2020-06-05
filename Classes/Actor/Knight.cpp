@@ -9,6 +9,10 @@ Knight::~Knight() {}
 
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
+  this->weapon = Weapon::create();
+  this->weapon->setAttack(4);
+  this->weapon->setSpeed(0.5f);
+  this->weapon->bindSprite(Sprite::create("weapon.png"));
   
   isInvincible = false, haveUltimateSkill = true;
   
@@ -42,13 +46,12 @@ void Knight::registerKeyboardEvent() {
         break;
 
       case EventKeyboard::KeyCode::KEY_S:
-          last = EventKeyboard::KeyCode::KEY_S;
-       moveSpeedY = -moveSpeed;
+        last = EventKeyboard::KeyCode::KEY_S;
+        moveSpeedY = -moveSpeed;
         break;
 
       case EventKeyboard::KeyCode::KEY_J:
-
-
+        weaponAttack(last);
         break;
 
       case EventKeyboard::KeyCode::KEY_K:
@@ -156,22 +159,30 @@ void Knight::weaponAttack(EventKeyboard::KeyCode last) {
     Bullet* bullet;
     switch (last) {
     case EventKeyboard::KeyCode::KEY_D:
+        weapon->getSpeed();
         speed.set(weapon->getSpeed(), 0);
+        CCLOG("attack (1,0)");
         bullet= weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_W:
+        
         speed.set(0, weapon->getSpeed());
+        CCLOG("attack (0,1)");
         bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_A:
+        
         speed.set(-(weapon->getSpeed()), 0);
+        CCLOG("attack(-1,0)");
       bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
 
     case EventKeyboard::KeyCode::KEY_S:
+        
         speed.set(0, -(weapon->getSpeed()));
+        CCLOG("attack(0,-1)");
       bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
         break;
     }

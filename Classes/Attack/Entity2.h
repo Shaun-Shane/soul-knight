@@ -15,7 +15,7 @@ public:
     
     INT32 getAttack();
 
-
+protected:
     Sprite* sprite;
     INT32 attack;
 
