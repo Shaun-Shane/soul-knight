@@ -13,12 +13,18 @@ class SafeScene : public Scene {
   virtual void update(float delta);
   CREATE_FUNC(SafeScene);
 
+  /*回调函数*/
+  void menuCloseCallbackEnd(cocos2d::Ref* pSender);
+  void menuCloseCallbackSet(cocos2d::Ref* pSender);
+
  private:
   void initBG();
 
+  /*判断角色是否进入传送门*/
+  bool isInDoor();
  private:
-  Sprite* bgSprite1 = nullptr;
-  Sprite* bgSprite2 = nullptr;
+	 Sprite* backGround = nullptr;
+	 Sprite* portal = nullptr;
 
   Knight* knight = nullptr;
 };

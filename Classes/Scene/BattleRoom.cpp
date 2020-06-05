@@ -5,13 +5,56 @@ bool BattleRoom::init() {
   upLeftX = .0f, upLeftY = .0f;
   downRightX = .0f, downRightY = .0f;
   x = 0, y = 0;
+  roomType = NORMAL;
   sizeHeight = SIZEROOM, sizeWidth = SIZEROOM;
 
   memset(visDir, false, sizeof(visDir));
+  playerVisited = false;
 
-  enemyCtr = EnemyController::create();  // controll enemy behaviors
-  portal = nullptr;
+  portal = nullptr, knight = nullptr;
+
+  this->scheduleUpdate();
   return true;
+}
+
+void BattleRoom::update(float delta) {
+  for (auto playerBullet : vecPlayerBullet) {
+    if (playerBullet->getParent() == nullptr) continue;
+    // if (...);
+    // do something
+  }
+
+  for (auto enemyBullet : vecEnemyBullet) {
+    if (enemyBullet->getParent() == nullptr) continue;
+    // if (...);
+    // do something
+  }
+
+  for (auto enemy : vecEnemy) {
+    if (enemy->getParent() == nullptr) continue;
+    // if (...);
+    //enemy AI do something
+  }
+}
+
+void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
+  if (toRoom != nullptr) {
+    // room was built, no not need to build again
+    curRoom->visDir[dir] = true;
+    toRoom->visDir[(dir + 2) % CNTDIR] = true;
+    // just connect them if toRoom is not beginRoom
+    return;
+  }
+
+  toRoom = BattleRoom::create();
+
+  toRoom->x = toX, toRoom->y = toY;
+  log("%d %d", toX, toY);
+  toRoom->setCenter(curRoom->centerX + DIRX[dir] * CENTERDIS,
+                    curRoom->centerY + DIRY[dir] * CENTERDIS);
+
+  curRoom->visDir[dir] = true;
+  toRoom->visDir[(dir + 2) % CNTDIR] = true;
 }
 
 void BattleRoom::setCenter(float X, float Y) { centerX = X, centerY = Y; }
@@ -36,6 +79,16 @@ void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
 
 void BattleRoom::createMap() {
   srand(time(nullptr));
+
+  if (roomType == END) {
+    sizeWidth -= 8, sizeHeight -= 8;
+    Sprite* portal = Sprite::create("Map//portal3.png");
+    portal->setPosition(Point(centerX, centerY));
+    addChild(portal);
+    portal->setGlobalZOrder(LayerPlayer - 1);
+
+    this->portal = portal;
+  }
 
   const float X = centerX - FLOORWIDTH * (sizeWidth / 2);
   const float Y = centerY + FLOORHEIGHT * (sizeHeight / 2);
@@ -76,12 +129,28 @@ void BattleRoom::createMap() {
         }
       } else {
         generateFloor(curX, curY, LayerPlayer - 2);
-      }
-      // randomly generate floor and Wall
-
+      } // randomly generate floor and Wall
+      
       curX += FLOORWIDTH;
     }
     curX = X, curY -= FLOORHEIGHT;
+  }
+
+  if (roomType == NORMAL) createEnemy(); 
+}
+
+void BattleRoom::createEnemy() {
+  srand(time(nullptr));
+
+  for (int i = 1; i <= 5; i++) {
+    Enemy* enemy = Enemy::create();
+    enemy->bindSprite(Sprite::create("Enemy//shooter.png"), LayerPlayer - 1);
+    float enemyX = upLeftX + rand() % static_cast<INT32>(downRightX - upLeftX);
+    float enemyY =
+        downRightY + rand() % static_cast<INT32>(upLeftY - downRightY);
+    this->addChild(enemy);
+    enemy->setPosition(Point(enemyX, enemyY));
+    vecEnemy.pushBack(enemy);
   }
 }
 
@@ -105,7 +174,7 @@ void BattleRoom::openDoor() {  // doorOpen sptires are visible
   }
 }
 
-void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
+bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
                                      float& ispeedY) {
   float knightX = knight->getPositionX();
   float knightY = knight->getPositionY();
@@ -113,12 +182,10 @@ void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
   if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
       knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
-    if (enemyCtr->enemyAllKilled())
-      openDoor();  //怪物全部击杀开门
-    else
-      closeDoor();
+    if (vecEnemy.empty()) openDoor();  //怪物全部击杀开门
+    else closeDoor();
 
-    if (enemyCtr->enemyAllKilled() == false) {
+    if (!vecEnemy.empty()) {
       if (ispeedX > 0 && knightX >= downRightX)
         ispeedX = .0f;
       else if (ispeedX < 0 && knightX <= upLeftX)
@@ -150,5 +217,10 @@ void BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
           ispeedY = .0f;
       }
     }
+
+    return true;
   }
+  return false;
 }
+
+Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }

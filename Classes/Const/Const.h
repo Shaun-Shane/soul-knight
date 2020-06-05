@@ -4,7 +4,7 @@
 
 constexpr INT32 CNTDIR = 4;
 
-enum {RIGHT, UP, LEFT, DOWN};
+enum Direction {RIGHT, UP, LEFT, DOWN};
 constexpr INT32 DIRX[CNTDIR] = {1, 0, -1, 0};  // right up left down
 constexpr INT32 DIRY[CNTDIR] = {0, 1, 0, -1};  // right up left down
 
@@ -23,4 +23,8 @@ constexpr INT32 SIZECENTERDIS = 39; //两房间相距格子数
 constexpr INT32 SIZEROOM = 19;
 
 constexpr INT32 LayerPlayer = 6;
+
+constexpr INT32 TOP = 100;
+
+enum RoomType { BEGIN, END, NORMAL, BOSS, WEAPON, PROP/*道具*/ };
 #endif  // !_CONST_H_
