@@ -5,7 +5,18 @@ bool Hall::init() {
   downRightX = .0f, downRightY = .0f;
 
   sizeHeight = SIZEHALL, sizeWidth = SIZEHALL;
+
+  this->scheduleUpdate();
   return true;
+}
+
+void Hall::update(float delta) {
+  for (auto playerBullet : vecPlayerBullet) {
+    if (playerBullet->getParent() == nullptr) continue;
+
+    // if (...);
+    //do something
+  }
 }
 
 void Hall::generateFloor(float X, float Y, INT32 layer) {
@@ -45,8 +56,8 @@ void Hall::generateWall(float X, float Y, INT32 layer) {
   //Upside of whe wall
 
   tmpSprite = Sprite::create(imageName.asString().c_str(), Rect(0, 35, 40, 25));
-  this->addChild(tmpSprite, LayerPlayer - 1);
-  tmpSprite->setGlobalZOrder(LayerPlayer - 1);
+  this->addChild(tmpSprite, LayerPlayer - 2);
+  tmpSprite->setGlobalZOrder(LayerPlayer - 2);
   tmpSprite->setPosition(Point(X, Y + (WALLHEIGHT - FLOORHEIGHT) - 30));
   vecWall.pushBack(tmpSprite);
 
@@ -85,11 +96,13 @@ void Hall::changePositionBy(float deltaX, float deltaY) {
   upLeftX += deltaX, upLeftY += deltaY;
   downRightX += deltaX, downRightY += deltaY;
 
-  float curX = getPositionX(), curY = getPositionY();
-  setPositionX(curX + deltaX), setPositionY(curY + deltaY);
+  for (auto child : getChildren()) {
+    float curX = child->getPositionX(), curY = child->getPositionY();
+    child->setPosition(Point(curX + deltaX, curY + deltaY));
+  }
 }
 
-void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
+bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   float knightX = knight->getPositionX();
   float knightY = knight->getPositionY();
 
@@ -112,4 +125,9 @@ void Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
         ispeedY = .0f;
     }
   }
+
+  if (knightX > upLeftX - FLOORWIDTH && knightX < downRightX + FLOORWIDTH &&
+      knightY < upLeftY + FLOORHEIGHT && knightY > downRightY - FLOORHEIGHT)
+    return true;
+  return false;
 }
