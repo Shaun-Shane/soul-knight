@@ -26,6 +26,8 @@ class Hall : public Node{
 
   void generateWall(float, float, INT32);
 
+  Vector<Sprite*>& getVecPlayerBullet(); //Sprite改为子弹类名
+
  private:
   INT32 dir; //direction of this hall
  protected:

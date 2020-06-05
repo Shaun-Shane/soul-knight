@@ -41,7 +41,7 @@ void Knight::registerKeyboardEvent() {
         break;
 
       case EventKeyboard::KeyCode::KEY_J:
-
+        weaponAttack(); 
         break;
 
       case EventKeyboard::KeyCode::KEY_K:
@@ -76,8 +76,12 @@ void Knight::registerKeyboardEvent() {
   _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void Knight::weaponAttack() {
-
+void Knight::weaponAttack() { 
+  log("attack!");
+  // do something
+  // Bullet* b = this->weapon->生成子弹函数(atBattleRoom, atHall);
+  // this->atBattleRoom->addchild()
+  // this->atBattleRoom->vecPlayerBullet.pushBack();
 }
 
 void Knight::useUltimateSkill() {
