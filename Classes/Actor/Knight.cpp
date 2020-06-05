@@ -54,6 +54,14 @@ void Knight::registerKeyboardEvent() {
       case EventKeyboard::KeyCode::KEY_K:
         useUltimateSkill();
         break;
+
+      case EventKeyboard::KeyCode::KEY_J:
+        weaponAttack(); 
+        break;
+
+      case EventKeyboard::KeyCode::KEY_K:
+        useUltimateSkill();
+        break;
     }
 
     if (abs(moveSpeedX) > 0 && abs(moveSpeedY) > 0) //确保任意方向速度相同
@@ -82,9 +90,6 @@ void Knight::registerKeyboardEvent() {
 
   _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
-
-
-
 
 void Knight::useUltimateSkill() {
   if (haveUltimateSkill) {

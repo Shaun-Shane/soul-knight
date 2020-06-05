@@ -33,6 +33,8 @@ class BattleRoom : public Hall {
 
   Vector<Enemy*>& getVecEnemy();
 
+  Vector<Sprite*>& getVecEnemyBullet(); //Sprite改为子弹类名
+
  private:
   void createEnemy();  //生成敌人
 
