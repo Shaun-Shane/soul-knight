@@ -90,8 +90,11 @@ void Knight::useUltimateSkill() {
     auto skillCircle = DrawNode::create();
     skillCircle->drawSolidCircle(getPosition(), 220.0f,
                                  CC_DEGREES_TO_RADIANS(360), 100,
-                                 Color4F(1.0f, 0.8f, .0f, 0.3f));
+                                 Color4F(1.0f, 0.8f, .0f, 0.4f));
     skillCircle->setGlobalZOrder(LayerPlayer);
+    
+    assert(this->getParent() != nullptr);
+    this->getParent()->addChild(skillCircle); //父类为Scene
 
     auto fadeIn = FadeIn::create(0.2f); 
     auto fadeOut = FadeOut::create(0.3f);
@@ -103,13 +106,10 @@ void Knight::useUltimateSkill() {
 
     if (this->atBattleRoom == nullptr) {
       assert(atHall != nullptr);
-      atHall->addChild(skillCircle);
 
       skillCircle->runAction(sequence);
       return;
     }
-
-    atBattleRoom->addChild(skillCircle);
 
     skillCircle->runAction(sequence);
 
@@ -130,7 +130,7 @@ void Knight::useUltimateSkill() {
       if (e->getParent() != nullptr) allKilled = false;
     }
 
-    if (allKilled) vecEnemy.clear();
+    if (allKilled) vecEnemy.clear(); //this can also be done in BattleRoom
 
   }
 }
