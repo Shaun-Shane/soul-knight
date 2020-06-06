@@ -26,31 +26,22 @@ class Knight : public Entity {
 
   void registerKeyboardEvent();
 
-<<<<<<< Updated upstream
-  void weaponAttack(EventKeyboard::KeyCode last);
-=======
   void weaponAttack(Vec2 last);
->>>>>>> Stashed changes
   void useUltimateSkill();
 
   void bindBattleRoom(BattleRoom*);
   void bindHall(Hall*);
-  void update();
 
   float getMoveSpeedX();
   float getMoveSpeedY();
 
-  BattleRoom* getAtBattleRoom();
-  Hall* getAtHall();
+  bool allKilled();
 
  private:
   INT32 armor;
   INT32 MP;
   Weapon* weapon;
-<<<<<<< Updated upstream
-=======
   
->>>>>>> Stashed changes
 
   BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
   Hall* atHall = nullptr;

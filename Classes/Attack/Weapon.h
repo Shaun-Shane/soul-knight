@@ -9,32 +9,18 @@ USING_NS_CC;
 
 class Weapon : public Entity2 {
 public:
-<<<<<<< Updated upstream
-    Weapon();
-    CREATE_FUNC(Weapon);
-    virtual bool init();
-
-    void bindWeapon(Weapon* weapon);
-    Bullet*& createBullet(Vec2 speed,Vec2 curPos, BattleRoom*, Hall*);  //to do再添加两个参数 atBattleRoom和atHall
-    float getSpeed();
-    void setSpeed(float m);
-    ~Weapon();
-protected:
-    float speed;
-=======
   Weapon();
   CREATE_FUNC(Weapon);
   virtual bool init();
   ~Weapon();
 
   void bindWeapon(Weapon* weapon);
-  Bullet*& createBullet(); 
+  Bullet* createBullet(Vec2 speed,INT32 firePower); 
   void setFireSpeed(float fireSpeed);
   float getFireSpeed();
   
 protected:
   float fireSpeed;
->>>>>>> Stashed changes
 
 };
 

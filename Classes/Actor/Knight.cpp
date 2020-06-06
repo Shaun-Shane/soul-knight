@@ -1,11 +1,7 @@
 ﻿#include "Knight.h"
 #include "Scene\Hall.h"
 #include "Scene\BattleRoom.h"
-<<<<<<< Updated upstream
-#include "Attack\Weapon.h"
-=======
 #include "Attack/Weapon.h"
->>>>>>> Stashed changes
 
 Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(5) {}
 
@@ -13,12 +9,6 @@ Knight::~Knight() {}
 
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
-<<<<<<< Updated upstream
-  this->weapon = Weapon::create();
-  this->weapon->setAttack(4);
-  this->weapon->setSpeed(0.5f);
-  this->weapon->bindSprite(Sprite::create("weapon.png"));
-=======
   this->weapon=Weapon::create();
   this->weapon->setFireSpeed(10.0);
   this->weapon->setAttack(10);
@@ -27,7 +17,6 @@ bool Knight::init() {
   this->weapon->setPosition(Vec2(20, -40));
   this->addChild(weapon);
 
->>>>>>> Stashed changes
   
   isInvincible = false, haveUltimateSkill = true;
   
@@ -39,37 +28,8 @@ bool Knight::init() {
 
 void Knight::registerKeyboardEvent() {
   auto listener = EventListenerKeyboard::create();
+
   listener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event*) {
-<<<<<<< Updated upstream
-      static EventKeyboard::KeyCode last;
-
-      switch (code) {
-      case EventKeyboard::KeyCode::KEY_D:
-        last = EventKeyboard::KeyCode::KEY_D;
-        moveSpeedX = moveSpeed;
-        getSprite()->setFlippedX(false);
-        break;
-
-      case EventKeyboard::KeyCode::KEY_W:
-        last = EventKeyboard::KeyCode::KEY_W;
-        moveSpeedY = moveSpeed;
-        break;
-
-      case EventKeyboard::KeyCode::KEY_A:
-        last = EventKeyboard::KeyCode::KEY_A;
-        moveSpeedX = -moveSpeed;
-        getSprite()->setFlippedX(true);
-        break;
-
-      case EventKeyboard::KeyCode::KEY_S:
-        last = EventKeyboard::KeyCode::KEY_S;
-        moveSpeedY = -moveSpeed;
-        break;
-
-      case EventKeyboard::KeyCode::KEY_J:
-        weaponAttack(last);
-        break;
-=======
     static Vec2 last;
     if (code != EventKeyboard::KeyCode::KEY_D &&
      code != EventKeyboard::KeyCode::KEY_W &&
@@ -78,7 +38,6 @@ void Knight::registerKeyboardEvent() {
      code != EventKeyboard::KeyCode::KEY_J &&
      code != EventKeyboard::KeyCode::KEY_K)
      last.set(1.0, 0);
->>>>>>> Stashed changes
 
     switch (code) {
     case EventKeyboard::KeyCode::KEY_D:
@@ -146,11 +105,8 @@ void Knight::useUltimateSkill() {
     auto skillCircle = DrawNode::create();
     skillCircle->drawSolidCircle(getPosition(), 220.0f,
                                  CC_DEGREES_TO_RADIANS(360), 100,
-                                 Color4F(1.0f, 0.8f, .0f, 0.4f));
+                                 Color4F(1.0f, 0.8f, .0f, 0.3f));
     skillCircle->setGlobalZOrder(LayerPlayer);
-    
-    assert(this->getParent() != nullptr);
-    this->getParent()->addChild(skillCircle); //父类为Scene
 
     auto fadeIn = FadeIn::create(0.2f); 
     auto fadeOut = FadeOut::create(0.3f);
@@ -162,10 +118,13 @@ void Knight::useUltimateSkill() {
 
     if (this->atBattleRoom == nullptr) {
       assert(atHall != nullptr);
+      atHall->addChild(skillCircle);
 
       skillCircle->runAction(sequence);
       return;
     }
+
+    atBattleRoom->addChild(skillCircle);
 
     skillCircle->runAction(sequence);
 
@@ -186,7 +145,7 @@ void Knight::useUltimateSkill() {
       if (e->getParent() != nullptr) allKilled = false;
     }
 
-    if (allKilled) vecEnemy.clear(); //this can also be done in BattleRoom
+    if (allKilled) vecEnemy.clear();
 
   }
 }
@@ -197,92 +156,51 @@ void Knight::bindBattleRoom(BattleRoom* battleRoom) {
 
 void Knight::bindHall(Hall* hall) { atHall = hall; }
 
-
 float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
 
-<<<<<<< Updated upstream
-BattleRoom* Knight::getAtBattleRoom() { return atBattleRoom; }
-
-Hall* Knight::getAtHall() { return atHall; }
-
-
-void Knight::weaponAttack(EventKeyboard::KeyCode last) {
-    Vec2 curPos = this->getPosition();
-    Vec2 speed;
-    Bullet* bullet=nullptr;
-    switch (last) {
-    case EventKeyboard::KeyCode::KEY_D:
-        weapon->getSpeed();
-        speed.set(weapon->getSpeed(), 0);
-        bullet= weapon->createBullet(speed, curPos, atBattleRoom, atHall);
-        break;
-
-    case EventKeyboard::KeyCode::KEY_W:
-        
-        speed.set(0, weapon->getSpeed());
-        bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
-        break;
-
-    case EventKeyboard::KeyCode::KEY_A:
-        
-        speed.set(-(weapon->getSpeed()), 0);
-      bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
-        break;
-
-    case EventKeyboard::KeyCode::KEY_S:
-        
-        speed.set(0, -(weapon->getSpeed()));
-      bullet = weapon->createBullet(speed, curPos, atBattleRoom, atHall);
-        break;
-    }
-  
-}
-
-void Knight::update()  ///////////////先暂时分开，之后改写为宏函数将上下 合二为一,还需要怪物的碰撞检测
-{
-    if (atBattleRoom == nullptr) {
-        assert(atHall != nullptr);
-        for (int i = 0; i < atHall->getVecPlayerBullet().size(); i++)
-        {
-            auto bullet = atHall->getVecPlayerBullet().at(i);
-            Vec2 pos = bullet->getPosition();
-            pos.y += bullet->getSpeed().y;
-            pos.x += bullet->getSpeed().x;
-            bullet->setPosition(pos);
-            if (bullet->isInScreen() == false) {
-                bullet->removeFromParent();
-                atHall->getVecPlayerBullet().eraseObject(bullet);
-                --i;
-            }
-        }
-    }
-    else {
-        assert(atBattleRoom != nullptr);
-        for (int i = 0; i < atBattleRoom->getVecPlayerBullet().size(); i++)
-        {
-            auto bullet = atBattleRoom->getVecPlayerBullet().at(i);
-            Vec2 pos = bullet->getPosition();
-            pos.y += bullet->getSpeed().x;
-            bullet->setPosition(pos);
-            if (bullet->isInScreen() == false) {
-                bullet->removeFromParent();
-                atBattleRoom->getVecPlayerBullet().eraseObject(bullet);
-                --i;
-            }
-        }
-
-      } 
-}
-=======
-void Knight::weaponAttack(Vec2 last) {
+void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
-  if (this->atBattleRoom == nullptr) {
+  INT32 firePower = this->weapon->getAttack();
+  Vec2 curPos = this->getPosition();
 
+  if (this->atBattleRoom == nullptr) {
+    Bullet* bullet = this->weapon->createBullet(fireSpeed,firePower);
+    bullet->setPosition(curPos);
+    atHall->addChild(bullet);
+    atHall->getVecPlayerBullet().pushBack(bullet);
   }
   else {
+    Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
+    Enemy* nearNeast = nullptr;
+    float distance = 99999;
 
+    for (auto e : vecEnemy) {
+      if (e->getParent() != nullptr ) {
+        Vec2 enemyPos = e->getPosition();
+        if (enemyPos.distance(curPos) < distance) {
+          nearNeast = e;
+          distance = enemyPos.distance(curPos);
+        }
+      }
+    }
+    if (nearNeast == nullptr) {
+      Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
+      bullet->setPosition(curPos);
+      atBattleRoom->addChild(bullet);
+      atBattleRoom->getVecPlayerBullet().pushBack(bullet);
+    }
+    else {
+      Vec2 target = nearNeast->getPosition() - curPos;
+      float targetX = target.x / target.length();
+      float targetY = target.y / target.length();
+      fireSpeed = target * this->weapon->getFireSpeed();
+      Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
+
+      bullet->setPosition(curPos);
+      atBattleRoom->addChild(bullet);
+      atBattleRoom->getVecPlayerBullet().pushBack(bullet);
+    }
   }
 }
->>>>>>> Stashed changes
