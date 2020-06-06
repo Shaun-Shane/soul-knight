@@ -3,6 +3,7 @@
 Weapon::Weapon(){}
 
 bool Weapon::init()
+<<<<<<< Updated upstream
 {
   
     return true;
@@ -53,3 +54,25 @@ void Weapon::setSpeed(float m)
 }
 
 Weapon::~Weapon() {}
+=======
+{ 
+  return true;	
+}
+
+Weapon::~Weapon(){}
+
+void Weapon::bindWeapon(Weapon* weapon) 
+{
+  this->sprite = weapon->sprite;
+  this->attack = weapon->attack;
+  this->fireSpeed = weapon->fireSpeed;
+}
+
+void Weapon::setFireSpeed(float fireSpeed)
+{
+  this->fireSpeed = fireSpeed;
+}
+
+float Weapon::getFireSpeed() { return this->fireSpeed; }
+
+>>>>>>> Stashed changes

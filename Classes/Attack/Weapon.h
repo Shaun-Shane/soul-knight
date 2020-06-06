@@ -9,6 +9,7 @@ USING_NS_CC;
 
 class Weapon : public Entity2 {
 public:
+<<<<<<< Updated upstream
     Weapon();
     CREATE_FUNC(Weapon);
     virtual bool init();
@@ -20,6 +21,20 @@ public:
     ~Weapon();
 protected:
     float speed;
+=======
+  Weapon();
+  CREATE_FUNC(Weapon);
+  virtual bool init();
+  ~Weapon();
+
+  void bindWeapon(Weapon* weapon);
+  Bullet*& createBullet(); 
+  void setFireSpeed(float fireSpeed);
+  float getFireSpeed();
+  
+protected:
+  float fireSpeed;
+>>>>>>> Stashed changes
 
 };
 

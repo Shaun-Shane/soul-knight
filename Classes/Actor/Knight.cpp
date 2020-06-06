@@ -1,7 +1,11 @@
 ﻿#include "Knight.h"
 #include "Scene\Hall.h"
 #include "Scene\BattleRoom.h"
+<<<<<<< Updated upstream
 #include "Attack\Weapon.h"
+=======
+#include "Attack/Weapon.h"
+>>>>>>> Stashed changes
 
 Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(5) {}
 
@@ -9,10 +13,21 @@ Knight::~Knight() {}
 
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
+<<<<<<< Updated upstream
   this->weapon = Weapon::create();
   this->weapon->setAttack(4);
   this->weapon->setSpeed(0.5f);
   this->weapon->bindSprite(Sprite::create("weapon.png"));
+=======
+  this->weapon=Weapon::create();
+  this->weapon->setFireSpeed(10.0);
+  this->weapon->setAttack(10);
+  this->weapon->bindSprite(Sprite::create("Weapon//weapon1.png"), 11);
+  this->weapon->setScale(0.7);
+  this->weapon->setPosition(Vec2(20, -40));
+  this->addChild(weapon);
+
+>>>>>>> Stashed changes
   
   isInvincible = false, haveUltimateSkill = true;
   
@@ -25,6 +40,7 @@ bool Knight::init() {
 void Knight::registerKeyboardEvent() {
   auto listener = EventListenerKeyboard::create();
   listener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event*) {
+<<<<<<< Updated upstream
       static EventKeyboard::KeyCode last;
 
       switch (code) {
@@ -53,10 +69,47 @@ void Knight::registerKeyboardEvent() {
       case EventKeyboard::KeyCode::KEY_J:
         weaponAttack(last);
         break;
+=======
+    static Vec2 last;
+    if (code != EventKeyboard::KeyCode::KEY_D &&
+     code != EventKeyboard::KeyCode::KEY_W &&
+     code != EventKeyboard::KeyCode::KEY_A &&
+     code != EventKeyboard::KeyCode::KEY_S &&
+     code != EventKeyboard::KeyCode::KEY_J &&
+     code != EventKeyboard::KeyCode::KEY_K)
+     last.set(1.0, 0);
+>>>>>>> Stashed changes
 
-      case EventKeyboard::KeyCode::KEY_K:
-        useUltimateSkill();
-        break;
+    switch (code) {
+    case EventKeyboard::KeyCode::KEY_D:
+      last.set(1.0, 0);
+      moveSpeedX = moveSpeed;
+      getSprite()->setFlippedX(false);
+      break;
+
+    case EventKeyboard::KeyCode::KEY_W:
+      last.set(0, 1.0);
+      moveSpeedY = moveSpeed;
+      break;
+
+    case EventKeyboard::KeyCode::KEY_A:
+      last.set(-1.0, 0);
+      moveSpeedX = -moveSpeed;
+      getSprite()->setFlippedX(true);
+      break;
+
+    case EventKeyboard::KeyCode::KEY_S:
+      last.set(0, -1.0);
+      moveSpeedY = -moveSpeed;
+      break;
+
+    case EventKeyboard::KeyCode::KEY_J:
+      weaponAttack(last);
+      break;
+
+    case EventKeyboard::KeyCode::KEY_K:
+      useUltimateSkill();
+      break;
     }
 
     if (abs(moveSpeedX) > 0 && abs(moveSpeedY) > 0) //确保任意方向速度相同
@@ -149,6 +202,7 @@ float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
 
+<<<<<<< Updated upstream
 BattleRoom* Knight::getAtBattleRoom() { return atBattleRoom; }
 
 Hall* Knight::getAtHall() { return atHall; }
@@ -221,3 +275,14 @@ void Knight::update()  ///////////////先暂时分开，之后改写为宏函数
 
       } 
 }
+=======
+void Knight::weaponAttack(Vec2 last) {
+  Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
+  if (this->atBattleRoom == nullptr) {
+
+  }
+  else {
+
+  }
+}
+>>>>>>> Stashed changes

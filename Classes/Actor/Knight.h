@@ -3,6 +3,8 @@
 #include "cocos2d.h"
 #include "Entity.h"
 
+
+
 USING_NS_CC;
 
 class Hall;
@@ -24,7 +26,11 @@ class Knight : public Entity {
 
   void registerKeyboardEvent();
 
+<<<<<<< Updated upstream
   void weaponAttack(EventKeyboard::KeyCode last);
+=======
+  void weaponAttack(Vec2 last);
+>>>>>>> Stashed changes
   void useUltimateSkill();
 
   void bindBattleRoom(BattleRoom*);
@@ -41,12 +47,18 @@ class Knight : public Entity {
   INT32 armor;
   INT32 MP;
   Weapon* weapon;
+<<<<<<< Updated upstream
+=======
+  
+>>>>>>> Stashed changes
 
   BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
   Hall* atHall = nullptr;
 
   bool isInvincible = false; //是否无敌
   bool haveUltimateSkill = true; //是否有大招
+
+  
 };
 
 #endif

@@ -6,6 +6,7 @@ USING_NS_CC;
 
 class Bullet : public Entity2 {
 public:
+<<<<<<< Updated upstream
     Bullet();
     ~Bullet();
     CREATE_FUNC(Bullet);
@@ -19,6 +20,21 @@ public:
 private:
     Vec2 speed;
 protected:
+=======
+  Bullet();
+  ~Bullet();
+  CREATE_FUNC(Bullet);
+  virtual bool init();
+
+  bool isInScreen();
+  Vec2 getBulletSpeed();
+  void setBulletSpeed(Vec2 speed);
+
+
+protected:
+  Vec2 bulletSpeed;
+
+>>>>>>> Stashed changes
 };
 
 #endif;
