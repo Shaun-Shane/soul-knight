@@ -29,8 +29,10 @@ Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
   Bullet* bullet = Bullet::create();
   bullet->setBulletSpeed(speed);
-  bullet->bindSprite(Sprite::create("bullet.png"), 12);
+  bullet->bindSprite(Sprite::create("Bullet//pistol.png"), 12);
+  
   bullet->setAttack(firePower);
+
   return bullet;
   
 }

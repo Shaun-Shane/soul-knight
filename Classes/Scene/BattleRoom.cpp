@@ -18,11 +18,7 @@ bool BattleRoom::init() {
 }
 
 void BattleRoom::update(float delta) {
-  for (auto playerBullet : vecPlayerBullet) {
-    if (playerBullet->getParent() == nullptr) continue;
-    // if (...);
-    // do something
-  }
+  this->bulletMove();
 
   for (auto enemyBullet : vecEnemyBullet) {
     if (enemyBullet->getParent() == nullptr) continue;
@@ -225,6 +221,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
 }
 
 Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
+
 
 Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
 

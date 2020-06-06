@@ -7,13 +7,11 @@ bool Hall::init() {
   sizeHeight = SIZEHALL, sizeWidth = SIZEHALL;
   
   
-  this->schedule(schedule_selector(Hall::update));
+  this->scheduleUpdate();
   return true;
 }
 
-void Hall::update(float delta) {
- 
-}
+void Hall::update(float delta) { this->bulletMove();}
 
 void Hall::generateFloor(float X, float Y, INT32 layer) {
   INT32 randomNum = rand();
@@ -134,7 +132,7 @@ Vector<Bullet*>& Hall::getVecPlayerBullet() { return vecPlayerBullet; }
 bool Hall::isInScreen(Vec2 pos)
 {
   Size size = Director::getInstance()->getVisibleSize();
-  return (pos.x<0 && pos.y<0 && pos.x>size.width && pos.y>size.height);
+  return (pos.x>0 && pos.y>0 && pos.x<size.width && pos.y<size.height);
 }
 
 void Hall::bulletMove()
@@ -144,7 +142,6 @@ void Hall::bulletMove()
     Vec2 pos = bullet->getPosition();
     pos = pos + bullet->getBulletSpeed();
     bullet->setPosition(pos);
-    addChild(bullet);
     if (this->isInScreen(pos) == false)
     {
       bullet->removeFromParent();
