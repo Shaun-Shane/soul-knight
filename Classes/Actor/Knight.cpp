@@ -12,8 +12,8 @@ bool Knight::init() {
   this->weapon=Weapon::create();
   this->weapon->setFireSpeed(10.0);
   this->weapon->setAttack(10);
-  this->weapon->bindSprite(Sprite::create("Weapon//weapon1.png"), 11);
-  this->weapon->setScale(0.7);
+  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), 11);
+  this->weapon->setScale(3);
   this->weapon->setPosition(Vec2(20, -40));
   this->addChild(weapon);
 
@@ -21,7 +21,6 @@ bool Knight::init() {
   isInvincible = false, haveUltimateSkill = true;
   
   registerKeyboardEvent();
-
   this->scheduleUpdate(); 	
   return true; 
 }
@@ -52,6 +51,7 @@ void Knight::registerKeyboardEvent() {
       break;
 
     case EventKeyboard::KeyCode::KEY_A:
+ 
       last.set(-1.0, 0);
       moveSpeedX = -moveSpeed;
       getSprite()->setFlippedX(true);
@@ -160,24 +160,17 @@ float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
 
-void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简
+void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
   INT32 firePower = this->weapon->getAttack();
   Vec2 curPos = this->getPosition();
-
-  if (this->atBattleRoom == nullptr) {
-    Bullet* bullet = this->weapon->createBullet(fireSpeed,firePower);
-    bullet->setPosition(curPos);
-    atHall->addChild(bullet);
-    atHall->getVecPlayerBullet().pushBack(bullet);
-  }
-  else {
+  Vec2 target;
+  if (this->atBattleRoom != nullptr) {
     Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
     Enemy* nearNeast = nullptr;
     float distance = 99999;
-
     for (auto e : vecEnemy) {
-      if (e->getParent() != nullptr ) {
+      if (e->getParent() != nullptr) {
         Vec2 enemyPos = e->getPosition();
         if (enemyPos.distance(curPos) < distance) {
           nearNeast = e;
@@ -185,22 +178,26 @@ void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再
         }
       }
     }
-    if (nearNeast == nullptr) {
-      Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
-      bullet->setPosition(curPos);
-      atBattleRoom->addChild(bullet);
-      atBattleRoom->getVecPlayerBullet().pushBack(bullet);
-    }
-    else {
-      Vec2 target = nearNeast->getPosition() - curPos;
-      float targetX = target.x / target.length();
-      float targetY = target.y / target.length();
+    if (nearNeast != nullptr) {
+      target = nearNeast->getPosition() - curPos;
+      target.set(target.x / target.length(), target.y / target.length());
       fireSpeed = target * this->weapon->getFireSpeed();
-      Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
-
-      bullet->setPosition(curPos);
-      atBattleRoom->addChild(bullet);
-      atBattleRoom->getVecPlayerBullet().pushBack(bullet);
     }
   }
+  Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
+  bullet->setPosition(curPos);
+  (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
+  (atBattleRoom != nullptr ? atBattleRoom : atHall)->getVecPlayerBullet().pushBack(bullet);
+  CCLOG("speed(%f,%f) firepower:%d,", fireSpeed.x, fireSpeed.y, firePower);
 }
+
+
+ 
+ 
+
+  
+
+
+      
+
+  

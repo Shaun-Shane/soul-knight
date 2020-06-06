@@ -154,6 +154,7 @@ void BattleRoom::createEnemy() {
   }
 }
 
+
 void BattleRoom::closeDoor() {  // doorClose sptires are visible
   for (auto sprite : vecDoorOpen) {
     sprite->setVisible(false);
@@ -226,3 +227,6 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
 Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
 
 Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
+
+
+

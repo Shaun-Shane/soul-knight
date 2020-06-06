@@ -27,7 +27,9 @@ class Hall : public Node{
 
   void generateWall(float, float, INT32);
 
-  Vector<Bullet*>& getVecPlayerBullet(); //Sprite改为子弹类名
+  Vector<Bullet*>& getVecPlayerBullet(); 
+  bool isInScreen(Vec2 pos);
+  void bulletMove();
 
  private:
   INT32 dir; //direction of this hall
@@ -39,7 +41,7 @@ class Hall : public Node{
 
   INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
   
-  Vector<Bullet*> vecPlayerBullet; //储存场景子弹 Sprite改为子弹类名
+  Vector<Bullet*> vecPlayerBullet; 
 
   Vector<Sprite*> vecFloor;
   Vector<Sprite*> vecWall;

@@ -5,18 +5,14 @@ bool Hall::init() {
   downRightX = .0f, downRightY = .0f;
 
   sizeHeight = SIZEHALL, sizeWidth = SIZEHALL;
-
-  this->scheduleUpdate();
+  
+  
+  this->schedule(schedule_selector(Hall::update));
   return true;
 }
 
 void Hall::update(float delta) {
-  for (auto playerBullet : vecPlayerBullet) {
-    if (playerBullet->getParent() == nullptr) continue;
-
-    // if (...);
-    //do something
-  }
+ 
 }
 
 void Hall::generateFloor(float X, float Y, INT32 layer) {
@@ -133,3 +129,27 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
 }
 
 Vector<Bullet*>& Hall::getVecPlayerBullet() { return vecPlayerBullet; }
+
+
+bool Hall::isInScreen(Vec2 pos)
+{
+  Size size = Director::getInstance()->getVisibleSize();
+  return (pos.x<0 && pos.y<0 && pos.x>size.width && pos.y>size.height);
+}
+
+void Hall::bulletMove()
+{
+  for (int i = 0; i < vecPlayerBullet.size(); ++i) {
+    auto bullet = vecPlayerBullet.at(i);
+    Vec2 pos = bullet->getPosition();
+    pos = pos + bullet->getBulletSpeed();
+    bullet->setPosition(pos);
+    addChild(bullet);
+    if (this->isInScreen(pos) == false)
+    {
+      bullet->removeFromParent();
+      vecPlayerBullet.eraseObject(bullet);
+      --i;
+    }
+  }
+}
