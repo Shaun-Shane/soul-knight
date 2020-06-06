@@ -43,6 +43,7 @@ void Knight::registerKeyboardEvent() {
       last.set(1.0, 0);
       moveSpeedX = moveSpeed;
       getSprite()->setFlippedX(false);
+      weapon->getSprite()->setFlippedX(false);
       break;
 
     case EventKeyboard::KeyCode::KEY_W:
@@ -55,6 +56,7 @@ void Knight::registerKeyboardEvent() {
       last.set(-1.0, 0);
       moveSpeedX = -moveSpeed;
       getSprite()->setFlippedX(true);
+      weapon->getSprite()->setFlippedX(true);
       break;
 
     case EventKeyboard::KeyCode::KEY_S:
