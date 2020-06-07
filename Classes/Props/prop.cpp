@@ -1,5 +1,9 @@
 #include "prop.h"
 
+Prop::Prop(){}
+
+Prop::~Prop(){}
+
 bool Prop::init()
 {
   return true;

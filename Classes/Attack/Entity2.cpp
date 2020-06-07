@@ -17,11 +17,5 @@ void Entity2::bindSprite(Sprite* sprite, INT32 layer)
   this->setContentSize(size);
 }
 
-<<<<<<< Updated upstream
-void Entity2::setAttack(INT32 attack) { this->attack = attack; }
-
-INT32 Entity2::getAttack() { return this->attack; }
-=======
->>>>>>> Stashed changes
 
 

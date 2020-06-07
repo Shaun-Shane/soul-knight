@@ -10,6 +10,7 @@ public:
   ~Prop();
   CREATE_FUNC(Prop);
   virtual bool init();
+
   INT32 getPropIndex();
   void setPropIndex(INT32 index);
   void useProps();
