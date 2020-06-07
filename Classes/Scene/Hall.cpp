@@ -101,7 +101,7 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   float knightY = knight->getPositionY();
 
   if (dir % 2 == 1) {
-    if (knightX >= upLeftX && knightX <= downRightX &&
+    if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
         knightY <= upLeftY + FLOORHEIGHT + FLOORHEIGHT / 2 &&
         knightY >= downRightY - FLOORHEIGHT - FLOORHEIGHT / 4) {
       if (ispeedX > 0 && knightX >= downRightX)
@@ -112,7 +112,7 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   } else {
     if (knightX >= upLeftX - FLOORWIDTH - FLOORWIDTH / 4 &&
         knightX <= downRightX + FLOORWIDTH + FLOORWIDTH / 4 &&
-        knightY <= upLeftY + FLOORHEIGHT / 2 && knightY >= downRightY) {
+        knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
       if (ispeedY > 0 && knightY >= upLeftY + FLOORHEIGHT / 2)
         ispeedY = .0f;
       else if (ispeedY < 0 && knightY <= downRightY)

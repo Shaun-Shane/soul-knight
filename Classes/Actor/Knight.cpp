@@ -12,7 +12,7 @@ bool Knight::init() {
   this->weapon=Weapon::create();
   this->weapon->setFireSpeed(10.0);
   this->weapon->setAttack(10);
-  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), 11);
+  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
   this->weapon->setScale(3);
   this->weapon->setPosition(Vec2(20, -40));
   this->addChild(weapon);
@@ -72,9 +72,6 @@ void Knight::registerKeyboardEvent() {
       useUltimateSkill();
       break;
     }
-
-    if (abs(moveSpeedX) > 0 && abs(moveSpeedY) > 0) //确保任意方向速度相同
-      moveSpeedX /= sqrt(2.0f), moveSpeedY /= sqrt(2.0f);  
   };
 
   listener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event*) {

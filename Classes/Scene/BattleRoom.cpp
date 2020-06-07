@@ -185,11 +185,11 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
     if (!vecEnemy.empty()) {
       if (ispeedX > 0 && knightX >= downRightX)
         ispeedX = .0f;
-      else if (ispeedX < 0 && knightX <= upLeftX)
+      if (ispeedX < 0 && knightX <= upLeftX)
         ispeedX = .0f;
-      else if (ispeedY > 0 && knightY >= upLeftY + 20)
+      if (ispeedY > 0 && knightY >= upLeftY + 20)
         ispeedY = .0f;
-      else if (ispeedY < 0 && knightY <= downRightY)
+      if (ispeedY < 0 && knightY <= downRightY)
         ispeedY = .0f;
     } else {
       if (((upLeftY + FLOORHEIGHT / 2 - FLOORHEIGHT * (sizeHeight / 2 - 3)) >=
@@ -206,11 +206,11 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
       } else {
         if (ispeedX > 0 && knightX >= downRightX)
           ispeedX = .0f;
-        else if (ispeedX < 0 && knightX <= upLeftX)
+        if (ispeedX < 0 && knightX <= upLeftX)
           ispeedX = .0f;
-        else if (ispeedY > 0 && knightY >= upLeftY + 20)
+        if (ispeedY > 0 && knightY >= upLeftY + 20)
           ispeedY = .0f;
-        else if (ispeedY < 0 && knightY <= downRightY)
+        if (ispeedY < 0 && knightY <= downRightY)
           ispeedY = .0f;
       }
     }
