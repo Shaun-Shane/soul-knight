@@ -169,7 +169,10 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
   if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
       knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
-    if (vecEnemy.empty()) openDoor();  //怪物全部击杀开门
+    if (vecEnemy.empty())
+    {
+      openDoor();             //怪物全部击杀开门
+    }
     else closeDoor();
 
     if (!vecEnemy.empty()) {
@@ -254,4 +257,38 @@ bool BattleRoom::allKilled()
     if (e->getParent() != nullptr) allKilled = false;
   }
   return allKilled;
+}
+
+void BattleRoom::createTreasureBox()
+{
+  srand(time(NULL));
+  int randomDigit = rand() % 3;
+  crearteWeapon(randomDigit);
+
+}
+
+void BattleRoom::crearteWeapon(int randomDigit)
+{
+  CCLOG("%d",randomDigit);
+  Weapon* weapon = Weapon::create();
+  switch (randomDigit) {
+  case 0:
+    weapon->setFireSpeed(5.0);
+    weapon->setAttack(1);
+    weapon->bindSprite(Sprite::create("Weapon//weapon2.png"),TOP);
+    break;
+  case 1:
+    weapon->setFireSpeed(3.0);
+    weapon->setAttack(4);
+    weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), TOP);
+    break;
+  case 2:
+    weapon->setFireSpeed(1);
+    weapon->setAttack(6);
+    weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), TOP);
+    break;
+  }
+  weapon->setScale(0.7);
+  weapon->setPosition(knight->getPosition());
+  this->addChild(weapon, TOP);
 }

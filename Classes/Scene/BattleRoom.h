@@ -6,6 +6,7 @@
 #include "Enemy\Enemy.h"
 #include "Actor\Knight.h"
 #include "Const\Const.h"
+#include "Attack/Weapon.h"
 USING_NS_CC;
 
 class BattleRoom : public Hall {
@@ -39,6 +40,9 @@ class BattleRoom : public Hall {
 
   bool allKilled();
   
+  void createTreasureBox();
+
+  void crearteWeapon(int randomDigit);
  private:
   void createEnemy();  //生成敌人
 
