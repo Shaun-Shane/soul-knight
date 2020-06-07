@@ -236,11 +236,7 @@ void BattleRoom::playerBulletCollistionCheck()
         enemy->deductHP(bullet->getAttack());
         if ((enemy->getHP()) <= 0) {
           enemy->removeFromParent();
-          bool allKilled = true; 
-          for (auto e : vecEnemy) {
-            if (e->getParent() != nullptr) allKilled = false;
-          }
-          if (allKilled) vecEnemy.clear();
+          if (this->allKilled() == true) vecEnemy.clear();
         }
         bullet->removeFromParent();
         vecPlayerBullet.eraseObject(bullet);
@@ -249,4 +245,13 @@ void BattleRoom::playerBulletCollistionCheck()
       }
     }
   }
+}
+
+bool BattleRoom::allKilled()
+{
+  bool allKilled = true;
+  for (auto e : vecEnemy) {
+    if (e->getParent() != nullptr) allKilled = false;
+  }
+  return allKilled;
 }

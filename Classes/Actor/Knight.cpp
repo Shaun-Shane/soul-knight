@@ -141,13 +141,10 @@ void Knight::useUltimateSkill() {
         e->removeFromParent(); //秒杀怪物 从父类移除
     }
 
-    bool allKilled = true; //判断是否全被击杀
-    for (auto e : vecEnemy) {
-      if (e->getParent() != nullptr) allKilled = false;
+    if (this->atBattleRoom == nullptr) {
+      assert(atHall != nullptr);
+      if (this->atBattleRoom->allKilled()) vecEnemy.clear();
     }
-
-    if (allKilled) vecEnemy.clear();
-
   }
 }
 
