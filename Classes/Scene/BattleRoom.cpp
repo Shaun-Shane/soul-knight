@@ -229,12 +229,10 @@ void BattleRoom::playerBulletCollistionCheck()
       
       auto enemy = vecEnemy.at(j);
       if (enemy->getParent() == nullptr) continue;
-      Vec2 v1= bullet->getPosition();
-      Vec2 v2 = knight->getPosition();
-      Vec2 v3 = enemy->getPosition();
       Rect enemyRect = enemy->getBoundingBox();
       if (bulletRect.intersectsRect(enemyRect))
       {
+        INT32 hp = knight->getHP();
         enemy->deductHP(bullet->getAttack());
         if ((enemy->getHP()) <= 0) {
           enemy->removeFromParent();

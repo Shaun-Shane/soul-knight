@@ -39,3 +39,5 @@ void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
   this->HP =this->HP- delta;
 }
+
+void Entity::setHP(INT32 HP) { this->HP = HP; }
