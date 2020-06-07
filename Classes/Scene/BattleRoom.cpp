@@ -171,9 +171,20 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
     if (vecEnemy.empty())
     {
-      openDoor();             //怪物全部击杀开门
+      if (roomType == BEGIN) knight->setNeedCreateBox(false);
+      else {
+        if (knight->getNeedCreateBox() == true) {
+          createTreasureBox();
+          knight->setNeedCreateBox(false);
+        }
+      }
+      openDoor();             
     }
-    else closeDoor();
+    else
+    {
+      if (knight->getNeedCreateBox() == false) knight->setNeedCreateBox(true);
+      closeDoor();
+    }
 
     if (!vecEnemy.empty()) {
       if (ispeedX > 0 && knightX >= downRightX)
@@ -289,6 +300,6 @@ void BattleRoom::crearteWeapon(int randomDigit)
     break;
   }
   weapon->setScale(0.7);
-  weapon->setPosition(knight->getPosition());
+  weapon->setPosition(Vec2((upLeftX+downRightX)/2,(upLeftY+downRightY)/2));
   this->addChild(weapon, TOP);
 }

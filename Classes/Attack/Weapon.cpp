@@ -12,7 +12,7 @@ Weapon::~Weapon(){}
 
 void Weapon::bindWeapon(Weapon* weapon) 
 {
-  this->sprite = weapon->sprite;
+  this->bindSprite(weapon->sprite, LayerPlayer + 1);
   this->attack = weapon->attack;
   this->fireSpeed = weapon->fireSpeed;
 }

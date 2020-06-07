@@ -158,6 +158,16 @@ float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
 
+void Knight::setNeedCreateBox(bool need)
+{
+  this->needCreateBox = need;
+}
+
+bool Knight::getNeedCreateBox()
+{
+  return this->needCreateBox;
+}
+
 void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
   INT32 firePower = this->weapon->getAttack();
