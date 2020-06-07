@@ -10,7 +10,7 @@ Knight::~Knight() {}
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
   this->weapon=Weapon::create();
-  this->weapon->setFireSpeed(10.0);
+  this->weapon->setFireSpeed(2.0);
   this->weapon->setAttack(10);
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
   this->weapon->setScale(3);
@@ -187,7 +187,6 @@ void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再
   bullet->setPosition(curPos);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->getVecPlayerBullet().pushBack(bullet);
-  CCLOG("speed(%f,%f) firepower:%d,", fireSpeed.x, fireSpeed.y, firePower);
 }
 
 
