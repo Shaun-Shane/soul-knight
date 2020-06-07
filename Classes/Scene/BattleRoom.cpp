@@ -18,20 +18,8 @@ bool BattleRoom::init() {
 }
 
 void BattleRoom::update(float delta) {
-  this->bulletMove();
-  //this->playerBulletCollistionCheck();
+  this->playerBulletMove();
 
-  for (auto enemyBullet : vecEnemyBullet) {
-    if (enemyBullet->getParent() == nullptr) continue;
-    // if (...);
-    // do something
-  }
-
-  for (auto enemy : vecEnemy) {
-    if (enemy->getParent() == nullptr) continue;
-    // if (...);
-    //enemy AI do something
-  }
 }
 
 void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
@@ -231,22 +219,26 @@ Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
 
 void BattleRoom::playerBulletCollistionCheck()
 {
+  
   for (int i = 0; i < vecPlayerBullet.size(); ++i)
   {
     auto bullet = vecPlayerBullet.at(i);
-    Rect bulletRect = bullet->getSprite()->getBoundingBox();
+    Rect bulletRect = bullet->getBoundingBox();
     for (int j = 0; j < vecEnemy.size(); ++j)
     {
       
       auto enemy = vecEnemy.at(j);
       if (enemy->getParent() == nullptr) continue;
-      Rect enemyRect = enemy->getSprite()->getBoundingBox();
+      Vec2 v1= bullet->getPosition();
+      Vec2 v2 = knight->getPosition();
+      Vec2 v3 = enemy->getPosition();
+      Rect enemyRect = enemy->getBoundingBox();
       if (bulletRect.intersectsRect(enemyRect))
       {
         enemy->deductHP(bullet->getAttack());
         if ((enemy->getHP()) <= 0) {
           enemy->removeFromParent();
-          bool allKilled = true; //判断是否全被击杀
+          bool allKilled = true; 
           for (auto e : vecEnemy) {
             if (e->getParent() != nullptr) allKilled = false;
           }
@@ -255,9 +247,31 @@ void BattleRoom::playerBulletCollistionCheck()
         bullet->removeFromParent();
         vecPlayerBullet.eraseObject(bullet);
         --i;
-
         break;
       }
     }
   }
+}
+
+
+
+ 
+
+void BattleRoom::playerBulletMove()
+{
+  for (int i = 0; i < vecPlayerBullet.size(); ++i) {
+    
+    auto bullet = vecPlayerBullet.at(i);
+    Vec2 pos = bullet->getPosition();
+    pos = pos + bullet->getBulletSpeed();
+    bullet->setPosition(pos);
+    if (this->isInScreen(pos) == false)
+    {
+      bullet->removeFromParent();
+      vecPlayerBullet.eraseObject(bullet);
+      --i;
+    }
+  }
+  
+  playerBulletCollistionCheck();
 }
