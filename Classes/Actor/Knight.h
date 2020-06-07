@@ -32,9 +32,6 @@ class Knight : public Entity {
   void bindBattleRoom(BattleRoom*);
   void bindHall(Hall*);
 
-  float getMoveSpeedX();
-  float getMoveSpeedY();
-
   bool allKilled();
 
   void setNeedCreateBox(bool);

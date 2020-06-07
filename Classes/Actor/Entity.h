@@ -17,6 +17,9 @@ public :
   void deductHP(INT32); //扣血
   void setHP(INT32 HP);
 
+  float getMoveSpeedX();
+  float getMoveSpeedY();
+
   ~Entity();
 
 private:

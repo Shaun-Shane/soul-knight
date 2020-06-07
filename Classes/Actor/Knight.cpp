@@ -154,10 +154,6 @@ void Knight::bindBattleRoom(BattleRoom* battleRoom) {
 
 void Knight::bindHall(Hall* hall) { atHall = hall; }
 
-float Knight::getMoveSpeedX() { return moveSpeedX; }
-
-float Knight::getMoveSpeedY() { return moveSpeedY; }
-
 void Knight::setNeedCreateBox(bool need)
 {
   this->needCreateBox = need;

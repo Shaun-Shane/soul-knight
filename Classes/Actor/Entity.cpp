@@ -41,3 +41,7 @@ void Entity::deductHP(INT32 delta) { //minus HP of this entity
 }
 
 void Entity::setHP(INT32 HP) { this->HP = HP; }
+
+float Entity::getMoveSpeedX() { return moveSpeedX; }
+
+float Entity::getMoveSpeedY() { return moveSpeedY; }
