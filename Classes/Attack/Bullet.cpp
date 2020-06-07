@@ -13,7 +13,6 @@ void Bullet::setBulletSpeed(Vec2 speed) { this->bulletSpeed = speed; }
 
 bool Bullet::isInScreen()        ///等了解如何获取地图位置再写
 {
+  
   return true;
 }
-
-
