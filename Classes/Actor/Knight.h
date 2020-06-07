@@ -3,9 +3,6 @@
 #include "cocos2d.h"
 #include "Entity.h"
 
-
-
-
 USING_NS_CC;
 
 class Hall;
@@ -24,8 +21,6 @@ class Knight : public Entity {
   CREATE_FUNC(Knight);
   virtual bool init();
 
-  //virtual void update(float);
-
   void registerKeyboardEvent();
 
   void weaponAttack(Vec2 last);
@@ -34,14 +29,25 @@ class Knight : public Entity {
   void bindBattleRoom(BattleRoom*);
   void bindHall(Hall*);
 
+  float getMoveSpeedX();
+  float getMoveSpeedY();
+
+  void bindWeapon(Weapon*);
+
   bool allKilled();
 
   void setNeedCreateBox(bool);
+
   bool getNeedCreateBox();
   
   INT32 getMP();
+
   void setMP(INT32);
 
+
+  Weapon* collisionWithWeaponCheck();
+
+  Prop* collisionWithCropCheck();
 
  private:
   INT32 armor;
@@ -50,14 +56,11 @@ class Knight : public Entity {
 
   bool needCreateBox;
   
-
   BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
   Hall* atHall = nullptr;
 
   bool isInvincible = false; //是否无敌
   bool haveUltimateSkill = true; //是否有大招
-
-  
 };
 
 #endif

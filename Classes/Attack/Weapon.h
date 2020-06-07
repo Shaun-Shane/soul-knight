@@ -14,7 +14,6 @@ public:
   virtual bool init();
   ~Weapon();
 
-  void bindWeapon(Weapon* weapon);
   Bullet* createBullet(Vec2 speed,INT32 firePower); 
   void setFireSpeed(float fireSpeed);
   float getFireSpeed();

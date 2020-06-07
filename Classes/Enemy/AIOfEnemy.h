@@ -1,14 +1,16 @@
 #ifndef _AIOFENEMY_H_
 #define _AIOFENEMY_H_
-
 #include <vector>
 #include "Enemy.h"
-#include "Const/Const.h"
 #include "Scene/BattleRoom.h"
 
 class AIOfEnemy {
   static constexpr INT32 SIGHTRANGE = 300;
   static constexpr INT32 ATTACKRANGE = 100;
+  static constexpr INT32 RIGHT = 0;
+  static constexpr INT32 UP = 1;
+  static constexpr INT32 LEFT = 2;
+  static constexpr INT32 DOWN = 3;
 
  public:
   AIOfEnemy();
@@ -30,5 +32,4 @@ class AIOfEnemy {
   INT32 wayOfPace;                      //选择走的方向
   std::vector<INT32> wayCanBeSelected;  //可供选择的行走方向
 };
-
 #endif  // _AIOFENEMY_H_

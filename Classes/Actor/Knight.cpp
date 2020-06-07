@@ -9,8 +9,9 @@ Knight::~Knight() {}
 
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
+
   this->weapon=Weapon::create();
-  this->weapon->setFireSpeed(2.0);
+  this->weapon->setFireSpeed(10.0);
   this->weapon->setAttack(1);
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
   this->weapon->setScale(3);
@@ -66,6 +67,23 @@ void Knight::registerKeyboardEvent() {
 
     case EventKeyboard::KeyCode::KEY_J:
       if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
+      if (this->atBattleRoom != nullptr) {
+        Weapon* weaponCheck = this->collisionWithWeaponCheck();
+        Prop* prop = this->collisionWithCropCheck();
+        if (weaponCheck != nullptr)
+        {
+          //this->bindWeapon(weaponCheck);
+          break;
+        }
+        else if (prop != nullptr)
+        {
+          prop->useProps(this);
+          prop->removeFromParent();
+          this->atBattleRoom->getVecProps().eraseObject(prop);
+          break;
+        }
+      }
+     
       weaponAttack(last);
       break;
 
@@ -154,6 +172,11 @@ void Knight::bindBattleRoom(BattleRoom* battleRoom) {
 
 void Knight::bindHall(Hall* hall) { atHall = hall; }
 
+float Knight::getMoveSpeedX() { return moveSpeedX; }
+
+float Knight::getMoveSpeedY() { return moveSpeedY; }
+
+
 void Knight::setNeedCreateBox(bool need)
 {
   this->needCreateBox = need;
@@ -205,13 +228,27 @@ void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->getVecPlayerBullet().pushBack(bullet);
 }
 
+Weapon* Knight::collisionWithWeaponCheck()
+{
+  for (int i = 0; i < this->atBattleRoom->getVecWeapon().size(); ++i)
+  {
+    auto weaponPick = this->atBattleRoom->getVecWeapon().at(i);
+    Rect weaponRect = weaponPick->getBoundingBox();
+    Rect kightRect = this->getBoundingBox();
+    if (weaponRect.intersectsRect(kightRect))  return weaponPick;
+  }
+  return nullptr;
+}
 
- 
- 
+Prop* Knight::collisionWithCropCheck()
+{
+  for (int i = 0; i < this->atBattleRoom->getVecProps().size(); ++i)
+  {
+    auto prop = this->atBattleRoom->getVecProps().at(i);
+    Rect cropRect = prop->getBoundingBox();
+    Rect kightRect = this->getBoundingBox();
+    if (cropRect.intersectsRect(kightRect))  return prop;
+  }
+  return nullptr;
+}
 
-  
-
-
-      
-
-  

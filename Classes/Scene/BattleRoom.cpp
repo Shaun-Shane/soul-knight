@@ -235,7 +235,10 @@ Vector<Prop*>& BattleRoom::getVecProps()
   return this->vecProps;
 }
 
-
+Vector<Weapon*>& BattleRoom::getVecWeapon()
+{
+  return vecWeapon;
+}
 
 
 void BattleRoom::playerBulletCollistionCheck()
@@ -279,7 +282,7 @@ bool BattleRoom::allKilled()
 void BattleRoom::createTreasureBox()
 {
   srand(time(NULL));
-  int randomDigit = rand() % 6;
+  int randomDigit = rand() % 3+3;
   if (randomDigit <= 2)
     crearteWeapon(randomDigit);
   else
@@ -309,6 +312,8 @@ void BattleRoom::crearteWeapon(int randomDigit)
   weapon->setScale(0.7);
   weapon->setPosition(Vec2((upLeftX+downRightX)/2,(upLeftY+downRightY)/2));
   this->addChild(weapon, TOP);
+  this->getVecWeapon().pushBack(weapon);
+  CCLOG("%d", getVecWeapon().size());
 }
 
 void BattleRoom::createProps(int randomDigit)
@@ -328,4 +333,5 @@ void BattleRoom::createProps(int randomDigit)
   }
   props->setPosition(Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
   this->addChild(props, TOP);
+  this->getVecProps().pushBack(props);
 }

@@ -10,15 +10,9 @@ bool Weapon::init()
 
 Weapon::~Weapon(){}
 
-void Weapon::bindWeapon(Weapon* weapon) 
-{
-  this->bindSprite(weapon->sprite, LayerPlayer + 1);
-  this->attack = weapon->attack;
-  this->fireSpeed = weapon->fireSpeed;
-}
-
 void Weapon::setFireSpeed(float fireSpeed)
 {
+  
   this->fireSpeed = fireSpeed;
 }
 
