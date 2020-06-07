@@ -3,7 +3,7 @@
 #include "Scene\BattleRoom.h"
 #include "Attack/Weapon.h"
 
-Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(5) {}
+Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(200) {}
 
 Knight::~Knight() {}
 
@@ -166,6 +166,17 @@ void Knight::setNeedCreateBox(bool need)
 bool Knight::getNeedCreateBox()
 {
   return this->needCreateBox;
+}
+
+INT32 Knight::getMP()
+{
+  return this->MP;
+}
+
+void Knight::setMP(INT32 mp)
+{
+  this->MP = mp;
+
 }
 
 void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
