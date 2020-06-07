@@ -17,14 +17,22 @@ void Weapon::bindWeapon(Weapon* weapon)
   this->fireSpeed = weapon->fireSpeed;
 }
 
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 void Weapon::setFireSpeed(float fireSpeed)
 {
   this->fireSpeed = fireSpeed;
 }
 
 float Weapon::getFireSpeed() { return this->fireSpeed; }
+<<<<<<< Updated upstream
+=======
+void Weapon::setAttack(INT32 attack) { this->attack = attack; }
+INT32  Weapon::getAttack() { return this->attack; }
+>>>>>>> Stashed changes
 
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
@@ -39,5 +47,8 @@ Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
   bullet->setAttack(firePower);
 
   return bullet;
+<<<<<<< Updated upstream
   
+=======
+>>>>>>> Stashed changes
 }

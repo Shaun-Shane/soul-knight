@@ -12,11 +12,19 @@ public:
   Sprite* getSprite();
   void bindSprite(Sprite* sprite, INT32 layer);
 
+<<<<<<< Updated upstream
   void setAttack(INT32 attack);
   INT32 getAttack();
 
 protected:
   Sprite* sprite;
   INT32 attack;
+=======
+ 
+
+protected:
+  Sprite* sprite;
+  
+>>>>>>> Stashed changes
 };
 #endif;

@@ -19,9 +19,19 @@ public:
   void setFireSpeed(float fireSpeed);
   float getFireSpeed();
 
+<<<<<<< Updated upstream
   
 protected:
   float fireSpeed;
+=======
+  void setAttack(INT32 attack);
+  INT32 getAttack();
+
+  
+protected:
+  float fireSpeed;
+  INT32 attack;
+>>>>>>> Stashed changes
 
 };
 

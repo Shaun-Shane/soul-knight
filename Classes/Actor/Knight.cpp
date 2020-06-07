@@ -141,9 +141,15 @@ void Knight::useUltimateSkill() {
         e->removeFromParent(); //秒杀怪物 从父类移除
     }
 
+<<<<<<< Updated upstream
     if (this->atBattleRoom == nullptr) {
       assert(atHall != nullptr);
       if (this->atBattleRoom->allKilled()) vecEnemy.clear();
+=======
+    if (this->atBattleRoom != nullptr) {
+      assert(atHall == nullptr);
+      if (this->atBattleRoom->allKilled()==true) vecEnemy.clear();
+>>>>>>> Stashed changes
     }
   }
 }

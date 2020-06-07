@@ -171,14 +171,22 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
     if (vecEnemy.empty())
     {
+<<<<<<< Updated upstream
+=======
+      openDoor();
+>>>>>>> Stashed changes
       if (roomType == BEGIN) knight->setNeedCreateBox(false);
       else {
         if (knight->getNeedCreateBox() == true) {
           createTreasureBox();
           knight->setNeedCreateBox(false);
         }
+<<<<<<< Updated upstream
       }
       openDoor();             
+=======
+      }            
+>>>>>>> Stashed changes
     }
     else
     {

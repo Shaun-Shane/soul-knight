@@ -17,3 +17,9 @@ bool Bullet::isInScreen()        ///等了解如何获取地图位置再写
 }
 
 
+<<<<<<< Updated upstream
+=======
+void Bullet::setAttack(INT32 attack) { this->attack = attack; }
+
+INT32  Bullet::getAttack() { return this->attack; }
+>>>>>>> Stashed changes

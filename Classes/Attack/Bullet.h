@@ -14,10 +14,19 @@ public:
   bool isInScreen();
   Vec2 getBulletSpeed();
   void setBulletSpeed(Vec2 speed);
+<<<<<<< Updated upstream
+=======
+  void setAttack(INT32 attack);
+  INT32 getAttack();
+>>>>>>> Stashed changes
 
 
 protected:
   Vec2 bulletSpeed;
+<<<<<<< Updated upstream
+=======
+  INT32 attack;
+>>>>>>> Stashed changes
 
 };
 
