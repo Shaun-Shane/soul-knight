@@ -35,6 +35,10 @@ INT32 Entity::getHP() { //return HP of this entity
   return this->HP;
 }
 
+float Entity::getMoveSpeedX() { return moveSpeedX; }
+
+float Entity::getMoveSpeedY() { return moveSpeedY; }
+
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
   this->HP =this->HP- delta;
