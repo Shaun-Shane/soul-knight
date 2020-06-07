@@ -12,7 +12,25 @@ bool BattleRoom::init() {
   playerVisited = false;
 
   portal = nullptr, knight = nullptr;
+
+  this->scheduleUpdate();
   return true;
+}
+
+void BattleRoom::update(float delta) {
+  this->bulletMove();
+
+  for (auto enemyBullet : vecEnemyBullet) {
+    if (enemyBullet->getParent() == nullptr) continue;
+    // if (...);
+    // do something
+  }
+
+  for (auto enemy : vecEnemy) {
+    if (enemy->getParent() == nullptr) continue;
+    // if (...);
+    //enemy AI do something
+  }
 }
 
 void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
@@ -132,6 +150,7 @@ void BattleRoom::createEnemy() {
   }
 }
 
+
 void BattleRoom::closeDoor() {  // doorClose sptires are visible
   for (auto sprite : vecDoorOpen) {
     sprite->setVisible(false);
@@ -166,11 +185,11 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
     if (!vecEnemy.empty()) {
       if (ispeedX > 0 && knightX >= downRightX)
         ispeedX = .0f;
-      else if (ispeedX < 0 && knightX <= upLeftX)
+      if (ispeedX < 0 && knightX <= upLeftX)
         ispeedX = .0f;
-      else if (ispeedY > 0 && knightY >= upLeftY + 20)
+      if (ispeedY > 0 && knightY >= upLeftY + 20)
         ispeedY = .0f;
-      else if (ispeedY < 0 && knightY <= downRightY)
+      if (ispeedY < 0 && knightY <= downRightY)
         ispeedY = .0f;
     } else {
       if (((upLeftY + FLOORHEIGHT / 2 - FLOORHEIGHT * (sizeHeight / 2 - 3)) >=
@@ -187,11 +206,11 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
       } else {
         if (ispeedX > 0 && knightX >= downRightX)
           ispeedX = .0f;
-        else if (ispeedX < 0 && knightX <= upLeftX)
+        if (ispeedX < 0 && knightX <= upLeftX)
           ispeedX = .0f;
-        else if (ispeedY > 0 && knightY >= upLeftY + 20)
+        if (ispeedY > 0 && knightY >= upLeftY + 20)
           ispeedY = .0f;
-        else if (ispeedY < 0 && knightY <= downRightY)
+        if (ispeedY < 0 && knightY <= downRightY)
           ispeedY = .0f;
       }
     }
@@ -202,3 +221,9 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
 }
 
 Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
+
+
+Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
+
+
+

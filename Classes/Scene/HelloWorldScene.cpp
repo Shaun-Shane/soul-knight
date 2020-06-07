@@ -26,6 +26,7 @@
 #include "SimpleAudioEngine.h"
 #include "cocos-ext.h"
 #include"SetScene.h"
+#include"StartScene.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -415,7 +416,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender) {
 /*退出游戏*/
 void HelloWorld::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->end();
+	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartScene::createScene()));
 }
 
 /*进入设置面板*/

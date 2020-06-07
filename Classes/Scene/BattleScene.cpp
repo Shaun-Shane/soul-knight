@@ -1,5 +1,6 @@
 ﻿#include "BattleScene.h"
 #include"SetScene.h"
+#include"StartScene.h"
 
 #include <vector>
 
@@ -78,6 +79,9 @@ void BattleScene::update(float delta) { updatePlayerPos(); }
 void BattleScene::updatePlayerPos() {
   float ispeedX = knight->moveSpeedX;
   float ispeedY = knight->moveSpeedY;
+
+  if (abs(ispeedX) > 0 && abs(ispeedY) > 0)  //确保任意方向速度相同
+    ispeedX /= sqrt(2.0f), ispeedY /= sqrt(2.0f);  
 
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
@@ -359,7 +363,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
 /*退出游戏*/
 void BattleScene::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->end();
+	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartScene::createScene()));
 }
 
 /*进入设置面板*/

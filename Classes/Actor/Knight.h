@@ -3,10 +3,13 @@
 #include "cocos2d.h"
 #include "Entity.h"
 
+
+
 USING_NS_CC;
 
 class Hall;
 class BattleRoom;
+class Weapon;
 
 class Knight : public Entity {
   friend class BattleScene;
@@ -23,7 +26,7 @@ class Knight : public Entity {
 
   void registerKeyboardEvent();
 
-  void weaponAttack();
+  void weaponAttack(Vec2 last);
   void useUltimateSkill();
 
   void bindBattleRoom(BattleRoom*);
@@ -32,15 +35,21 @@ class Knight : public Entity {
   float getMoveSpeedX();
   float getMoveSpeedY();
 
+  bool allKilled();
+
  private:
   INT32 armor;
   INT32 MP;
+  Weapon* weapon;
+  
 
   BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
   Hall* atHall = nullptr;
 
   bool isInvincible = false; //是否无敌
   bool haveUltimateSkill = true; //是否有大招
+
+  
 };
 
 #endif

@@ -5,8 +5,13 @@ bool Hall::init() {
   downRightX = .0f, downRightY = .0f;
 
   sizeHeight = SIZEHALL, sizeWidth = SIZEHALL;
+  
+  
+  this->scheduleUpdate();
   return true;
 }
+
+void Hall::update(float delta) { this->bulletMove();}
 
 void Hall::generateFloor(float X, float Y, INT32 layer) {
   INT32 randomNum = rand();
@@ -96,7 +101,7 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   float knightY = knight->getPositionY();
 
   if (dir % 2 == 1) {
-    if (knightX >= upLeftX && knightX <= downRightX &&
+    if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
         knightY <= upLeftY + FLOORHEIGHT + FLOORHEIGHT / 2 &&
         knightY >= downRightY - FLOORHEIGHT - FLOORHEIGHT / 4) {
       if (ispeedX > 0 && knightX >= downRightX)
@@ -107,7 +112,7 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   } else {
     if (knightX >= upLeftX - FLOORWIDTH - FLOORWIDTH / 4 &&
         knightX <= downRightX + FLOORWIDTH + FLOORWIDTH / 4 &&
-        knightY <= upLeftY + FLOORHEIGHT / 2 && knightY >= downRightY) {
+        knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
       if (ispeedY > 0 && knightY >= upLeftY + FLOORHEIGHT / 2)
         ispeedY = .0f;
       else if (ispeedY < 0 && knightY <= downRightY)
@@ -119,4 +124,29 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
       knightY < upLeftY + FLOORHEIGHT && knightY > downRightY - FLOORHEIGHT)
     return true;
   return false;
+}
+
+Vector<Bullet*>& Hall::getVecPlayerBullet() { return vecPlayerBullet; }
+
+
+bool Hall::isInScreen(Vec2 pos)
+{
+  Size size = Director::getInstance()->getVisibleSize();
+  return (pos.x>0 && pos.y>0 && pos.x<size.width && pos.y<size.height);
+}
+
+void Hall::bulletMove()
+{
+  for (int i = 0; i < vecPlayerBullet.size(); ++i) {
+    auto bullet = vecPlayerBullet.at(i);
+    Vec2 pos = bullet->getPosition();
+    pos = pos + bullet->getBulletSpeed();
+    bullet->setPosition(pos);
+    if (this->isInScreen(pos) == false)
+    {
+      bullet->removeFromParent();
+      vecPlayerBullet.eraseObject(bullet);
+      --i;
+    }
+  }
 }

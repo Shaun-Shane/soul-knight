@@ -1,6 +1,7 @@
 ﻿#include "SafeScene.h"
 #include"SetScene.h"
 #include"BattleScene.h"
+#include"StartScene.h"
 
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 
@@ -83,7 +84,7 @@ void SafeScene::initBG() {
 /*退出游戏*/
 void SafeScene::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->end();
+	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartScene::createScene()));
 }
 
 /*进入设置面板*/

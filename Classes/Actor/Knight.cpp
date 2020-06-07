@@ -1,6 +1,7 @@
 ﻿#include "Knight.h"
 #include "Scene\Hall.h"
 #include "Scene\BattleRoom.h"
+#include "Attack/Weapon.h"
 
 Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(5) {}
 
@@ -8,11 +9,18 @@ Knight::~Knight() {}
 
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
+  this->weapon=Weapon::create();
+  this->weapon->setFireSpeed(10.0);
+  this->weapon->setAttack(10);
+  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
+  this->weapon->setScale(3);
+  this->weapon->setPosition(Vec2(20, -40));
+  this->addChild(weapon);
+
   
   isInvincible = false, haveUltimateSkill = true;
   
   registerKeyboardEvent();
-
   this->scheduleUpdate(); 	
   return true; 
 }
@@ -21,36 +29,49 @@ void Knight::registerKeyboardEvent() {
   auto listener = EventListenerKeyboard::create();
 
   listener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event*) {
+    static Vec2 last;
+    if (code != EventKeyboard::KeyCode::KEY_D &&
+     code != EventKeyboard::KeyCode::KEY_W &&
+     code != EventKeyboard::KeyCode::KEY_A &&
+     code != EventKeyboard::KeyCode::KEY_S &&
+     code != EventKeyboard::KeyCode::KEY_J &&
+     code != EventKeyboard::KeyCode::KEY_K)
+     last.set(1.0, 0);
+
     switch (code) {
-      case EventKeyboard::KeyCode::KEY_D:
-        moveSpeedX = moveSpeed;
-        getSprite()->setFlippedX(false);
-        break;
+    case EventKeyboard::KeyCode::KEY_D:
+      last.set(1.0, 0);
+      moveSpeedX = moveSpeed;
+      getSprite()->setFlippedX(false);
+      weapon->getSprite()->setFlippedX(false);
+      break;
 
-      case EventKeyboard::KeyCode::KEY_W:
-        moveSpeedY = moveSpeed;
-        break;
+    case EventKeyboard::KeyCode::KEY_W:
+      last.set(0, 1.0);
+      moveSpeedY = moveSpeed;
+      break;
 
-      case EventKeyboard::KeyCode::KEY_A:
-        moveSpeedX = -moveSpeed;
-        getSprite()->setFlippedX(true);
-        break;
+    case EventKeyboard::KeyCode::KEY_A:
+ 
+      last.set(-1.0, 0);
+      moveSpeedX = -moveSpeed;
+      getSprite()->setFlippedX(true);
+      weapon->getSprite()->setFlippedX(true);
+      break;
 
-      case EventKeyboard::KeyCode::KEY_S:
-        moveSpeedY = -moveSpeed;
-        break;
+    case EventKeyboard::KeyCode::KEY_S:
+      last.set(0, -1.0);
+      moveSpeedY = -moveSpeed;
+      break;
 
-      case EventKeyboard::KeyCode::KEY_J:
+    case EventKeyboard::KeyCode::KEY_J:
+      weaponAttack(last);
+      break;
 
-        break;
-
-      case EventKeyboard::KeyCode::KEY_K:
-        useUltimateSkill();
-        break;
+    case EventKeyboard::KeyCode::KEY_K:
+      useUltimateSkill();
+      break;
     }
-
-    if (abs(moveSpeedX) > 0 && abs(moveSpeedY) > 0) //确保任意方向速度相同
-      moveSpeedX /= sqrt(2.0f), moveSpeedY /= sqrt(2.0f);  
   };
 
   listener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event*) {
@@ -76,10 +97,6 @@ void Knight::registerKeyboardEvent() {
   _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void Knight::weaponAttack() {
-
-}
-
 void Knight::useUltimateSkill() {
   if (haveUltimateSkill) {
     log("using ultimate skill!");
@@ -92,8 +109,11 @@ void Knight::useUltimateSkill() {
 
     auto fadeIn = FadeIn::create(0.2f); 
     auto fadeOut = FadeOut::create(0.3f);
-    auto sequence = Sequence::create(fadeIn, fadeOut,
-                                     RemoveSelf::create(true), NULL);
+    auto blink = Blink::create(0.5f, 2);
+
+    auto sequence = Sequence::create(
+        Spawn::create(Sequence::create(fadeIn, fadeOut, NULL), blink, NULL),
+        RemoveSelf::create(), NULL);
 
     if (this->atBattleRoom == nullptr) {
       assert(atHall != nullptr);
@@ -138,3 +158,45 @@ void Knight::bindHall(Hall* hall) { atHall = hall; }
 float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
+
+void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
+  Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
+  INT32 firePower = this->weapon->getAttack();
+  Vec2 curPos = this->getPosition();
+  Vec2 target;
+  if (this->atBattleRoom != nullptr) {
+    Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
+    Enemy* nearNeast = nullptr;
+    float distance = 99999;
+    for (auto e : vecEnemy) {
+      if (e->getParent() != nullptr) {
+        Vec2 enemyPos = e->getPosition();
+        if (enemyPos.distance(curPos) < distance) {
+          nearNeast = e;
+          distance = enemyPos.distance(curPos);
+        }
+      }
+    }
+    if (nearNeast != nullptr) {
+      target = nearNeast->getPosition() - curPos;
+      target.set(target.x / target.length(), target.y / target.length());
+      fireSpeed = target * this->weapon->getFireSpeed();
+    }
+  }
+  Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
+  bullet->setPosition(curPos);
+  (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
+  (atBattleRoom != nullptr ? atBattleRoom : atHall)->getVecPlayerBullet().pushBack(bullet);
+  CCLOG("speed(%f,%f) firepower:%d,", fireSpeed.x, fireSpeed.y, firePower);
+}
+
+
+ 
+ 
+
+  
+
+
+      
+
+  
