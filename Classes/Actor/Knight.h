@@ -5,11 +5,13 @@
 
 
 
+
 USING_NS_CC;
 
 class Hall;
 class BattleRoom;
 class Weapon;
+class Prop;
 
 class Knight : public Entity {
   friend class BattleScene;
@@ -36,6 +38,9 @@ class Knight : public Entity {
 
   void setNeedCreateBox(bool);
   bool getNeedCreateBox();
+  
+  INT32 getMP();
+  void setMP(INT32);
 
 
  private:
