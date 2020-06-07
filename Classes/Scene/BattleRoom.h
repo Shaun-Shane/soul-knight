@@ -36,9 +36,7 @@ class BattleRoom : public Hall {
   Vector<Sprite*>& getVecEnemyBullet(); //Sprite改为子弹类名
 
   void playerBulletCollistionCheck();
-  void playerBulletMove();
   
-
  private:
   void createEnemy();  //生成敌人
 

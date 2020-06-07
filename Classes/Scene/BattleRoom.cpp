@@ -18,7 +18,8 @@ bool BattleRoom::init() {
 }
 
 void BattleRoom::update(float delta) {
-  this->playerBulletMove();
+  this->bulletMove();
+  this->playerBulletCollistionCheck();
 
 }
 
@@ -226,7 +227,6 @@ void BattleRoom::playerBulletCollistionCheck()
     Rect bulletRect = bullet->getBoundingBox();
     for (int j = 0; j < vecEnemy.size(); ++j)
     {
-      
       auto enemy = vecEnemy.at(j);
       if (enemy->getParent() == nullptr) continue;
       Rect enemyRect = enemy->getBoundingBox();
@@ -249,27 +249,4 @@ void BattleRoom::playerBulletCollistionCheck()
       }
     }
   }
-}
-
-
-
- 
-
-void BattleRoom::playerBulletMove()
-{
-  for (int i = 0; i < vecPlayerBullet.size(); ++i) {
-    
-    auto bullet = vecPlayerBullet.at(i);
-    Vec2 pos = bullet->getPosition();
-    pos = pos + bullet->getBulletSpeed();
-    bullet->setPosition(pos);
-    if (this->isInScreen(pos) == false)
-    {
-      bullet->removeFromParent();
-      vecPlayerBullet.eraseObject(bullet);
-      --i;
-    }
-  }
-  
-  playerBulletCollistionCheck();
 }
