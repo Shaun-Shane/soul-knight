@@ -65,10 +65,12 @@ void Knight::registerKeyboardEvent() {
       break;
 
     case EventKeyboard::KeyCode::KEY_J:
+      if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
       weaponAttack(last);
       break;
 
     case EventKeyboard::KeyCode::KEY_K:
+      if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
       useUltimateSkill();
       break;
     }
