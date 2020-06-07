@@ -19,6 +19,7 @@ bool BattleRoom::init() {
 
 void BattleRoom::update(float delta) {
   this->bulletMove();
+  this->playerBulletCollistionCheck();
 
   for (auto enemyBullet : vecEnemyBullet) {
     if (enemyBullet->getParent() == nullptr) continue;
@@ -227,3 +228,38 @@ Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
 
 
 
+
+void BattleRoom::playerBulletCollistionCheck()
+{
+
+  for (int i = 0; i < vecPlayerBullet.size(); ++i)
+  {
+    auto bullet = vecPlayerBullet.at(i);
+    Rect bulletRect = bullet->getSprite()->getBoundingBox();
+    for (int j = 0; j < vecEnemy.size(); ++j)
+    {
+      auto enemy = vecEnemy.at(j);
+      if (enemy->getParent() == nullptr) continue;
+      Rect enemyRect = enemy->getSprite()->getBoundingBox();
+      if (bulletRect.intersectsRect(enemyRect))
+      {
+        //两者图片重叠，说明碰撞到
+        //把敌人减血
+        enemy->deductHP(bullet->getAttack());
+        if ((enemy->getHP()) <= 0) {
+          enemy->removeFromParent();
+          bool allKilled = true; //判断是否全被击杀
+          for (auto e : vecEnemy) {
+            if (e->getParent() != nullptr) allKilled = false;
+          }
+          if (allKilled) vecEnemy.clear();
+        }
+        bullet->removeFromParent();
+        vecPlayerBullet.eraseObject(bullet);
+        --i;
+
+        break;
+      }
+    }
+  }
+}

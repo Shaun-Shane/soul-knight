@@ -34,6 +34,8 @@ class BattleRoom : public Hall {
   Vector<Enemy*>& getVecEnemy();
 
   Vector<Sprite*>& getVecEnemyBullet(); //Sprite改为子弹类名
+
+  void playerBulletCollistionCheck();
   
 
  private:
