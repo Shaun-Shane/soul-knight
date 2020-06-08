@@ -340,22 +340,3 @@ void BattleRoom::createProps(int randomDigit)
   this->addChild(props, TOP);
   this->getVecProps().pushBack(props);
 }
-
-void BattleRoom::createProps(int randomDigit)
-{
-  Prop* props = Prop::create();
-  switch (randomDigit) {
-  case 3:
-    props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
-    props->setPropIndex(3);
-    break;
-  case 4:
-    props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
-    props->setPropIndex(4);
-    break;
-  case 5:        //不出任何道具
-    return;
-  }
-  props->setPosition(Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
-  this->addChild(props, TOP);
-}
