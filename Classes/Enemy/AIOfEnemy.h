@@ -1,8 +1,9 @@
-#ifndef _AIOFENEMY_H_
+﻿#ifndef _AIOFENEMY_H_
 #define _AIOFENEMY_H_
 #include <vector>
 #include "Enemy.h"
 #include "Scene/BattleRoom.h"
+
 
 class AIOfEnemy {
   static constexpr INT32 SIGHTRANGE = 300;

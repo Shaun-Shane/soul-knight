@@ -1,4 +1,4 @@
-#include "AIOfEnemy.h"
+﻿#include "AIOfEnemy.h"
 
 AIOfEnemy::AIOfEnemy() {
   myEnemy = nullptr;
