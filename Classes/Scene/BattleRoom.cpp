@@ -24,13 +24,13 @@ void BattleRoom::update(float delta) {
 
 }
 
-void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
+bool BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
   if (toRoom != nullptr) {
     // room was built, no not need to build again
     curRoom->visDir[dir] = true;
     toRoom->visDir[(dir + 2) % CNTDIR] = true;
     // just connect them if toRoom is not beginRoom
-    return;
+    return false;
   }
 
   toRoom = BattleRoom::create();
@@ -42,6 +42,7 @@ void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir,
 
   curRoom->visDir[dir] = true;
   toRoom->visDir[(dir + 2) % CNTDIR] = true;
+  return true;
 }
 
 void BattleRoom::setCenter(float X, float Y) { centerX = X, centerY = Y; }

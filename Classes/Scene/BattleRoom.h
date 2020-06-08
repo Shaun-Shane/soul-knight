@@ -12,7 +12,7 @@ USING_NS_CC;
 
 class BattleRoom : public Hall {
   friend class BattleScene;
-  static void createRoom(BattleRoom*&, BattleRoom*, INT32, INT32, INT32);
+  static bool createRoom(BattleRoom*&, BattleRoom*, INT32, INT32, INT32);
 
  public:
   CREATE_FUNC(BattleRoom);
