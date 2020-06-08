@@ -31,6 +31,7 @@ void Knight::registerKeyboardEvent() {
 
   listener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event*) {
     static Vec2 last;
+    static bool isRight = true;
     if (code != EventKeyboard::KeyCode::KEY_D &&
      code != EventKeyboard::KeyCode::KEY_W &&
      code != EventKeyboard::KeyCode::KEY_A &&
@@ -42,6 +43,7 @@ void Knight::registerKeyboardEvent() {
     switch (code) {
     case EventKeyboard::KeyCode::KEY_D:
       last.set(1.0, 0);
+      isRight = true;
       moveSpeedX = moveSpeed;
       getSprite()->setFlippedX(false);
       weapon->getSprite()->setFlippedX(false);
@@ -53,7 +55,7 @@ void Knight::registerKeyboardEvent() {
       break;
 
     case EventKeyboard::KeyCode::KEY_A:
- 
+      isRight = false;
       last.set(-1.0, 0);
       moveSpeedX = -moveSpeed;
       getSprite()->setFlippedX(true);
@@ -72,8 +74,8 @@ void Knight::registerKeyboardEvent() {
         Prop* prop = this->collisionWithCropCheck();
         if (weaponCheck != nullptr)
         {
-          CCLOG("pick!");
           this->bindWeapon(weaponCheck);
+          if (isRight == false) weapon->getSprite()->setFlippedX(true);
           break;
         }
         else if (prop != nullptr)
@@ -84,7 +86,7 @@ void Knight::registerKeyboardEvent() {
           break;
         }
       }
-     
+      
       weaponAttack(last);
       break;
 
