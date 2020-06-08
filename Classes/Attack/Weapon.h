@@ -19,9 +19,13 @@ public:
   void setFireSpeed(float fireSpeed);
   float getFireSpeed();
 
+  void setAttack(INT32 attack);
+  INT32 getAttack();
+
   
 protected:
   float fireSpeed;
+  INT32 attack;
 
 };
 

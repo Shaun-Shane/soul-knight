@@ -1,4 +1,5 @@
 ﻿#include "BattleRoom.h"
+#include "Props/prop.h"
 
 bool BattleRoom::init() {
   centerX = .0f, centerY = .0f;
@@ -273,14 +274,15 @@ bool BattleRoom::allKilled()
 void BattleRoom::createTreasureBox()
 {
   srand(time(NULL));
-  int randomDigit = rand() % 3;
-  crearteWeapon(randomDigit);
+  int randomDigit = rand() % 3+3;
+  if (randomDigit <= 2)
+    crearteWeapon(randomDigit);
+  else
+    createProps(randomDigit);
 
 }
-
 void BattleRoom::crearteWeapon(int randomDigit)
 {
-  CCLOG("%d",randomDigit);
   Weapon* weapon = Weapon::create();
   switch (randomDigit) {
   case 0:
@@ -302,4 +304,23 @@ void BattleRoom::crearteWeapon(int randomDigit)
   weapon->setScale(0.7);
   weapon->setPosition(Vec2((upLeftX+downRightX)/2,(upLeftY+downRightY)/2));
   this->addChild(weapon, TOP);
+}
+
+void BattleRoom::createProps(int randomDigit)
+{
+  Prop* props = Prop::create();
+  switch (randomDigit) {
+  case 3:
+    props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
+    props->setPropIndex(3);
+    break;
+  case 4:
+    props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+    props->setPropIndex(4);
+    break;
+  case 5:        //不出任何道具
+    return;
+  }
+  props->setPosition(Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
+  this->addChild(props, TOP);
 }

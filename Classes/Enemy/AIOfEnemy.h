@@ -4,7 +4,6 @@
 #include "Enemy.h"
 #include "Scene/BattleRoom.h"
 
-
 class AIOfEnemy {
   static constexpr INT32 SIGHTRANGE = 300;
   static constexpr INT32 ATTACKRANGE = 100;

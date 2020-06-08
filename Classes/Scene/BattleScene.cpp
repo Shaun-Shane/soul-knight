@@ -1,5 +1,6 @@
 ﻿#include "BattleScene.h"
 #include"SetScene.h"
+#include"StartScene.h"
 
 #include <vector>
 
@@ -49,7 +50,7 @@ bool BattleScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight.png"), LayerPlayer);
+  this->knight->bindSprite(Sprite::create("Character//Knight1.png"), LayerPlayer);
 
   this->knight->setPosition(
       Point(visibleSize.width / 2, visibleSize.height / 2));
@@ -362,7 +363,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
 /*退出游戏*/
 void BattleScene::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->end();
+	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartScene::createScene()));
 }
 
 /*进入设置面板*/

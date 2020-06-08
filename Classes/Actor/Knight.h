@@ -40,6 +40,7 @@ class Knight : public Entity {
   void setNeedCreateBox(bool);
   bool getNeedCreateBox();
 
+  Animate* getAnimate();
 
  private:
   INT32 armor;

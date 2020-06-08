@@ -11,9 +11,12 @@ Vec2 Bullet::getBulletSpeed() { return this->bulletSpeed; }
 void Bullet::setBulletSpeed(Vec2 speed) { this->bulletSpeed = speed; }
 
 
-bool Bullet::isInScreen()        ///µÈÁË½âÈçºÎ»ñÈ¡µØÍ¼Î»ÖÃÔÙĞ´
+bool Bullet::isInScreen()        ///ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½Î»ï¿½È¡ï¿½ï¿½Í¼Î»ï¿½ï¿½ï¿½ï¿½Ğ´
 {
   return true;
 }
 
 
+void Bullet::setAttack(INT32 attack) { this->attack = attack; }
+
+INT32  Bullet::getAttack() { return this->attack; }

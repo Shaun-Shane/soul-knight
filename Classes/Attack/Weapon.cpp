@@ -25,6 +25,8 @@ void Weapon::setFireSpeed(float fireSpeed)
 }
 
 float Weapon::getFireSpeed() { return this->fireSpeed; }
+void Weapon::setAttack(INT32 attack) { this->attack = attack; }
+INT32  Weapon::getAttack() { return this->attack; }
 
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
