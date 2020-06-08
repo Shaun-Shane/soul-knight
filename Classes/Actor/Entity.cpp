@@ -27,9 +27,9 @@ void Entity::bindSprite(Sprite* sprite, INT32 layer) {
   this->setAnchorPoint(Point(0.5f, 0.5f)); //设置锚点
   setPosition(Point(.0f, .0f));
 
-  sprite->setPosition(Point(size.width / 2, size.height / 2));
-  
+
   this->addChild(sprite);
+  sprite->setPosition(Point(size.width / 2, size.height / 2));
 }
 
 INT32 Entity::getHP() { //return HP of this entity
