@@ -176,6 +176,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
       if (roomType == BEGIN) knight->setNeedCreateBox(false);
       else {
         if (knight->getNeedCreateBox() == true) {
+          this->knight->setMP(this->knight->getMP() + 20);
           createTreasureBox();
           knight->setNeedCreateBox(false);
         }
@@ -282,7 +283,7 @@ bool BattleRoom::allKilled()
 void BattleRoom::createTreasureBox()
 {
   srand(time(NULL));
-  int randomDigit = rand() % 3+3;
+  int randomDigit = rand() % 3;
   if (randomDigit <= 2)
     crearteWeapon(randomDigit);
   else
@@ -296,16 +297,19 @@ void BattleRoom::crearteWeapon(int randomDigit)
   case 0:
     weapon->setFireSpeed(5.0);
     weapon->setAttack(1);
+    weapon->setMPConsumption(1);
     weapon->bindSprite(Sprite::create("Weapon//weapon2.png"),TOP);
     break;
   case 1:
     weapon->setFireSpeed(3.0);
     weapon->setAttack(4);
+    weapon->setMPConsumption(3);
     weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), TOP);
     break;
   case 2:
     weapon->setFireSpeed(1);
     weapon->setAttack(6);
+    weapon->setMPConsumption(4);
     weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), TOP);
     break;
   }
@@ -313,7 +317,8 @@ void BattleRoom::crearteWeapon(int randomDigit)
   weapon->setPosition(Vec2((upLeftX+downRightX)/2,(upLeftY+downRightY)/2));
   this->addChild(weapon, TOP);
   this->getVecWeapon().pushBack(weapon);
-  CCLOG("%d", getVecWeapon().size());
+  int p = getVecWeapon().size();
+  CCLOG("vecWeapon Size:%d", getVecWeapon().size());
 }
 
 void BattleRoom::createProps(int randomDigit)

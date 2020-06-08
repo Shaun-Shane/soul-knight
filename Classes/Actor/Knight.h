@@ -27,6 +27,7 @@ class Knight : public Entity {
   void useUltimateSkill();
 
   void bindBattleRoom(BattleRoom*);
+
   void bindHall(Hall*);
 
   void bindWeapon(Weapon*);
@@ -48,16 +49,19 @@ class Knight : public Entity {
 
  private:
   INT32 armor;
+
   INT32 MP;
+
   Weapon* weapon;
 
   bool needCreateBox;
   
   BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
+
   Hall* atHall = nullptr;
 
   bool isInvincible = false; //是否无敌
-  bool haveUltimateSkill = true; //是否有大招
+
 };
 
 #endif
