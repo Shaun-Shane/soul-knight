@@ -45,7 +45,7 @@ bool Knight::init() {
   this->weapon->setAttack(1);
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
 
-  this->weapon->setPosition(Vec2(25, 10));
+  this->weapon->setPosition(Vec2(40, 20));
 
   this->weapon->setMPConsumption(0);
   this->addChild(weapon);
