@@ -11,10 +11,11 @@ void Entity2::bindSprite(Sprite* sprite, INT32 layer)
   this->sprite = sprite;
   this->sprite->setGlobalZOrder(layer);
   this->addChild(this->sprite);
+
+  Size size = this->sprite->getContentSize();
+  this->sprite->setPosition(Point(size.width / 2, size.height / 2));
+  this->setContentSize(size);
 }
 
-void Entity2::setAttack(INT32 attack) { this->attack = attack; }
-
-INT32 Entity2::getAttack() { return this->attack; }
 
 

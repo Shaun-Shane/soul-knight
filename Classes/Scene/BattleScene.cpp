@@ -50,7 +50,7 @@ bool BattleScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight.png"), LayerPlayer);
+  this->knight->bindSprite(Sprite::create("Character//Knight1.png"), LayerPlayer);
 
   this->knight->setPosition(
       Point(visibleSize.width / 2, visibleSize.height / 2));

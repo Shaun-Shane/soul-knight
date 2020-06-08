@@ -22,9 +22,9 @@ void Entity::bindSprite(Sprite* sprite, INT32 layer) {
   this->addChild(this->sprite);
 
   //将entity中心和sprite中心重合
-  /*Size size = this->sprite->getContentSize();
+  Size size = this->sprite->getContentSize();
   this->sprite->setPosition(Point(size.width / 2, size.height / 2));
-  this->setContentSize(size);*/
+  this->setContentSize(size);
 }
 
 INT32 Entity::getHP() { //return HP of this entity
@@ -37,5 +37,7 @@ INT32 Entity::getHP() { //return HP of this entity
 
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
-  this->HP -= delta;
+  this->HP =this->HP- delta;
 }
+
+void Entity::setHP(INT32 HP) { this->HP = HP; }

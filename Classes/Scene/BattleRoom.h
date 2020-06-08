@@ -6,6 +6,7 @@
 #include "Enemy\Enemy.h"
 #include "Actor\Knight.h"
 #include "Const\Const.h"
+#include "Attack/Weapon.h"
 USING_NS_CC;
 
 class BattleRoom : public Hall {
@@ -34,8 +35,16 @@ class BattleRoom : public Hall {
   Vector<Enemy*>& getVecEnemy();
 
   Vector<Sprite*>& getVecEnemyBullet(); //Sprite改为子弹类名
-  
 
+  void playerBulletCollistionCheck();
+
+  bool allKilled();
+  
+  void createTreasureBox();
+
+  void crearteWeapon(int randomDigit);
+
+  void createProps(int randomDigit);
  private:
   void createEnemy();  //生成敌人
 

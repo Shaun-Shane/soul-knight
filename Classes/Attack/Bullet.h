@@ -14,10 +14,13 @@ public:
   bool isInScreen();
   Vec2 getBulletSpeed();
   void setBulletSpeed(Vec2 speed);
+  void setAttack(INT32 attack);
+  INT32 getAttack();
 
 
 protected:
   Vec2 bulletSpeed;
+  INT32 attack;
 
 };
 

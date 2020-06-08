@@ -12,11 +12,10 @@ public:
   Sprite* getSprite();
   void bindSprite(Sprite* sprite, INT32 layer);
 
-  void setAttack(INT32 attack);
-  INT32 getAttack();
+ 
 
 protected:
   Sprite* sprite;
-  INT32 attack;
+  
 };
 #endif;

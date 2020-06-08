@@ -1,4 +1,5 @@
 ﻿#include "BattleRoom.h"
+#include "Props/prop.h"
 
 bool BattleRoom::init() {
   centerX = .0f, centerY = .0f;
@@ -19,18 +20,8 @@ bool BattleRoom::init() {
 
 void BattleRoom::update(float delta) {
   this->bulletMove();
+  this->playerBulletCollistionCheck();
 
-  for (auto enemyBullet : vecEnemyBullet) {
-    if (enemyBullet->getParent() == nullptr) continue;
-    // if (...);
-    // do something
-  }
-
-  for (auto enemy : vecEnemy) {
-    if (enemy->getParent() == nullptr) continue;
-    // if (...);
-    //enemy AI do something
-  }
 }
 
 void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
@@ -179,8 +170,22 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
   if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
       knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
-    if (vecEnemy.empty()) openDoor();  //怪物全部击杀开门
-    else closeDoor();
+    if (vecEnemy.empty())
+    {
+      openDoor();
+      if (roomType == BEGIN) knight->setNeedCreateBox(false);
+      else {
+        if (knight->getNeedCreateBox() == true) {
+          createTreasureBox();
+          knight->setNeedCreateBox(false);
+        }
+      }            
+    }
+    else
+    {
+      if (knight->getNeedCreateBox() == false) knight->setNeedCreateBox(true);
+      closeDoor();
+    }
 
     if (!vecEnemy.empty()) {
       if (ispeedX > 0 && knightX >= downRightX)
@@ -227,3 +232,95 @@ Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
 
 
 
+
+void BattleRoom::playerBulletCollistionCheck()
+{
+  
+  for (int i = 0; i < vecPlayerBullet.size(); ++i)
+  {
+    auto bullet = vecPlayerBullet.at(i);
+    Rect bulletRect = bullet->getBoundingBox();
+    for (int j = 0; j < vecEnemy.size(); ++j)
+    {
+      auto enemy = vecEnemy.at(j);
+      if (enemy->getParent() == nullptr) continue;
+      Rect enemyRect = enemy->getBoundingBox();
+      if (bulletRect.intersectsRect(enemyRect))
+      {
+        INT32 hp = knight->getHP();
+        enemy->deductHP(bullet->getAttack());
+        if ((enemy->getHP()) <= 0) {
+          enemy->removeFromParent();
+          if (this->allKilled() == true) vecEnemy.clear();
+        }
+        bullet->removeFromParent();
+        vecPlayerBullet.eraseObject(bullet);
+        --i;
+        break;
+      }
+    }
+  }
+}
+
+bool BattleRoom::allKilled()
+{
+  bool allKilled = true;
+  for (auto e : vecEnemy) {
+    if (e->getParent() != nullptr) allKilled = false;
+  }
+  return allKilled;
+}
+
+void BattleRoom::createTreasureBox()
+{
+  srand(time(NULL));
+  int randomDigit = rand() % 3+3;
+  if (randomDigit <= 2)
+    crearteWeapon(randomDigit);
+  else
+    createProps(randomDigit);
+
+}
+void BattleRoom::crearteWeapon(int randomDigit)
+{
+  Weapon* weapon = Weapon::create();
+  switch (randomDigit) {
+  case 0:
+    weapon->setFireSpeed(5.0);
+    weapon->setAttack(1);
+    weapon->bindSprite(Sprite::create("Weapon//weapon2.png"),TOP);
+    break;
+  case 1:
+    weapon->setFireSpeed(3.0);
+    weapon->setAttack(4);
+    weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), TOP);
+    break;
+  case 2:
+    weapon->setFireSpeed(1);
+    weapon->setAttack(6);
+    weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), TOP);
+    break;
+  }
+  weapon->setScale(0.7);
+  weapon->setPosition(Vec2((upLeftX+downRightX)/2,(upLeftY+downRightY)/2));
+  this->addChild(weapon, TOP);
+}
+
+void BattleRoom::createProps(int randomDigit)
+{
+  Prop* props = Prop::create();
+  switch (randomDigit) {
+  case 3:
+    props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
+    props->setPropIndex(3);
+    break;
+  case 4:
+    props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+    props->setPropIndex(4);
+    break;
+  case 5:        //不出任何道具
+    return;
+  }
+  props->setPosition(Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
+  this->addChild(props, TOP);
+}

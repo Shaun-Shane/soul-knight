@@ -7,11 +7,41 @@ Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(5) {}
 
 Knight::~Knight() {}
 
+Animate* Knight::getAnimate() {
+	//创建序列帧动画
+	auto animation = Animation::create();
+
+	//设置动画名字数组的长度
+	char nameSize[30] = { 0 };
+
+	//动画的循环2张图片
+	for (int i = 1; i < 3; i++)
+
+	{
+		sprintf(nameSize, "Character//Knight%d.png", i);
+
+		//添加到序列帧动画
+		animation->addSpriteFrameWithFile(nameSize);
+	}
+	//设置动画帧的时间间隔
+	animation->setDelayPerUnit(0.1f);
+
+	//设置播放循环 一直播放 为-1
+	animation->setLoops(-1);
+
+	//设置动画结束后恢复到第一帧
+	animation->setRestoreOriginalFrame(true);
+
+	//创建动画动作
+	auto animate = Animate::create(animation);
+	return animate;
+}
+
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
   this->weapon=Weapon::create();
-  this->weapon->setFireSpeed(10.0);
-  this->weapon->setAttack(10);
+  this->weapon->setFireSpeed(2.0);
+  this->weapon->setAttack(1);
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
   this->weapon->setScale(3);
   this->weapon->setPosition(Vec2(20, -40));
@@ -44,6 +74,7 @@ void Knight::registerKeyboardEvent() {
       moveSpeedX = moveSpeed;
       getSprite()->setFlippedX(false);
       weapon->getSprite()->setFlippedX(false);
+	  getSprite()->runAction(getAnimate());
       break;
 
     case EventKeyboard::KeyCode::KEY_W:
@@ -57,6 +88,7 @@ void Knight::registerKeyboardEvent() {
       moveSpeedX = -moveSpeed;
       getSprite()->setFlippedX(true);
       weapon->getSprite()->setFlippedX(true);
+	  getSprite()->runAction(getAnimate());//执行帧动画动作
       break;
 
     case EventKeyboard::KeyCode::KEY_S:
@@ -65,10 +97,12 @@ void Knight::registerKeyboardEvent() {
       break;
 
     case EventKeyboard::KeyCode::KEY_J:
+      if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
       weaponAttack(last);
       break;
 
     case EventKeyboard::KeyCode::KEY_K:
+      if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
       useUltimateSkill();
       break;
     }
@@ -78,6 +112,7 @@ void Knight::registerKeyboardEvent() {
     switch (code) {
       case EventKeyboard::KeyCode::KEY_D:
         moveSpeedX = .0f;
+		getSprite()->stopAllActions();//停止帧动画动作
         break;
 
       case EventKeyboard::KeyCode::KEY_W:
@@ -86,6 +121,7 @@ void Knight::registerKeyboardEvent() {
 
       case EventKeyboard::KeyCode::KEY_A:
         moveSpeedX = .0f;
+		getSprite()->stopAllActions();
         break;
 
       case EventKeyboard::KeyCode::KEY_S:
@@ -139,13 +175,10 @@ void Knight::useUltimateSkill() {
         e->removeFromParent(); //秒杀怪物 从父类移除
     }
 
-    bool allKilled = true; //判断是否全被击杀
-    for (auto e : vecEnemy) {
-      if (e->getParent() != nullptr) allKilled = false;
+    if (this->atBattleRoom != nullptr) {
+      assert(atHall == nullptr);
+      if (this->atBattleRoom->allKilled()==true) vecEnemy.clear();
     }
-
-    if (allKilled) vecEnemy.clear();
-
   }
 }
 
@@ -158,6 +191,16 @@ void Knight::bindHall(Hall* hall) { atHall = hall; }
 float Knight::getMoveSpeedX() { return moveSpeedX; }
 
 float Knight::getMoveSpeedY() { return moveSpeedY; }
+
+void Knight::setNeedCreateBox(bool need)
+{
+  this->needCreateBox = need;
+}
+
+bool Knight::getNeedCreateBox()
+{
+  return this->needCreateBox;
+}
 
 void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
@@ -187,7 +230,6 @@ void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再
   bullet->setPosition(curPos);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->getVecPlayerBullet().pushBack(bullet);
-  CCLOG("speed(%f,%f) firepower:%d,", fireSpeed.x, fireSpeed.y, firePower);
 }
 
 

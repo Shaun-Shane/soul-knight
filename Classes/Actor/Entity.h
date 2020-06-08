@@ -15,6 +15,7 @@ public :
 
   INT32 getHP(); // return HP of this entity
   void deductHP(INT32); //扣血
+  void setHP(INT32 HP);
 
   ~Entity();
 

@@ -18,9 +18,14 @@ public:
   Bullet* createBullet(Vec2 speed,INT32 firePower); 
   void setFireSpeed(float fireSpeed);
   float getFireSpeed();
+
+  void setAttack(INT32 attack);
+  INT32 getAttack();
+
   
 protected:
   float fireSpeed;
+  INT32 attack;
 
 };
 

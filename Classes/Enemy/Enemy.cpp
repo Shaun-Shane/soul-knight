@@ -4,7 +4,10 @@ Enemy::Enemy() { enemyIsAlive = false; }
 
 Enemy::~Enemy() {}
 
-bool Enemy::init() { return true; }
+bool Enemy::init() { 
+  this->setHP(5);
+  return true; 
+}
 
 void Enemy::show() {
   if (getSprite() != nullptr) {

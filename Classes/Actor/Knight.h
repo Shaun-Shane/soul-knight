@@ -37,10 +37,17 @@ class Knight : public Entity {
 
   bool allKilled();
 
+  void setNeedCreateBox(bool);
+  bool getNeedCreateBox();
+
+  Animate* getAnimate();
+
  private:
   INT32 armor;
   INT32 MP;
   Weapon* weapon;
+
+  bool needCreateBox;
   
 
   BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
