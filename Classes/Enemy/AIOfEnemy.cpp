@@ -4,6 +4,7 @@ AIOfEnemy::AIOfEnemy() {
   myEnemy = nullptr;
   paceCount = 0;
   wayOfPace = -1;  //-1代表未确定方向
+  attackTimeCount = 0;
 }
 
 AIOfEnemy::~AIOfEnemy() {}
@@ -77,7 +78,11 @@ void AIOfEnemy::aiOfEnemy(Knight* knight, BattleRoom* battleRoom,
 void AIOfEnemy::attackTheKnight(Knight* knight,
                                 INT32 disBetweenEnemyAndKnight) {
   if (disBetweenEnemyAndKnight <= 5) {
-    knight->deductHP(3);
+      if (attackTimeCount % 40 == 0) {
+          knight->deductHP(3);
+          attackTimeCount = 0;
+      }
+      attackTimeCount++;
     return;
   }
 
