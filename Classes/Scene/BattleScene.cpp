@@ -56,10 +56,6 @@ bool BattleScene::init() {
   this->knight->setPosition(
       Point(visibleSize.width / 2, visibleSize.height / 2));
 
-  this->knight->setScaleX(0.3f);
-  this->knight->setScaleY(0.3f);
-
-
   this->addChild(this->knight);
   // add knight to scene
 
