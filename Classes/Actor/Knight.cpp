@@ -14,7 +14,11 @@ bool Knight::init() {
   this->weapon->setFireSpeed(10.0);
   this->weapon->setAttack(1);
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
+<<<<<<< Updated upstream
   this->weapon->setPosition(Vec2(5, -10));
+=======
+  this->weapon->setPosition(Vec2(25, 10));
+>>>>>>> Stashed changes
   this->weapon->setMPConsumption(0);
   this->addChild(weapon);
 
@@ -199,7 +203,11 @@ void Knight::setMP(INT32 mp)
 }
 
 void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
+<<<<<<< Updated upstream
   if (this->MP <= 0) return;
+=======
+  if (this->MP <= 0 && this->weapon->getMPConsumption()>0) return;
+>>>>>>> Stashed changes
   this->setMP(this->getMP() - this->weapon->getMPConsumption());
 
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
