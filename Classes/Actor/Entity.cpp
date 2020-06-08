@@ -22,7 +22,13 @@ void Entity::bindSprite(Sprite* sprite, INT32 layer) {
 
   //将entity中心和sprite中心重合
   Size size = this->sprite->getContentSize();
-  this->setContentSize(size), setPosition(Point(0, 0));
+  this->setContentSize(size); //设置大小
+
+  this->setAnchorPoint(Point(0.5f, 0.5f)); //设置锚点
+  setPosition(Point(.0f, .0f));
+
+  sprite->setPosition(Point(size.width / 2, size.height / 2));
+  
   this->addChild(sprite);
 }
 
