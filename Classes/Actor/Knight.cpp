@@ -14,8 +14,7 @@ bool Knight::init() {
   this->weapon->setFireSpeed(10.0);
   this->weapon->setAttack(1);
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
-  this->weapon->setScale(3);
-  this->weapon->setPosition(Vec2(20, -40));
+  this->weapon->setPosition(Vec2(5, -10));
   this->weapon->setMPConsumption(0);
   this->addChild(weapon);
 
@@ -257,6 +256,7 @@ Prop* Knight::collisionWithCropCheck()
 
 void Knight::bindWeapon(Weapon* weapon)
 {
+  this->atBattleRoom->getVecWeapon().eraseObject(weapon);
   auto myWeapon = this->weapon;
   auto pickWeapon = weapon;
   auto myPos = myWeapon->getPosition();
@@ -264,9 +264,15 @@ void Knight::bindWeapon(Weapon* weapon)
   myWeapon->setPosition(pickPos);
   pickWeapon->setPosition(myPos);
 
+  myWeapon->retain();
+  pickWeapon->retain();
+
   myWeapon->removeFromParent();
   pickWeapon->removeFromParent();
 
+  this->weapon = pickWeapon;
+
   this->addChild(pickWeapon);
   this->atBattleRoom->addChild(myWeapon);
+  this->atBattleRoom->getVecWeapon().pushBack(myWeapon);
 }

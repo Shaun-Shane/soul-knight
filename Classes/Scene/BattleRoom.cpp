@@ -284,7 +284,7 @@ bool BattleRoom::allKilled()
 void BattleRoom::createTreasureBox()
 {
   srand(time(NULL));
-  int randomDigit = rand() % 3;
+  int randomDigit = rand() % 6;
   if (randomDigit <= 2)
     crearteWeapon(randomDigit);
   else
@@ -296,25 +296,24 @@ void BattleRoom::crearteWeapon(int randomDigit)
   Weapon* weapon = Weapon::create();
   switch (randomDigit) {
   case 0:
-    weapon->setFireSpeed(5.0);
+    weapon->setFireSpeed(20.0);
     weapon->setAttack(1);
     weapon->setMPConsumption(1);
     weapon->bindSprite(Sprite::create("Weapon//weapon2.png"),TOP);
     break;
   case 1:
-    weapon->setFireSpeed(3.0);
+    weapon->setFireSpeed(11.0);
     weapon->setAttack(4);
     weapon->setMPConsumption(3);
     weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), TOP);
     break;
   case 2:
-    weapon->setFireSpeed(1);
+    weapon->setFireSpeed(9);
     weapon->setAttack(6);
     weapon->setMPConsumption(4);
     weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), TOP);
     break;
   }
-  weapon->setScale(0.7);
   weapon->setPosition(Vec2((upLeftX+downRightX)/2,(upLeftY+downRightY)/2));
   this->addChild(weapon, TOP);
   this->getVecWeapon().pushBack(weapon);
