@@ -24,13 +24,13 @@ void BattleRoom::update(float delta) {
 
 }
 
-void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
+bool BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {
   if (toRoom != nullptr) {
     // room was built, no not need to build again
     curRoom->visDir[dir] = true;
     toRoom->visDir[(dir + 2) % CNTDIR] = true;
     // just connect them if toRoom is not beginRoom
-    return;
+    return false;
   }
 
   toRoom = BattleRoom::create();
@@ -42,6 +42,7 @@ void BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir,
 
   curRoom->visDir[dir] = true;
   toRoom->visDir[(dir + 2) % CNTDIR] = true;
+  return true;
 }
 
 void BattleRoom::setCenter(float X, float Y) { centerX = X, centerY = Y; }
@@ -172,14 +173,15 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
     if (vecEnemy.empty())
     {
+      openDoor();
       if (roomType == BEGIN) knight->setNeedCreateBox(false);
       else {
         if (knight->getNeedCreateBox() == true) {
+          this->knight->setMP(this->knight->getMP() + 20);
           createTreasureBox();
           knight->setNeedCreateBox(false);
         }
-      }
-      openDoor();             
+      }            
     }
     else
     {
@@ -230,7 +232,15 @@ Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
 
 Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
 
+Vector<Prop*>& BattleRoom::getVecProps()
+{
+  return this->vecProps;
+}
 
+Vector<Weapon*>& BattleRoom::getVecWeapon()
+{
+  return vecWeapon;
+}
 
 
 void BattleRoom::playerBulletCollistionCheck()
@@ -274,7 +284,7 @@ bool BattleRoom::allKilled()
 void BattleRoom::createTreasureBox()
 {
   srand(time(NULL));
-  int randomDigit = rand() % 3+3;
+  int randomDigit = rand() % 3;
   if (randomDigit <= 2)
     crearteWeapon(randomDigit);
   else
@@ -286,24 +296,49 @@ void BattleRoom::crearteWeapon(int randomDigit)
   Weapon* weapon = Weapon::create();
   switch (randomDigit) {
   case 0:
-    weapon->setFireSpeed(5.0);
+    weapon->setFireSpeed(20.0);
     weapon->setAttack(1);
+    weapon->setMPConsumption(1);
     weapon->bindSprite(Sprite::create("Weapon//weapon2.png"),TOP);
     break;
   case 1:
-    weapon->setFireSpeed(3.0);
+    weapon->setFireSpeed(11.0);
     weapon->setAttack(4);
+    weapon->setMPConsumption(3);
     weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), TOP);
     break;
   case 2:
-    weapon->setFireSpeed(1);
+    weapon->setFireSpeed(9);
     weapon->setAttack(6);
+    weapon->setMPConsumption(4);
     weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), TOP);
     break;
   }
-  weapon->setScale(0.7);
   weapon->setPosition(Vec2((upLeftX+downRightX)/2,(upLeftY+downRightY)/2));
   this->addChild(weapon, TOP);
+  this->getVecWeapon().pushBack(weapon);
+  int p = getVecWeapon().size();
+  CCLOG("vecWeapon Size:%d", getVecWeapon().size());
+}
+
+void BattleRoom::createProps(int randomDigit)
+{
+  Prop* props = Prop::create();
+  switch (randomDigit) {
+  case 3:
+    props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
+    props->setPropIndex(3);
+    break;
+  case 4:
+    props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+    props->setPropIndex(4);
+    break;
+  case 5:        //不出任何道具
+    return;
+  }
+  props->setPosition(Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
+  this->addChild(props, TOP);
+  this->getVecProps().pushBack(props);
 }
 
 void BattleRoom::createProps(int randomDigit)

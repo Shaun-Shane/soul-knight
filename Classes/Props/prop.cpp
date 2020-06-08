@@ -18,3 +18,16 @@ void Prop::setPropIndex(INT32 index)
 {
   this->propIndex = index;
 }
+
+void Prop::useProps(Knight* knight)
+{
+  switch (this->propIndex)
+  {
+  case 3:
+    knight->setHP(2 + (knight->getHP()));
+      break;
+  case 4:
+    knight->setMP(25 + (knight->getMP()));
+    break;
+  }
+}
