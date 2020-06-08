@@ -51,9 +51,6 @@ bool SafeScene::init() {
   this->knight->setPosition(Point(visibleSize.width / 2, 40));
   this->addChild(this->knight, 10);
 
-  this->knight->setScaleX(0.3f);
-  this->knight->setScaleY(0.3f);
-
   this->portal = Sprite::create("Map//portal3.png");
   this->addChild(portal, 1);
   this->portal->setPosition(Point(visibleSize.width / 2 + 50, visibleSize.height - 80));
