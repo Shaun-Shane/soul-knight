@@ -38,6 +38,7 @@ class Hall : public Node{
   INT32 dir; //direction of this hall
  protected:
   float upLeftX, upLeftY;
+
   float downRightX, downRightY;
 
   Knight* knight = nullptr;

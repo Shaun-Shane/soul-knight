@@ -16,10 +16,11 @@ bool Knight::init() {
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
   this->weapon->setScale(3);
   this->weapon->setPosition(Vec2(20, -40));
+  this->weapon->setMPConsumption(0);
   this->addChild(weapon);
 
   
-  isInvincible = false, haveUltimateSkill = true;
+  isInvincible = false;
   
   registerKeyboardEvent();
   this->scheduleUpdate(); 	
@@ -72,7 +73,8 @@ void Knight::registerKeyboardEvent() {
         Prop* prop = this->collisionWithCropCheck();
         if (weaponCheck != nullptr)
         {
-          //this->bindWeapon(weaponCheck);
+          CCLOG("pick!");
+          this->bindWeapon(weaponCheck);
           break;
         }
         else if (prop != nullptr)
@@ -118,8 +120,9 @@ void Knight::registerKeyboardEvent() {
 }
 
 void Knight::useUltimateSkill() {
-  if (haveUltimateSkill) {
+  if (this->MP>=120) {
     log("using ultimate skill!");
+    this->setMP(this->getMP() - 120);
 
     auto skillCircle = DrawNode::create();
     skillCircle->drawSolidCircle(getPosition(), 220.0f,
@@ -195,6 +198,9 @@ void Knight::setMP(INT32 mp)
 }
 
 void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
+  if (this->MP <= 0) return;
+  this->setMP(this->getMP() - this->weapon->getMPConsumption());
+
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
   INT32 firePower = this->weapon->getAttack();
   Vec2 curPos = this->getPosition();
@@ -218,6 +224,7 @@ void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再
       fireSpeed = target * this->weapon->getFireSpeed();
     }
   }
+  
   Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
   bullet->setPosition(curPos);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
@@ -248,3 +255,18 @@ Prop* Knight::collisionWithCropCheck()
   return nullptr;
 }
 
+void Knight::bindWeapon(Weapon* weapon)
+{
+  auto myWeapon = this->weapon;
+  auto pickWeapon = weapon;
+  auto myPos = myWeapon->getPosition();
+  auto pickPos = weapon->getPosition();
+  myWeapon->setPosition(pickPos);
+  pickWeapon->setPosition(myPos);
+
+  myWeapon->removeFromParent();
+  pickWeapon->removeFromParent();
+
+  this->addChild(pickWeapon);
+  this->atBattleRoom->addChild(myWeapon);
+}

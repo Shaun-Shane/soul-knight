@@ -66,7 +66,7 @@ class BattleRoom : public Hall {
  private:
   Sprite* portal = nullptr; //传送门
 
- private:
+protected:
   Vector<Sprite*> vecDoorOpen, vecDoorClose; 
 
   Vector<Enemy*> vecEnemy;

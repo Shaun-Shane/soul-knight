@@ -20,6 +20,10 @@ float Weapon::getFireSpeed() { return this->fireSpeed; }
 void Weapon::setAttack(INT32 attack) { this->attack = attack; }
 INT32  Weapon::getAttack() { return this->attack; }
 
+INT32 Weapon::getMPConsumption() {  return mpConsumption;}
+
+void Weapon::setMPConsumption(INT32 deta) { this->mpConsumption = deta;}
+
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
   Bullet* bullet = Bullet::create();

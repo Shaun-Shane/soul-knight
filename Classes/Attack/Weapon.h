@@ -19,12 +19,20 @@ public:
   float getFireSpeed();
 
   void setAttack(INT32 attack);
+
   INT32 getAttack();
+
+  INT32 getMPConsumption();
+
+  void setMPConsumption(INT32);
+
+
 
   
 protected:
   float fireSpeed;
   INT32 attack;
+  INT32 mpConsumption;
 
 };
 
