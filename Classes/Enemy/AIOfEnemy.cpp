@@ -34,7 +34,6 @@ void AIOfEnemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight,
     myEnemy->setPosition(
         Point(enemyPos.x + DIRX[wayOfPace] - knight->getMoveSpeedX(),
               enemyPos.y + DIRY[wayOfPace] - knight->getMoveSpeedY()));
-    myEnemy->makeCoinside();
     paceCount++;
     return;
   }
@@ -55,7 +54,6 @@ void AIOfEnemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight,
   myEnemy->setPosition(
       Point(enemyPos.x + DIRX[wayOfPace] - knight->getMoveSpeedX(),
             enemyPos.y + DIRY[wayOfPace] - knight->getMoveSpeedY()));
-  myEnemy->makeCoinside();
 
 }  //在没探测到骑士的时候正常的巡逻路线
 
@@ -83,7 +81,6 @@ void AIOfEnemy::aiOfEnemy(Knight* knight, BattleRoom* battleRoom,
                 enemyPos.y +
                     2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight -
                     knight->getMoveSpeedY()));
-      myEnemy->makeCoinside();
     } else {
       attackTheKnight(knight, disBetweenEnemyAndKnight);
     }
@@ -109,6 +106,5 @@ void AIOfEnemy::attackTheKnight(Knight* knight,
             knight->getMoveSpeedX(),
         enemyPos.y + 2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight -
             knight->getMoveSpeedY()));
-    myEnemy->makeCoinside();
   }  //等武器那一块出来加上武器
 }
