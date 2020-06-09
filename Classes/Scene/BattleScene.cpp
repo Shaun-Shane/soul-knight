@@ -95,14 +95,13 @@ bool BattleScene::init() {
   armorLabel->setGlobalZOrder(TOP);
   MPLabel->setGlobalZOrder(TOP);
 
-  // add knight to scene
-  this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight1.png"), LayerPlayer);
+  // add knight to scene remove it from prev scene
 
-  this->knight->setPosition(
-      Point(visibleSize.width / 2, visibleSize.height / 2));
+  this->addChild(knight);
 
-  this->addChild(this->knight);
+  knight->moveSpeedX = knight->moveSpeedY = .0f;
+
+  knight->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
   // add knight to scene
 
   miniMap = MiniMap::create(); //添加小地图
@@ -121,14 +120,14 @@ void BattleScene::update(float delta) {
   updatePlayerPos();
 
   /*进度条更新*/
-  BloodLoadingBar->setPercent(this->knight->getHP() * 100 / 5 );
-  ArmorLoadingBar->setPercent(this->knight->getArmor() * 100 / 5 );
-  MPLoadingBar->setPercent(float(this->knight->getMP()) / 200.0f * 100);
+  BloodLoadingBar->setPercent(knight->getHP() * 100 / 5);
+  ArmorLoadingBar->setPercent(knight->getArmor() * 100 / 5);
+  MPLoadingBar->setPercent(float(knight->getMP()) / 200.0f * 100);
 
   /*状态信息更新*/
-  HPLabel->setString(Value(this->knight->HP).asString() + "/5");
-  armorLabel->setString(Value(this->knight->armor).asString() + "/5");
-  MPLabel->setString(Value(this->knight->MP).asString() + "/200");
+  HPLabel->setString(Value(knight->HP).asString() + "/5");
+  armorLabel->setString(Value(knight->armor).asString() + "/5");
+  MPLabel->setString(Value(knight->MP).asString() + "/200");
 
   if (knight->atBattleRoom == nullptr) return;
 
@@ -136,12 +135,25 @@ void BattleScene::update(float delta) {
     if (enemy->getParent() == nullptr) continue; //死亡的敌人指针可能还未被释放
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
   }
+
+  if (knight->atBattleRoom == endRoom) {
+    if (knight->getPosition().distance(endRoom->portal->getPosition()) < 10.0f) {
+      BattleScene::knight->retain();
+      BattleScene::knight->removeFromParent();  //从该场景移除
+
+      assert(BattleScene::knight->getParent() == nullptr);
+
+      this->cleanup();
+      this->removeAllChildren(); //释放
+      Director::getInstance()->pushScene( //进入下一个场景
+          TransitionFade::create(1.6f, BattleScene::createScene()));
+    }
+  }
 }
 
 void BattleScene::updatePlayerPos() {
   float ispeedX = knight->moveSpeedX;
   float ispeedY = knight->moveSpeedY;
-
   if (abs(ispeedX) > 0 && abs(ispeedY) > 0)  //确保任意方向速度相同
     ispeedX /= sqrt(2.0f), ispeedY /= sqrt(2.0f);  
 
@@ -383,7 +395,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     auto hall = Hall::create(); //生成地图走廊
     hall->knight = knight;
     hall->dir = dir;
-
+    
     switch (dir) {
       case RIGHT:
         setHallWithWidth(hall, miniHall, curRoom, toRoom);
