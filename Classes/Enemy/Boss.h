@@ -30,6 +30,7 @@ private:
 	void heavilyAttackTheKnight(Knight* knight);//大范围攻击骑士的绝招
 	void flashMove(Knight* knight);//瞬移至骑士坐标或尽力向骑士方向瞬移的绝招
 
+	void makeCoinside();
 private:
 	INT32 uniSkiTimeCount;
 	INT32 aiChoice;

@@ -126,3 +126,7 @@ void Boss::flashMove(Knight* knight){
 	}
 }
 
+void Boss::makeCoinside(){
+	this->getSprite()->setPosition(this->getPosition());
+}
+
