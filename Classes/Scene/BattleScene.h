@@ -10,6 +10,7 @@
 #include "MiniMap\MiniRoom.h"
 #include "cocos2d.h"
 #include <queue>
+#include"ui/CocosGUI.h"
 
 USING_NS_CC;
 using std::queue;
@@ -59,6 +60,10 @@ class BattleScene : public Scene {
   BattleRoom* beginRoom = nullptr;
   BattleRoom* endRoom = nullptr;
   BattleRoom* battleRoom[SIZEMTX][SIZEMTX] = {nullptr};  // room
+
+  ui::LoadingBar* BloodLoadingBar = ui::LoadingBar::create();
+  ui::LoadingBar* ArmorLoadingBar = ui::LoadingBar::create();
+  ui::LoadingBar* MPLoadingBar = ui::LoadingBar::create();
 };
 
 #endif

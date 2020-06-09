@@ -50,6 +50,33 @@ bool BattleScene::init() {
   setSprite->setGlobalZOrder(TOP);
   exitSprite->setGlobalZOrder(TOP);
 
+  /*创建状态信息进度条*/
+  auto StatusBackGround = Sprite::create("Character//StatusBackground.png");
+
+  BloodLoadingBar = ui::LoadingBar::create("Character//StatusBlood.png");
+  ArmorLoadingBar = ui::LoadingBar::create("Character//StatusArmor.png");
+  MPLoadingBar = ui::LoadingBar::create("Character//StatusMP.png");
+
+  BloodLoadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
+  ArmorLoadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
+  MPLoadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
+
+  StatusBackGround->setPosition(80, 680);
+  BloodLoadingBar->setPosition(Vec2(89, 664));
+  ArmorLoadingBar->setPosition(Vec2(89, 680));
+  MPLoadingBar->setPosition(Vec2(89, 698));
+
+  this->addChild(StatusBackGround, TOP);
+  this->addChild(BloodLoadingBar, TOP);
+  this->addChild(ArmorLoadingBar, TOP);
+  this->addChild(MPLoadingBar, TOP);
+
+  /*置定*/
+  StatusBackGround->setGlobalZOrder(TOP);
+  BloodLoadingBar->setGlobalZOrder(TOP);
+  ArmorLoadingBar->setGlobalZOrder(TOP);
+  MPLoadingBar->setGlobalZOrder(TOP);
+
   // add knight to scene
   this->knight = Knight::create();
   this->knight->bindSprite(Sprite::create("Character//Knight1.png"), LayerPlayer);
@@ -74,6 +101,11 @@ bool BattleScene::init() {
 
 void BattleScene::update(float delta) {
   updatePlayerPos();
+
+  /*进度条更新*/
+  BloodLoadingBar->setPercent(this->knight->getHP() * 100 / 5 );
+  ArmorLoadingBar->setPercent(this->knight->getArmor() * 100 / 5 );
+  MPLoadingBar->setPercent(float(this->knight->getMP()) / 200.0f * 100);
 
   if (knight->atBattleRoom == nullptr) return;
 

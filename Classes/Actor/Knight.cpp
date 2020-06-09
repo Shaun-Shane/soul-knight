@@ -14,8 +14,8 @@ Animate* Knight::getAnimate() {
 	//设置动画名字数组的长度
 	char nameSize[30] = { 0 };
 
-	//动画的循环2张图片
-	for (int i = 1; i < 3; i++)
+	//动画的循环4张图片
+	for (int i = 1; i < 5; i++)
 
 	{
 		sprintf(nameSize, "Character//Knight%d.png", i);
@@ -79,12 +79,19 @@ void Knight::registerKeyboardEvent() {
       moveSpeedX = moveSpeed;
       getSprite()->setFlippedX(false);
       weapon->getSprite()->setFlippedX(false);
-	    getSprite()->runAction(getAnimate());
+	  if (!isAnimation) {
+		  getSprite()->runAction(getAnimate());
+		  isAnimation = true;
+	  }
       break;
 
     case EventKeyboard::KeyCode::KEY_W:
       last.set(0, 1.0);
       moveSpeedY = moveSpeed;
+	  if (!isAnimation) {
+		  getSprite()->runAction(getAnimate());//执行帧动作
+		  isAnimation = true;
+	  }
       break;
 
     case EventKeyboard::KeyCode::KEY_A:
@@ -93,12 +100,19 @@ void Knight::registerKeyboardEvent() {
       moveSpeedX = -moveSpeed;
       getSprite()->setFlippedX(true);
       weapon->getSprite()->setFlippedX(true);
-	    getSprite()->runAction(getAnimate());//执行帧动画动作
+	  if (!isAnimation) {
+		  getSprite()->runAction(getAnimate());
+		  isAnimation = true;
+	  }
       break;
 
     case EventKeyboard::KeyCode::KEY_S:
       last.set(0, -1.0);
       moveSpeedY = -moveSpeed;
+	  if (!isAnimation) {
+		  getSprite()->runAction(getAnimate());
+		  isAnimation = true;
+	  }
       break;
 
     case EventKeyboard::KeyCode::KEY_J:
@@ -136,19 +150,25 @@ void Knight::registerKeyboardEvent() {
       case EventKeyboard::KeyCode::KEY_D:
         moveSpeedX = .0f;
 		getSprite()->stopAllActions();//停止帧动画动作
+		isAnimation = false;
         break;
 
       case EventKeyboard::KeyCode::KEY_W:
         moveSpeedY = .0f;
+		getSprite()->stopAllActions();
+		isAnimation = false;
         break;
 
       case EventKeyboard::KeyCode::KEY_A:
         moveSpeedX = .0f;
 		getSprite()->stopAllActions();
+		isAnimation = false;
         break;
 
       case EventKeyboard::KeyCode::KEY_S:
         moveSpeedY = .0f;
+		getSprite()->stopAllActions();
+		isAnimation = false;
         break;
     }
   };
@@ -226,6 +246,10 @@ bool Knight::getNeedCreateBox()
 INT32 Knight::getMP()
 {
   return this->MP;
+}
+
+INT32 Knight::getArmor() {
+	return this->armor;
 }
 
 void Knight::setMP(INT32 mp)
