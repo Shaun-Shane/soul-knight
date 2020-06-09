@@ -46,13 +46,10 @@ bool SafeScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight1.png"), 10);
+  this->knight->bindSprite(Sprite::create("Character//Knight1.png"), LayerPlayer);
 
   this->knight->setPosition(Point(visibleSize.width / 2, 40));
-  this->addChild(this->knight, 10);
-
-  this->knight->setScaleX(0.3f);
-  this->knight->setScaleY(0.3f);
+  this->addChild(this->knight);
 
   this->portal = Sprite::create("Map//portal3.png");
   this->addChild(portal, 1);

@@ -11,7 +11,7 @@ Vec2 Bullet::getBulletSpeed() { return this->bulletSpeed; }
 void Bullet::setBulletSpeed(Vec2 speed) { this->bulletSpeed = speed; }
 
 
-bool Bullet::isInScreen()        ///╣хак╫БхГ╨н╩Ях║╣ьм╪н╩жцтып╢
+bool Bullet::isInScreen()        ///О©╫О©╫О©╫к╫О©╫О©╫О©╫н╩О©╫х║О©╫О©╫м╪н╩О©╫О©╫О©╫О©╫п╢
 {
   return true;
 }

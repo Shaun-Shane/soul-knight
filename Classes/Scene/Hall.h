@@ -28,13 +28,20 @@ class Hall : public Node{
   void generateWall(float, float, INT32);
 
   Vector<Bullet*>& getVecPlayerBullet(); 
+
   bool isInScreen(Vec2 pos);
+
   void bulletMove();
+
+  Point getUpleftVertex(); //获得房间内左上角顶点坐标
+
+  Point getDownRightVertex(); //获得房间内右下角顶点坐标
 
  private:
   INT32 dir; //direction of this hall
  protected:
   float upLeftX, upLeftY;
+
   float downRightX, downRightY;
 
   Knight* knight = nullptr;
@@ -44,7 +51,9 @@ class Hall : public Node{
   Vector<Bullet*> vecPlayerBullet; 
 
   Vector<Sprite*> vecFloor;
+
   Vector<Sprite*> vecWall;
+
 };
 
 #endif  // _HALL_H_

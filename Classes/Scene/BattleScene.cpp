@@ -3,8 +3,10 @@
 #include"StartScene.h"
 
 #include <vector>
+#include <cmath>
 
 using std::vector;
+using std::max;
 
 Scene* BattleScene::createScene() { return BattleScene::create(); }
 
@@ -54,10 +56,6 @@ bool BattleScene::init() {
 
   this->knight->setPosition(
       Point(visibleSize.width / 2, visibleSize.height / 2));
-
-  this->knight->setScaleX(0.3f);
-  this->knight->setScaleY(0.3f);
-
 
   this->addChild(this->knight);
   // add knight to scene
@@ -209,37 +207,30 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
 
   if (vecDir.empty()) return;
 
+  INT32 cntDirChosen = max(2U, (rand() % (vecDir.size() + 1)));
+
   // randomly choose direction
-  INT32 dirIndex = rand() % vecDir.size();
-  INT32 dir = vecDir.at(dirIndex);  
-  vecDir.erase(vecDir.begin() + dirIndex);
-  INT32 toX = x + DIRX[dir], toY = y + DIRY[dir];
+  for (INT32 i = 0; i < cntDirChosen; i++) {
+    INT32 dirIndex = rand() % vecDir.size();
+    INT32 dir = vecDir.at(dirIndex);
+    vecDir.erase(vecDir.begin() + dirIndex);
+    INT32 toX = x + DIRX[dir], toY = y + DIRY[dir];
 
-  if (battleRoom[toX][toY] == beginRoom) return;
+    if (battleRoom[toX][toY] == beginRoom) return;
 
-  BattleRoom*& toRoom1 = battleRoom[toX][toY]; // the pointer will be changed
-  BattleRoom::createRoom(toRoom1, curRoom, dir, toX, toY);
+    BattleRoom*& toRoom = battleRoom[toX][toY];  // the pointer will be changed
+    if (BattleRoom::createRoom(toRoom, curRoom, dir, toX, toY)) {
+      this->addChild(toRoom);
+      q.push(toRoom);
+      endRoom = toRoom;
+      cntRoom++;
+    }
 
-  this->addChild(toRoom1, 0);
-  q.push(toRoom1);
-  endRoom = toRoom1;
-  cntRoom++;
-  
-  if (cntRoom >= MAXROOM || curRoom == beginRoom || vecDir.empty()) return;
+    assert(battleRoom[toX][toY] != nullptr);
+    assert(battleRoom[toX][toY] != beginRoom);
 
-  dir = vecDir.at(rand() % vecDir.size());
-  toX = x + DIRX[dir], toY = y + DIRY[dir];
-
-  if (battleRoom[toX][toY] == beginRoom) return;
-
-  BattleRoom*& toRoom2 = battleRoom[toX][toY];  // the pointer will be changed
-  BattleRoom::createRoom(toRoom2, curRoom, dir, toX, toY);
-
-  this->addChild(toRoom2, 0);
-  cntRoom++;
-
-  assert(battleRoom[toX][toY] != nullptr);
-  assert(battleRoom[toX][toY] != beginRoom);
+    if (cntRoom >= MAXROOM || curRoom == beginRoom || vecDir.empty()) return;
+  }
 }
 
 void BattleScene::initMiniMap() {

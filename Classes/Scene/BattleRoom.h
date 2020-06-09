@@ -7,11 +7,12 @@
 #include "Actor\Knight.h"
 #include "Const\Const.h"
 #include "Attack/Weapon.h"
+#include "Props/prop.h"
 USING_NS_CC;
 
 class BattleRoom : public Hall {
   friend class BattleScene;
-  static void createRoom(BattleRoom*&, BattleRoom*, INT32, INT32, INT32);
+  static bool createRoom(BattleRoom*&, BattleRoom*, INT32, INT32, INT32);
 
  public:
   CREATE_FUNC(BattleRoom);
@@ -35,6 +36,10 @@ class BattleRoom : public Hall {
   Vector<Enemy*>& getVecEnemy();
 
   Vector<Sprite*>& getVecEnemyBullet(); //Sprite改为子弹类名
+
+  Vector<Prop*>& getVecProps();
+
+  Vector<Weapon*>& getVecWeapon();
 
   void playerBulletCollistionCheck();
 
@@ -61,14 +66,18 @@ class BattleRoom : public Hall {
  private:
   Sprite* portal = nullptr; //传送门
 
- private:
+protected:
   Vector<Sprite*> vecDoorOpen, vecDoorClose; 
 
   Vector<Enemy*> vecEnemy;
 
-
   Vector<Sprite*> vecEnemyBullet;
   // 储存场景敌人子弹 基类中Hall有玩家的子弹Vector Sprite改为子弹类名
+
+  Vector<Prop*> vecProps;
+
+  Vector<Weapon*> vecWeapon;
+
 };
 
 #endif
