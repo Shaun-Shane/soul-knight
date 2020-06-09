@@ -1,4 +1,4 @@
-#ifndef _ENEMY_H_
+ï»¿#ifndef _ENEMY_H_
 #define _ENEMY_H_
 #include <vector>
 
@@ -7,8 +7,8 @@
 #include "Const/Const.h"
 
 class Enemy : public Entity {
-  static constexpr INT32 SIGHTRANGE = 350;
-  static constexpr INT32 ATTACKRANGE = 200;
+  static constexpr INT32 SIGHTRANGE = 260;
+  static constexpr INT32 ATTACKRANGE = 150;
 
  public:
   Enemy();
@@ -23,21 +23,23 @@ class Enemy : public Entity {
   bool isAlive();
   bool isCollideWithKnight(Knight* knight);
 
-  void makeCoinside();
+  void aiOfEnemy(Knight* knight, const BattleRoom* battleRoom);  
 
-  void aiOfEnemy(Knight* knight, BattleRoom* battleRoom);  
+  INT32 startCount;
 
  private:
   void patrolRoute(const BattleRoom* battleRoom, Knight* knight);
-  void attackTheKnight(Knight* knight, INT32 disBetweenEnemyAndKnight);
+  void attackTheKnight(Knight* knight, float disBetweenEnemyAndKnight);
 
  private:
   bool enemyIsAlive;
 
-  INT32 paceCount = 0;  //ÓÃÓÚ±£Ö¤ÖÁÉÙ20²½¶¼ÔÚ×ßÍ¬Ò»·½Ïò
-  INT32 wayOfPace = -1;  //Ñ¡Ôñ×ßµÄ·½Ïò
+  INT32 paceCount = 0;  //ç”¨äºä¿è¯è‡³å°‘20æ­¥éƒ½åœ¨èµ°åŒä¸€æ–¹å‘
+  INT32 wayOfPace = -1;  //é€‰æ‹©èµ°çš„æ–¹å‘
   INT32 attackTimeCount = 1;
-  std::vector<INT32> wayCanBeSelected;  //¿É¹©Ñ¡ÔñµÄĞĞ×ß·½Ïò
+  std::vector<INT32> wayCanBeSelected;  //å¯ä¾›é€‰æ‹©çš„è¡Œèµ°æ–¹å‘
+  float shiftSeed=0.0f;
+  INT32 followCount = 0;
 };
 
 #endif

@@ -1,4 +1,5 @@
-#include "Enemy.h"
+ï»¿#include "Enemy.h"
+#include "Scene/BattleRoom.h"
 
 Enemy::Enemy() { enemyIsAlive = false; }
 
@@ -11,15 +12,15 @@ bool Enemy::init() {
 
 void Enemy::show() {
   if (getSprite() != nullptr) {
-    setVisible(true); //¿É¼û
+    setVisible(true); //å¯è§
     enemyIsAlive = true;
   } 
 }
 
 void Enemy::hide() {
   if (getSprite() != nullptr) {
-    setVisible(false); //²»¿É¼û
-    reset(); //ÖØÖÃµĞÈËÊı¾İ
+    setVisible(false); //ä¸å¯è§
+    reset(); //é‡ç½®æ•Œäººæ•°æ®
     enemyIsAlive = false;
   }
 }
@@ -34,74 +35,82 @@ void Enemy::reset() {
 
 bool Enemy::isAlive() { return enemyIsAlive;}
 
-//Åö×²¼ì²é ¿ÉÄÜÃ»ÓÃ
+//ç¢°æ’æ£€æŸ¥ å¯èƒ½æ²¡ç”¨
 bool Enemy::isCollideWithKnight(Knight * knight) {
-  //»ñÈ¡Åö×²¶ÔÏóµÄbounding box
+  //è·å–ç¢°æ’å¯¹è±¡çš„bounding box
   Rect entityRec = knight->getBoundingBox();
 
   Point enemyPos = getPosition();
 
-  //ÅĞ¶Ïbounding box ºÍ ¹ÖÎïÖĞĞÄµãÊÇ·ñÓĞ½»¼¯
+  //åˆ¤æ–­bounding box å’Œ æ€ªç‰©ä¸­å¿ƒç‚¹æ˜¯å¦æœ‰äº¤é›†
   return entityRec.containsPoint(enemyPos);
 }
-
-void Enemy::makeCoinside() {
-    this->getSprite()->setPosition(this->getPosition());
-}//½«¾«ÁéÎ»ÖÃ¸úenemyÀàNodeÎ»ÖÃµ÷Í³Ò»
 
 void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   const Point enemyPos = this->getPosition();
 
   if (paceCount % 40) {
     this->setPosition(
-        Point(enemyPos.x + DIRX[wayOfPace] - knight->getMoveSpeedX(),
-              enemyPos.y + DIRY[wayOfPace] - knight->getMoveSpeedY()));
-    this->makeCoinside();
+        Point(enemyPos.x + 3 * DIRX[wayOfPace], enemyPos.y + 3 * DIRY[wayOfPace]));
+    //3.0fæ˜¯åˆç§»åŠ¨é€Ÿåº¦
     paceCount++;
     return;
   }
 
-  paceCount = 1;  //ÉèÖÃÎª1£¬±ÜÃâÏÂÒ»ÂÖ±»paceCount%40Ê¶±ğÎªfalse
+  paceCount = startCount;  //è®¾ç½®ä¸ºstartCountï¼Œé¿å…ä¸‹ä¸€è½®è¢«paceCount%40è¯†åˆ«ä¸ºfalse
   wayCanBeSelected.clear();
-  for (INT32 dir = 0; dir < CNTDIR; dir++) {
-    if (true) { //4¸÷¿ÉÒÔ×ßµÄ·½Ïò
+
+  for (INT32 dir = 0; dir < CNTDIR; dir++) { // 4ä¸ªå¯ä»¥èµ°çš„æ–¹å‘
+    Point upLeftPos = battleRoom->getUpleftVertex();
+    Point downRightPos = battleRoom->getDownRightVertex();
+
+    if (upLeftPos.x  < enemyPos.x + DIRX[dir] * 120 && 
+        enemyPos.x + DIRX[dir] * 120 < downRightPos.x &&
+        downRightPos.y < enemyPos.y + DIRY[dir] * 120 &&
+        enemyPos.y + DIRY[dir] * 120 < upLeftPos.y) {  //åˆ¤æ–­è¾¹ç•Œ 40æ­¥=120.0f
       wayCanBeSelected.push_back(dir);
     }
-  }  //Ñ¡È¡¿ÉÒÔ×ßµÄ·½Ïò
+  }  //é€‰å–å¯ä»¥èµ°çš„æ–¹å‘
 
   srand(static_cast<unsigned int>(time(nullptr)));
+
+  assert(wayCanBeSelected.size() != 0);
+
   wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
   this->setPosition(
-      Point(enemyPos.x + DIRX[wayOfPace] - knight->getMoveSpeedX(),
-            enemyPos.y + DIRY[wayOfPace] - knight->getMoveSpeedY()));
-  this->makeCoinside();
+      Point(enemyPos.x + 3 * DIRX[wayOfPace], enemyPos.y + 3 * DIRY[wayOfPace]));
 
-}  //ÔÚÃ»Ì½²âµ½ÆïÊ¿µÄÊ±ºòÕı³£µÄÑ²ÂßÂ·Ïß
+}  //åœ¨æ²¡æ¢æµ‹åˆ°éª‘å£«çš„æ—¶å€™æ­£å¸¸çš„å·¡é€»è·¯çº¿
 
-void Enemy::aiOfEnemy(Knight* knight, BattleRoom* battleRoom) {
+void Enemy::aiOfEnemy(Knight* knight, const BattleRoom* battleRoom) {
   if (knight == nullptr || battleRoom == nullptr) {
     return;
   }
 
   const Point enemyPos = this->getPosition();
   const Point knightPos = knight->getPosition();
-  const INT32 disBetweenEnemyAndKnight =
-      enemyPos.getDistance(knightPos);  //»ñÈ¡¶şÕß¾àÀë£¬ÓÃÓÚºóĞøÅĞ¶Ï
+  const float disBetweenEnemyAndKnight =
+      enemyPos.getDistance(knightPos);  //è·å–äºŒè€…è·ç¦»ï¼Œç”¨äºåç»­åˆ¤æ–­
 
   if (disBetweenEnemyAndKnight > SIGHTRANGE) {
     patrolRoute(battleRoom, knight);
+    followCount = 0;
   } else {
     paceCount = 0;
     wayOfPace = -1;
     if (disBetweenEnemyAndKnight > ATTACKRANGE) {
-      this->setPosition(
-          Point(enemyPos.x +
-                    2 * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight -
-                    knight->getMoveSpeedX(),
-                enemyPos.y +
-                    2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight -
-                    knight->getMoveSpeedY()));
-      this->makeCoinside();
+        if (followCount >= 25) {
+            followCount = 0;
+        }
+        if (followCount == 0) {
+            srand(static_cast<unsigned>(time(nullptr)));
+            shiftSeed = rand_0_1() - 0.5;
+        }
+      this->setPosition(Point(enemyPos.x + 3.0f * (knightPos.x - enemyPos.x) /
+                                               disBetweenEnemyAndKnight +3.0f*shiftSeed,
+                              enemyPos.y + 3.0f * (knightPos.y - enemyPos.y) /
+                                               disBetweenEnemyAndKnight+ 3.0f * shiftSeed));
+      followCount++;
     } else {
       attackTheKnight(knight, disBetweenEnemyAndKnight);
     }
@@ -109,10 +118,11 @@ void Enemy::aiOfEnemy(Knight* knight, BattleRoom* battleRoom) {
 }
 
 void Enemy::attackTheKnight(Knight* knight,
-                                INT32 disBetweenEnemyAndKnight) {
-  if (disBetweenEnemyAndKnight <= 5) {
+                                float disBetweenEnemyAndKnight) {
+  if (disBetweenEnemyAndKnight < ATTACKRANGE) {
     if (attackTimeCount % 40 == 0) {
       knight->deductHP(3);
+      log("%d", knight->getHP());
       attackTimeCount = 1;
     }
     attackTimeCount++;
@@ -122,11 +132,8 @@ void Enemy::attackTheKnight(Knight* knight,
   else {
     const Point enemyPos = this->getPosition();
     const Point knightPos = knight->getPosition();
-    this->setPosition(Point(
-        enemyPos.x + 2 * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight -
-            knight->getMoveSpeedX(),
-        enemyPos.y + 2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight -
-            knight->getMoveSpeedY()));
-    this->makeCoinside();
-  }  //µÈÎäÆ÷ÄÇÒ»¿é³öÀ´¼ÓÉÏÎäÆ÷
+    //this->setPosition(Point(  
+    //    enemyPos.x + 3.0f * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight,
+    //    enemyPos.y + 3.0f * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight));
+  }  //ç­‰æ­¦å™¨é‚£ä¸€å—å‡ºæ¥åŠ ä¸Šæ­¦å™¨
 }
