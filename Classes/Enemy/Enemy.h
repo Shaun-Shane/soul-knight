@@ -1,4 +1,4 @@
-#ifndef _ENEMY_H_
+﻿#ifndef _ENEMY_H_
 #define _ENEMY_H_
 #include <vector>
 
