@@ -32,8 +32,6 @@ class Knight : public Entity {
 
   void bindWeapon(Weapon*);
 
-  bool allKilled();
-
   void setNeedCreateBox(bool);
 
   bool getNeedCreateBox();
