@@ -38,6 +38,8 @@ class Knight : public Entity {
   
   INT32 getMP();
 
+  INT32 getArmor();
+
   void setMP(INT32);
 
   Animate* getAnimate();
@@ -61,6 +63,7 @@ class Knight : public Entity {
 
   bool isInvincible = false; //是否无敌
 
+  bool isAnimation = false;//是否在执行帧动画动作
 };
 
 #endif
