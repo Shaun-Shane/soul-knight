@@ -150,3 +150,7 @@ void Hall::bulletMove()
     }
   }
 }
+
+Point Hall::getUpleftVertex() { return Point(upLeftX, upLeftY); }
+
+Point Hall::getDownRightVertex() { return Point(downRightX, downRightY); }
