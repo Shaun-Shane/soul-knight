@@ -21,7 +21,6 @@ bool BattleRoom::init() {
 void BattleRoom::update(float delta) {
   this->bulletMove();
   this->playerBulletCollistionCheck();
-
 }
 
 bool BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir, INT32 toX, INT32 toY) {

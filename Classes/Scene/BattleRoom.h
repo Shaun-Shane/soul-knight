@@ -50,6 +50,7 @@ class BattleRoom : public Hall {
   void crearteWeapon(int randomDigit);
 
   void createProps(int randomDigit);
+
  private:
   void createEnemy();  //生成敌人
 

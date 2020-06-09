@@ -72,7 +72,15 @@ bool BattleScene::init() {
   return true;
 }
 
-void BattleScene::update(float delta) { updatePlayerPos(); }
+void BattleScene::update(float delta) {
+  updatePlayerPos();
+
+  if (knight->atBattleRoom == nullptr) return;
+
+  for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
+    enemy->aiOfEnemy(knight, knight->atBattleRoom);
+  }
+}
 
 void BattleScene::updatePlayerPos() {
   float ispeedX = knight->moveSpeedX;

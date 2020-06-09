@@ -33,9 +33,9 @@ class Hall : public Node{
 
   void bulletMove();
 
-  Point getUpleftVertex(); //获得房间内左上角顶点坐标
+  Point getUpleftVertex() const;  //获得房间内左上角顶点坐标
 
-  Point getDownRightVertex(); //获得房间内右下角顶点坐标
+  Point getDownRightVertex() const;  //获得房间内右下角顶点坐标
 
  private:
   INT32 dir; //direction of this hall
