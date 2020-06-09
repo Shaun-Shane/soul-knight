@@ -26,5 +26,7 @@ constexpr INT32 LayerPlayer = 6;
 
 constexpr INT32 TOP = 100;
 
+constexpr float PI = 3.1415926;
+
 enum RoomType { BEGIN, END, NORMAL, BOSS, WEAPON, PROP/*道具*/ };
 #endif  // !_CONST_H_

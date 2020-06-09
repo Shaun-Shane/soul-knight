@@ -1,68 +1,141 @@
 ﻿#include "Knight.h"
 #include "Scene\Hall.h"
 #include "Scene\BattleRoom.h"
+#include "Attack/Weapon.h"
 
-Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(5) {}
+Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(200) {}
 
 Knight::~Knight() {}
 
+Animate* Knight::getAnimate() {
+	//创建序列帧动画
+	auto animation = Animation::create();
+
+	//设置动画名字数组的长度
+	char nameSize[30] = { 0 };
+
+	//动画的循环2张图片
+	for (int i = 1; i < 3; i++)
+
+	{
+		sprintf(nameSize, "Character//Knight%d.png", i);
+
+		//添加到序列帧动画
+		animation->addSpriteFrameWithFile(nameSize);
+	}
+	//设置动画帧的时间间隔
+	animation->setDelayPerUnit(0.1f);
+
+	//设置播放循环 一直播放 为-1
+	animation->setLoops(-1);
+
+	//设置动画结束后恢复到第一帧
+	animation->setRestoreOriginalFrame(true);
+
+	//创建动画动作
+	auto animate = Animate::create(animation);
+	return animate;
+}
+
 bool Knight::init() {
   this->moveSpeedX = 0, this->moveSpeedY = 0;
+
+  this->weapon=Weapon::create();
+  this->weapon->setFireSpeed(10.0);
+  this->weapon->setAttack(1);
+  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
+
+  this->weapon->setPosition(Vec2(40, 20));
+
+  this->weapon->setMPConsumption(0);
+  this->addChild(weapon);
+
   
-  isInvincible = false, haveUltimateSkill = true;
+  isInvincible = false;
   
   registerKeyboardEvent();
-
   this->scheduleUpdate(); 	
   return true; 
 }
 
 void Knight::registerKeyboardEvent() {
   auto listener = EventListenerKeyboard::create();
+
   listener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event*) {
-      static EventKeyboard::KeyCode last;
+    static Vec2 last;
+    static bool isRight = true;
+    if (code != EventKeyboard::KeyCode::KEY_D &&
+     code != EventKeyboard::KeyCode::KEY_W &&
+     code != EventKeyboard::KeyCode::KEY_A &&
+     code != EventKeyboard::KeyCode::KEY_S &&
+     code != EventKeyboard::KeyCode::KEY_J &&
+     code != EventKeyboard::KeyCode::KEY_K)
+     last.set(1.0, 0);
 
-      switch (code) {
-      case EventKeyboard::KeyCode::KEY_D:
-        last = EventKeyboard::KeyCode::KEY_D;
-        moveSpeedX = moveSpeed;
-        getSprite()->setFlippedX(false);
-        break;
+    switch (code) {
+    case EventKeyboard::KeyCode::KEY_D:
+      last.set(1.0, 0);
+      isRight = true;
+      moveSpeedX = moveSpeed;
+      getSprite()->setFlippedX(false);
+      weapon->getSprite()->setFlippedX(false);
+	    getSprite()->runAction(getAnimate());
+      break;
 
-      case EventKeyboard::KeyCode::KEY_W:
-        last = EventKeyboard::KeyCode::KEY_W;
-        moveSpeedY = moveSpeed;
-        break;
+    case EventKeyboard::KeyCode::KEY_W:
+      last.set(0, 1.0);
+      moveSpeedY = moveSpeed;
+      break;
 
-      case EventKeyboard::KeyCode::KEY_A:
-        last = EventKeyboard::KeyCode::KEY_A;
-        moveSpeedX = -moveSpeed;
-        getSprite()->setFlippedX(true);
-        break;
+    case EventKeyboard::KeyCode::KEY_A:
+      isRight = false;
+      last.set(-1.0, 0);
+      moveSpeedX = -moveSpeed;
+      getSprite()->setFlippedX(true);
+      weapon->getSprite()->setFlippedX(true);
+	    getSprite()->runAction(getAnimate());//执行帧动画动作
+      break;
 
-      case EventKeyboard::KeyCode::KEY_S:
-          last = EventKeyboard::KeyCode::KEY_S;
-       moveSpeedY = -moveSpeed;
-        break;
+    case EventKeyboard::KeyCode::KEY_S:
+      last.set(0, -1.0);
+      moveSpeedY = -moveSpeed;
+      break;
 
-      case EventKeyboard::KeyCode::KEY_J:
+    case EventKeyboard::KeyCode::KEY_J:
+      if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
+      if (this->atBattleRoom != nullptr) {
+        Weapon* weaponCheck = this->collisionWithWeaponCheck();
+        Prop* prop = this->collisionWithCropCheck();
+        if (weaponCheck != nullptr)
+        {
+          this->bindWeapon(weaponCheck);
+          if (isRight == false) weapon->getSprite()->setFlippedX(true);
+          break;
+        }
+        else if (prop != nullptr)
+        {
+          prop->useProps(this);
+          prop->removeFromParent();
+          this->atBattleRoom->getVecProps().eraseObject(prop);
+          break;
+        }
+      }
+      
+      weaponAttack(last);
+      break;
 
-
-        break;
-
-      case EventKeyboard::KeyCode::KEY_K:
-        useUltimateSkill();
-        break;
+    case EventKeyboard::KeyCode::KEY_K:
+      if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
+      useUltimateSkill();
+      break;
     }
-
-    if (abs(moveSpeedX) > 0 && abs(moveSpeedY) > 0) //确保任意方向速度相同
-      moveSpeedX /= sqrt(2.0f), moveSpeedY /= sqrt(2.0f);  
   };
 
   listener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event*) {
     switch (code) {
       case EventKeyboard::KeyCode::KEY_D:
         moveSpeedX = .0f;
+		getSprite()->stopAllActions();//停止帧动画动作
         break;
 
       case EventKeyboard::KeyCode::KEY_W:
@@ -71,6 +144,7 @@ void Knight::registerKeyboardEvent() {
 
       case EventKeyboard::KeyCode::KEY_A:
         moveSpeedX = .0f;
+		getSprite()->stopAllActions();
         break;
 
       case EventKeyboard::KeyCode::KEY_S:
@@ -82,12 +156,10 @@ void Knight::registerKeyboardEvent() {
   _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-
-
-
 void Knight::useUltimateSkill() {
-  if (haveUltimateSkill) {
+  if (this->MP>=120) {
     log("using ultimate skill!");
+    this->setMP(this->getMP() - 120);
 
     auto skillCircle = DrawNode::create();
     skillCircle->drawSolidCircle(getPosition(), 220.0f,
@@ -127,13 +199,10 @@ void Knight::useUltimateSkill() {
         e->removeFromParent(); //秒杀怪物 从父类移除
     }
 
-    bool allKilled = true; //判断是否全被击杀
-    for (auto e : vecEnemy) {
-      if (e->getParent() != nullptr) allKilled = false;
+    if (this->atBattleRoom != nullptr) {
+      assert(atHall == nullptr);
+      if (this->atBattleRoom->allKilled()==true) vecEnemy.clear();
     }
-
-    if (allKilled) vecEnemy.clear();
-
   }
 }
 
@@ -143,35 +212,106 @@ void Knight::bindBattleRoom(BattleRoom* battleRoom) {
 
 void Knight::bindHall(Hall* hall) { atHall = hall; }
 
-float Knight::getMoveSpeedX() { return moveSpeedX; }
 
-float Knight::getMoveSpeedY() { return moveSpeedY; }
+void Knight::setNeedCreateBox(bool need)
+{
+  this->needCreateBox = need;
+}
 
+bool Knight::getNeedCreateBox()
+{
+  return this->needCreateBox;
+}
 
-void Knight::weaponAttack(EventKeyboard::KeyCode last) {
-    Vec2 curPos = this->getPosition();
-    Vec2 speed;
-    Bullet* bullet;
-    switch (last) {
-    case EventKeyboard::KeyCode::KEY_D:
-        speed.set(weapon->getSpeed(), 0);
-        bullet= weapon->createBullet(speed, curPos);
-        break;
+INT32 Knight::getMP()
+{
+  return this->MP;
+}
 
-    case EventKeyboard::KeyCode::KEY_W:
-        speed.set(0, weapon->getSpeed());
-        bullet = weapon->createBullet(speed, curPos);
-        break;
+void Knight::setMP(INT32 mp)
+{
+  this->MP = mp;
 
-    case EventKeyboard::KeyCode::KEY_A:
-        speed.set(-(weapon->getSpeed()), 0);
-        bullet =weapon ->createBullet(speed, curPos);
-        break;
+}
 
-    case EventKeyboard::KeyCode::KEY_S:
-        speed.set(0, -(weapon->getSpeed()));
-        bullet = weapon->createBullet(speed, curPos);
-        break;
+void Knight::weaponAttack(Vec2 last) {          //写得有点啰嗦，有空再精简，不过感觉不好精简了
+  if (this->MP <= 0 && this->weapon->getMPConsumption()>0) return;
+
+  this->setMP(this->getMP() - this->weapon->getMPConsumption());
+
+  Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
+  INT32 firePower = this->weapon->getAttack();
+  Vec2 curPos = this->getPosition();
+  Vec2 target;
+  if (this->atBattleRoom != nullptr) {
+    Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
+    Enemy* nearNeast = nullptr;
+    float distance = 99999;
+    for (auto e : vecEnemy) {
+      if (e->getParent() != nullptr) {
+        Vec2 enemyPos = e->getPosition();
+        if (enemyPos.distance(curPos) < distance) {
+          nearNeast = e;
+          distance = enemyPos.distance(curPos);
+        }
+      }
     }
+    if (nearNeast != nullptr) {
+      target = nearNeast->getPosition() - curPos;
+      target.set(target.x / target.length(), target.y / target.length());
+      fireSpeed = target * this->weapon->getFireSpeed();
+    }
+  }
   
+  Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
+  bullet->setPosition(curPos);
+  (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
+  (atBattleRoom != nullptr ? atBattleRoom : atHall)->getVecPlayerBullet().pushBack(bullet);
+}
+
+Weapon* Knight::collisionWithWeaponCheck()
+{
+  for (int i = 0; i < this->atBattleRoom->getVecWeapon().size(); ++i)
+  {
+    auto weaponPick = this->atBattleRoom->getVecWeapon().at(i);
+    Rect weaponRect = weaponPick->getBoundingBox();
+    Rect kightRect = this->getBoundingBox();
+    if (weaponRect.intersectsRect(kightRect))  return weaponPick;
+  }
+  return nullptr;
+}
+
+Prop* Knight::collisionWithCropCheck()
+{
+  for (int i = 0; i < this->atBattleRoom->getVecProps().size(); ++i)
+  {
+    auto prop = this->atBattleRoom->getVecProps().at(i);
+    Rect cropRect = prop->getBoundingBox();
+    Rect kightRect = this->getBoundingBox();
+    if (cropRect.intersectsRect(kightRect))  return prop;
+  }
+  return nullptr;
+}
+
+void Knight::bindWeapon(Weapon* weapon)
+{
+  this->atBattleRoom->getVecWeapon().eraseObject(weapon);
+  auto myWeapon = this->weapon;
+  auto pickWeapon = weapon;
+  auto myPos = myWeapon->getPosition();
+  auto pickPos = weapon->getPosition();
+  myWeapon->setPosition(pickPos);
+  pickWeapon->setPosition(myPos);
+
+  myWeapon->retain();
+  pickWeapon->retain();
+
+  myWeapon->removeFromParent();
+  pickWeapon->removeFromParent();
+
+  this->weapon = pickWeapon;
+
+  this->addChild(pickWeapon);
+  this->atBattleRoom->addChild(myWeapon);
+  this->atBattleRoom->getVecWeapon().pushBack(myWeapon);
 }

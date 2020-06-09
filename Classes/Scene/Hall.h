@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "Const/Const.h"
 #include "Actor/Knight.h"
+#include "Attack/Bullet.h"
 USING_NS_CC;
 
 class Hall : public Node{
@@ -26,20 +27,33 @@ class Hall : public Node{
 
   void generateWall(float, float, INT32);
 
+  Vector<Bullet*>& getVecPlayerBullet(); 
+
+  bool isInScreen(Vec2 pos);
+
+  void bulletMove();
+
+  Point getUpleftVertex(); //获得房间内左上角顶点坐标
+
+  Point getDownRightVertex(); //获得房间内右下角顶点坐标
+
  private:
   INT32 dir; //direction of this hall
  protected:
   float upLeftX, upLeftY;
+
   float downRightX, downRightY;
 
   Knight* knight = nullptr;
 
   INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
   
-  Vector<Sprite*> vecPlayerBullet; //储存场景子弹 Sprite改为子弹类名
+  Vector<Bullet*> vecPlayerBullet; 
 
   Vector<Sprite*> vecFloor;
+
   Vector<Sprite*> vecWall;
+
 };
 
 #endif  // _HALL_H_

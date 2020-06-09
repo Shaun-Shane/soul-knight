@@ -1,9 +1,12 @@
 ﻿#include "BattleScene.h"
 #include"SetScene.h"
+#include"StartScene.h"
 
 #include <vector>
+#include <cmath>
 
 using std::vector;
+using std::max;
 
 Scene* BattleScene::createScene() { return BattleScene::create(); }
 
@@ -49,14 +52,10 @@ bool BattleScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight.png"), LayerPlayer);
+  this->knight->bindSprite(Sprite::create("Character//Knight1.png"), LayerPlayer);
 
   this->knight->setPosition(
       Point(visibleSize.width / 2, visibleSize.height / 2));
-
-  this->knight->setScaleX(0.3f);
-  this->knight->setScaleY(0.3f);
-
 
   this->addChild(this->knight);
   // add knight to scene
@@ -78,6 +77,9 @@ void BattleScene::update(float delta) { updatePlayerPos(); }
 void BattleScene::updatePlayerPos() {
   float ispeedX = knight->moveSpeedX;
   float ispeedY = knight->moveSpeedY;
+
+  if (abs(ispeedX) > 0 && abs(ispeedY) > 0)  //确保任意方向速度相同
+    ispeedX /= sqrt(2.0f), ispeedY /= sqrt(2.0f);  
 
   for (INT32 y = 0; y < SIZEMTX; y++) {
     for (INT32 x = 0; x < SIZEMTX; x++) {
@@ -205,37 +207,30 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
 
   if (vecDir.empty()) return;
 
+  INT32 cntDirChosen = max(2U, (rand() % (vecDir.size() + 1)));
+
   // randomly choose direction
-  INT32 dirIndex = rand() % vecDir.size();
-  INT32 dir = vecDir.at(dirIndex);  
-  vecDir.erase(vecDir.begin() + dirIndex);
-  INT32 toX = x + DIRX[dir], toY = y + DIRY[dir];
+  for (INT32 i = 0; i < cntDirChosen; i++) {
+    INT32 dirIndex = rand() % vecDir.size();
+    INT32 dir = vecDir.at(dirIndex);
+    vecDir.erase(vecDir.begin() + dirIndex);
+    INT32 toX = x + DIRX[dir], toY = y + DIRY[dir];
 
-  if (battleRoom[toX][toY] == beginRoom) return;
+    if (battleRoom[toX][toY] == beginRoom) return;
 
-  BattleRoom*& toRoom1 = battleRoom[toX][toY]; // the pointer will be changed
-  BattleRoom::createRoom(toRoom1, curRoom, dir, toX, toY);
+    BattleRoom*& toRoom = battleRoom[toX][toY];  // the pointer will be changed
+    if (BattleRoom::createRoom(toRoom, curRoom, dir, toX, toY)) {
+      this->addChild(toRoom);
+      q.push(toRoom);
+      endRoom = toRoom;
+      cntRoom++;
+    }
 
-  this->addChild(toRoom1, 0);
-  q.push(toRoom1);
-  endRoom = toRoom1;
-  cntRoom++;
-  
-  if (cntRoom >= MAXROOM || curRoom == beginRoom || vecDir.empty()) return;
+    assert(battleRoom[toX][toY] != nullptr);
+    assert(battleRoom[toX][toY] != beginRoom);
 
-  dir = vecDir.at(rand() % vecDir.size());
-  toX = x + DIRX[dir], toY = y + DIRY[dir];
-
-  if (battleRoom[toX][toY] == beginRoom) return;
-
-  BattleRoom*& toRoom2 = battleRoom[toX][toY];  // the pointer will be changed
-  BattleRoom::createRoom(toRoom2, curRoom, dir, toX, toY);
-
-  this->addChild(toRoom2, 0);
-  cntRoom++;
-
-  assert(battleRoom[toX][toY] != nullptr);
-  assert(battleRoom[toX][toY] != beginRoom);
+    if (cntRoom >= MAXROOM || curRoom == beginRoom || vecDir.empty()) return;
+  }
 }
 
 void BattleScene::initMiniMap() {
@@ -359,7 +354,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
 /*退出游戏*/
 void BattleScene::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->end();
+	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartScene::createScene()));
 }
 
 /*进入设置面板*/

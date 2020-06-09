@@ -19,12 +19,17 @@ Sprite* Entity::getSprite() { return this->sprite; }
 void Entity::bindSprite(Sprite* sprite, INT32 layer) {
   this->sprite = sprite;
   this->sprite->setGlobalZOrder(layer);
-  this->addChild(this->sprite);
 
   //将entity中心和sprite中心重合
-  /*Size size = this->sprite->getContentSize();
-  this->sprite->setPosition(Point(size.width / 2, size.height / 2));
-  this->setContentSize(size);*/
+  Size size = this->sprite->getContentSize();
+  this->setContentSize(size); //设置大小
+
+  this->setAnchorPoint(Point(0.5f, 0.5f)); //设置锚点
+  setPosition(Point(.0f, .0f));
+
+
+  this->addChild(sprite);
+  sprite->setPosition(Point(size.width / 2, size.height / 2));
 }
 
 INT32 Entity::getHP() { //return HP of this entity
@@ -35,7 +40,13 @@ INT32 Entity::getHP() { //return HP of this entity
   return this->HP;
 }
 
+float Entity::getMoveSpeedX() { return moveSpeedX; }
+
+float Entity::getMoveSpeedY() { return moveSpeedY; }
+
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
-  this->HP -= delta;
+  this->HP =this->HP- delta;
 }
+
+void Entity::setHP(INT32 HP) { this->HP = HP; }

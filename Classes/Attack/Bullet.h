@@ -6,17 +6,22 @@ USING_NS_CC;
 
 class Bullet : public Entity2 {
 public:
-    Bullet();
-    ~Bullet();
-    CREATE_FUNC(Bullet);
-    virtual bool init();
+  Bullet();
+  ~Bullet();
+  CREATE_FUNC(Bullet);
+  virtual bool init();
 
-    void setSpeed(Vec2 speed);
+  bool isInScreen();
+  Vec2 getBulletSpeed();
+  void setBulletSpeed(Vec2 speed);
+  void setAttack(INT32 attack);
+  INT32 getAttack();
 
-    
-private:
-    Vec2 speed;
+
 protected:
+  Vec2 bulletSpeed;
+  INT32 attack;
+
 };
 
 #endif;

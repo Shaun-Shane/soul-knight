@@ -1,6 +1,7 @@
 ﻿#include "SafeScene.h"
 #include"SetScene.h"
 #include"BattleScene.h"
+#include"StartScene.h"
 
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 
@@ -45,13 +46,10 @@ bool SafeScene::init() {
 
   // add knight to scene
   this->knight = Knight::create();
-  this->knight->bindSprite(Sprite::create("Character//Knight.png"), 10);
+  this->knight->bindSprite(Sprite::create("Character//Knight1.png"), LayerPlayer);
 
   this->knight->setPosition(Point(visibleSize.width / 2, 40));
-  this->addChild(this->knight, 10);
-
-  this->knight->setScaleX(0.3f);
-  this->knight->setScaleY(0.3f);
+  this->addChild(this->knight);
 
   this->portal = Sprite::create("Map//portal3.png");
   this->addChild(portal, 1);
@@ -83,7 +81,7 @@ void SafeScene::initBG() {
 /*退出游戏*/
 void SafeScene::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->end();
+	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartScene::createScene()));
 }
 
 /*进入设置面板*/

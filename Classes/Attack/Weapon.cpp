@@ -1,39 +1,40 @@
 #include "Weapon.h"
 
+
 Weapon::Weapon(){}
 
 bool Weapon::init()
-{
-    return true;
+{ 
+  return true;	
 }
 
+Weapon::~Weapon(){}
 
-
-
-void Weapon::bindWeapon(Weapon* weapon)
+void Weapon::setFireSpeed(float fireSpeed)
 {
-    this->sprite = weapon->getSprite();
-    this->attack = weapon->getAttack();
-    this->speed = weapon->getSpeed();
+  
+  this->fireSpeed = fireSpeed;
 }
 
+float Weapon::getFireSpeed() { return this->fireSpeed; }
+void Weapon::setAttack(INT32 attack) { this->attack = attack; }
+INT32  Weapon::getAttack() { return this->attack; }
 
+INT32 Weapon::getMPConsumption() {  return mpConsumption;}
 
-Bullet* Weapon::createBullet(Vec2 speed, Vec2 curPos)  //to do再添加两个参数 atBattleRoom和atHall
+void Weapon::setMPConsumption(INT32 deta) { this->mpConsumption = deta;}
+
+Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
-    Bullet* bullet = Bullet::create();
-    bullet->bindSprite(Sprite::create("bullet.png"));
-    bullet->setPosition(curPos);
-    bullet->setSpeed(speed);
+  Bullet* bullet = Bullet::create();
+  bullet->setBulletSpeed(speed);
+  bullet->bindSprite(Sprite::create("Bullet//pistol.png"), 12);
 
-    //to do
-    
-    return bullet;
+  if (speed.x == 0 && speed.y > 0)  bullet->getSprite()->setRotation(-90.0f);
+  else if (speed.x < 0)   bullet->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
+  else if (speed.x == 0 && speed.y < 0)   bullet->getSprite()->setRotation(-270.0f);
+  else    bullet->getSprite()->setRotation(-(180.0f * atan(speed.y / speed.x) / PI));
+  bullet->setAttack(firePower);
+
+  return bullet;
 }
-
-float Weapon::getSpeed()
-{
-	return this->speed;
-}
-
-Weapon::~Weapon() {}

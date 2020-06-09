@@ -6,19 +6,16 @@ USING_NS_CC;
 
 class Entity2 : public Node {
 public:
-    Entity2();
-    ~Entity2();
+  Entity2();
+  ~Entity2();
 
-    Sprite* getSprite();
-    void bindSprite(Sprite* sprite);
-    void setAttack(INT32 attack);
-    
-    INT32 getAttack();
+  Sprite* getSprite();
+  void bindSprite(Sprite* sprite, INT32 layer);
 
+ 
 
-    Sprite* sprite;
-    INT32 attack;
-
+protected:
+  Sprite* sprite;
+  
 };
-
 #endif;
