@@ -62,20 +62,38 @@ bool BattleScene::init() {
   MPLoadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
 
   StatusBackGround->setPosition(80, 680);
-  BloodLoadingBar->setPosition(Vec2(89, 664));
+  BloodLoadingBar->setPosition(Vec2(89, 698));
   ArmorLoadingBar->setPosition(Vec2(89, 680));
-  MPLoadingBar->setPosition(Vec2(89, 698));
+  MPLoadingBar->setPosition(Vec2(89, 664));
 
   this->addChild(StatusBackGround, TOP);
   this->addChild(BloodLoadingBar, TOP);
   this->addChild(ArmorLoadingBar, TOP);
   this->addChild(MPLoadingBar, TOP);
 
-  /*置定*/
+  /*置顶*/
   StatusBackGround->setGlobalZOrder(TOP);
   BloodLoadingBar->setGlobalZOrder(TOP);
   ArmorLoadingBar->setGlobalZOrder(TOP);
   MPLoadingBar->setGlobalZOrder(TOP);
+
+  /*状态数字信息*/
+  HPLabel = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 15);
+  armorLabel = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 15);
+  MPLabel = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 15);
+
+  HPLabel->setPosition(Vec2(89, 698));
+  armorLabel->setPosition(Vec2(89, 680));
+  MPLabel->setPosition(Vec2(89, 664));
+
+  this->addChild(HPLabel, TOP);
+  this->addChild(armorLabel, TOP);
+  this->addChild(MPLabel, TOP);
+
+  /*置顶*/
+  HPLabel->setGlobalZOrder(TOP);
+  armorLabel->setGlobalZOrder(TOP);
+  MPLabel->setGlobalZOrder(TOP);
 
   // add knight to scene
   this->knight = Knight::create();
@@ -106,6 +124,11 @@ void BattleScene::update(float delta) {
   BloodLoadingBar->setPercent(this->knight->getHP() * 100 / 5 );
   ArmorLoadingBar->setPercent(this->knight->getArmor() * 100 / 5 );
   MPLoadingBar->setPercent(float(this->knight->getMP()) / 200.0f * 100);
+
+  /*状态信息更新*/
+  HPLabel->setString(Value(this->knight->HP).asString() + "/5");
+  armorLabel->setString(Value(this->knight->armor).asString() + "/5");
+  MPLabel->setString(Value(this->knight->MP).asString() + "/200");
 
   if (knight->atBattleRoom == nullptr) return;
 

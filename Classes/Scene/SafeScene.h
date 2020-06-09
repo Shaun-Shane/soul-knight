@@ -32,6 +32,10 @@ class SafeScene : public Scene {
   ui::LoadingBar* BloodLoadingBar = ui::LoadingBar::create();
   ui::LoadingBar* ArmorLoadingBar = ui::LoadingBar::create();
   ui::LoadingBar* MPLoadingBar = ui::LoadingBar::create();
+
+  Label* HPLabel;
+  Label* armorLabel;
+  Label* MPLabel;
 };
 
 #endif
