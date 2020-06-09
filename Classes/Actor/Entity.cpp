@@ -46,7 +46,7 @@ float Entity::getMoveSpeedY() { return moveSpeedY; }
 
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
-  this->HP =this->HP- delta;
+  this->HP = std::max(0, this->HP - delta);
 }
 
 void Entity::setHP(INT32 HP) { this->HP = HP; }

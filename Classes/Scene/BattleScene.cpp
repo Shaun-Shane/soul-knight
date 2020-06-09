@@ -133,6 +133,7 @@ void BattleScene::update(float delta) {
   if (knight->atBattleRoom == nullptr) return;
 
   for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
+    if (enemy->getParent() == nullptr) continue; //死亡的敌人指针可能还未被释放
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
   }
 }

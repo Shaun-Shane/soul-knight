@@ -177,14 +177,16 @@ void Knight::registerKeyboardEvent() {
 }
 
 void Knight::useUltimateSkill() {
-  if (this->MP>=120) {
+  if (this->MP >= 120) {
     log("using ultimate skill!");
     this->setMP(this->getMP() - 120);
 
     auto skillCircle = DrawNode::create();
-    skillCircle->drawSolidCircle(getPosition(), 220.0f,
-                                 CC_DEGREES_TO_RADIANS(360), 100,
+    skillCircle->drawSolidCircle(Point(this->getContentSize().width / 2,
+                                       this->getContentSize().height / 2),
+                                 220.0f, CC_DEGREES_TO_RADIANS(360), 100,
                                  Color4F(1.0f, 0.8f, .0f, 0.3f));
+
     skillCircle->setGlobalZOrder(LayerPlayer);
 
     auto fadeIn = FadeIn::create(0.2f); 
@@ -193,19 +195,11 @@ void Knight::useUltimateSkill() {
 
     auto sequence = Sequence::create(
         Spawn::create(Sequence::create(fadeIn, fadeOut, NULL), blink, NULL),
-        RemoveSelf::create(), NULL);
+        RemoveSelf::create(), NULL); //生成动作序列
 
-    if (this->atBattleRoom == nullptr) {
-      assert(atHall != nullptr);
-      atHall->addChild(skillCircle);
+    this->addChild(skillCircle);
 
-      skillCircle->runAction(sequence);
-      return;
-    }
-
-    atBattleRoom->addChild(skillCircle);
-
-    skillCircle->runAction(sequence);
+    skillCircle->runAction(sequence); //执行动画
 
     Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
 
