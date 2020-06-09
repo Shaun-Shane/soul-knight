@@ -131,6 +131,7 @@ void BattleRoom::createEnemy() {
 
   for (int i = 1; i <= 5; i++) {
     Enemy* enemy = Enemy::create();
+    enemy->startCount = i * 2;
     enemy->bindSprite(Sprite::create("Enemy//shooter.png"), LayerPlayer - 1);
     float enemyX = upLeftX + rand() % static_cast<INT32>(downRightX - upLeftX);
     float enemyY =

@@ -57,7 +57,7 @@ void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
     return;
   }
 
-  paceCount = 1;  //设置为1，避免下一轮被paceCount%40识别为false
+  paceCount = startCount;  //设置为startCount，避免下一轮被paceCount%40识别为false
   wayCanBeSelected.clear();
 
   for (INT32 dir = 0; dir < CNTDIR; dir++) { // 4个可以走的方向
@@ -94,14 +94,23 @@ void Enemy::aiOfEnemy(Knight* knight, const BattleRoom* battleRoom) {
 
   if (disBetweenEnemyAndKnight > SIGHTRANGE) {
     patrolRoute(battleRoom, knight);
+    followCount = 0;
   } else {
     paceCount = 0;
     wayOfPace = -1;
     if (disBetweenEnemyAndKnight > ATTACKRANGE) {
+        if (followCount >= 25) {
+            followCount = 0;
+        }
+        if (followCount == 0) {
+            srand(static_cast<unsigned>(time(nullptr)));
+            shiftSeed = rand_0_1() - 0.5;
+        }
       this->setPosition(Point(enemyPos.x + 3.0f * (knightPos.x - enemyPos.x) /
-                                               disBetweenEnemyAndKnight,
+                                               disBetweenEnemyAndKnight +3.0f*shiftSeed,
                               enemyPos.y + 3.0f * (knightPos.y - enemyPos.y) /
-                                               disBetweenEnemyAndKnight));
+                                               disBetweenEnemyAndKnight+ 3.0f * shiftSeed));
+      followCount++;
     } else {
       attackTheKnight(knight, disBetweenEnemyAndKnight);
     }

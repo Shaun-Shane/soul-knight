@@ -25,6 +25,8 @@ class Enemy : public Entity {
 
   void aiOfEnemy(Knight* knight, const BattleRoom* battleRoom);  
 
+  INT32 startCount;
+
  private:
   void patrolRoute(const BattleRoom* battleRoom, Knight* knight);
   void attackTheKnight(Knight* knight, float disBetweenEnemyAndKnight);
@@ -36,6 +38,8 @@ class Enemy : public Entity {
   INT32 wayOfPace = -1;  //选择走的方向
   INT32 attackTimeCount = 1;
   std::vector<INT32> wayCanBeSelected;  //可供选择的行走方向
+  float shiftSeed=0.0f;
+  INT32 followCount = 0;
 };
 
 #endif
