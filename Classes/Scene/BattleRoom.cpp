@@ -12,7 +12,7 @@ bool BattleRoom::init() {
   memset(visDir, false, sizeof(visDir));
   playerVisited = false;
 
-  portal = nullptr, knight = nullptr;
+  portal = nullptr, knight = nullptr, boss = nullptr;
 
   this->scheduleUpdate();
   return true;
@@ -48,8 +48,8 @@ void BattleRoom::setCenter(float X, float Y) { centerX = X, centerY = Y; }
 
 void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
   Sprite* tmpSprite = Sprite::create("Map//doorOpen.png");
-  this->addChild(tmpSprite, LayerPlayer - 1);
-  tmpSprite->setGlobalZOrder(LayerPlayer - 1);
+  this->addChild(tmpSprite, LayerPlayer - 2);
+  tmpSprite->setGlobalZOrder(LayerPlayer - 2);
   vecDoorOpen.pushBack(tmpSprite);
 
   tmpSprite->setPosition(Point(X, Y));
@@ -70,7 +70,7 @@ void BattleRoom::createMap() {
   if (roomType == END || roomType == WEAPON || roomType == PROP) {
     sizeWidth -= 6, sizeHeight -= 6;
 
-    if (roomType == END) {
+    if (roomType == END) { //设置房间大小以及传送门
       sizeWidth -= 2, sizeHeight -= 2;
       Sprite* portal = Sprite::create("Map//portal3.png");
       portal->setPosition(Point(centerX, centerY));
@@ -132,7 +132,7 @@ void BattleRoom::createMap() {
   if (roomType == NORMAL)
     createEnemy();
   else if (roomType == BOSS)
-    /*createBoss*/;
+    createBoss();
 }
 
 void BattleRoom::createEnemy() {
@@ -141,7 +141,12 @@ void BattleRoom::createEnemy() {
   for (int i = 1; i <= 5; i++) {
     Enemy* enemy = Enemy::create();
     enemy->startCount = i * 2;
-    enemy->bindSprite(Sprite::create("Enemy//shooter.png"), LayerPlayer - 1);
+
+    enemy->bindSprite(Sprite::create("Enemy//enemy002.png"), LayerPlayer - 1);
+    enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
+                           enemy->getContentSize().height / 8),
+                    LayerPlayer - 1);  //添加阴影
+
     float enemyX = upLeftX + rand() % static_cast<INT32>(downRightX - upLeftX);
     float enemyY =
         downRightY + rand() % static_cast<INT32>(upLeftY - downRightY);
@@ -151,6 +156,17 @@ void BattleRoom::createEnemy() {
   }
 }
 
+void BattleRoom::createBoss() {
+  boss = Boss::create();
+
+  boss->bindSprite(Sprite::create("Enemy//boss.png"), LayerPlayer);
+  boss->addShadow(Point(boss->getContentSize().width / 2,
+                        boss->getContentSize().height / 4.5f),
+                  LayerPlayer);  //添加阴影
+
+  boss->setPosition(Point(centerX, centerY));
+  this->addChild(boss);
+}
 
 void BattleRoom::closeDoor() {  // doorClose sptires are visible
   for (auto sprite : vecDoorOpen) {

@@ -3,11 +3,13 @@
 
 #include "cocos2d.h"
 #include "Hall.h"
-#include "Enemy\Enemy.h"
-#include "Actor\Knight.h"
-#include "Const\Const.h"
+#include "Enemy/Enemy.h"
+#include "Enemy/Boss.h"
+#include "Actor/Knight.h"
+#include "Const/Const.h"
 #include "Attack/Weapon.h"
 #include "Props/prop.h"
+
 USING_NS_CC;
 
 class BattleRoom : public Hall {
@@ -53,6 +55,7 @@ class BattleRoom : public Hall {
 
  private:
   void createEnemy();  //生成敌人
+  void createBoss();
 
  private:
   float centerX, centerY;
@@ -66,6 +69,7 @@ class BattleRoom : public Hall {
 
  private:
   Sprite* portal = nullptr; //传送门
+  Boss* boss = nullptr; //Boss
 
 protected:
   Vector<Sprite*> vecDoorOpen, vecDoorClose; 
