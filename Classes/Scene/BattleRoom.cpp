@@ -177,7 +177,10 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
       if (roomType == BEGIN) knight->setNeedCreateBox(false);
       else {
         if (knight->getNeedCreateBox() == true) {
-          this->knight->setMP(this->knight->getMP() + 20);
+          INT32 curMP = this->knight->getMP() + 20;
+          if (curMP >= 200) curMP = 200;
+          this->knight->setMP(curMP);
+          
           createTreasureBox();
           knight->setNeedCreateBox(false);
         }
