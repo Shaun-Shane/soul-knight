@@ -201,6 +201,8 @@ void Knight::useUltimateSkill() {
 
     skillCircle->runAction(sequence); //执行动画
 
+    if (this->atBattleRoom == nullptr) return;
+
     Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
 
     for (auto& e : vecEnemy) {
