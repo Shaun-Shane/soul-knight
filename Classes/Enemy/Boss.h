@@ -21,6 +21,8 @@ public:
 	Boss(INT32, INT32);
 	~Boss();
 
+	CREATE_FUNC(Boss);
+
 	void aiOfBoss(Knight* knight, const std::vector<float>& boundaryOfRoom);//boundaryOfRoom是一个封装了边界的vector，按顺序依次应为右边界、上、左、下
 
 private:

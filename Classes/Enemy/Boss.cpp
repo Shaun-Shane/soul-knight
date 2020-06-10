@@ -4,16 +4,12 @@ Boss::Boss() {
 	attack = 5;
 	HP = 50;
 	uniSkiTimeCount = 0;
-	
-	this->bindSprite(Sprite::create("Enemy//boss.png"),LayerPlayer);
 }
 
 Boss::Boss(INT32 att, INT32 hp) {
 	attack = att;
 	HP = hp;
 	uniSkiTimeCount = 0;
-
-	this->bindSprite(Sprite::create("Enemy//boss.png"), LayerPlayer);
 }
 
 Boss::~Boss() { }
