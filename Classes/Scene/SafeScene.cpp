@@ -4,7 +4,13 @@
 #include "SetScene.h"
 #include "StartScene.h"
 
+#ifndef DEBUG
+#define DEBUG  // DEBUG模式，直接进入有BOSS地图
+#endif
+
 Knight* BattleScene::knight = nullptr;
+
+INT32 BattleScene::battleSceneNumber = 0;
 
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 
@@ -43,11 +49,16 @@ void SafeScene::update(float delta) {
     BattleScene::knight = this->knight;
     BattleScene::knight->retain();
     BattleScene::knight->removeFromParent(); //从该场景移除
+    BattleScene::battleSceneNumber++;
+
+#ifdef DEBUG
+    BattleScene::battleSceneNumber = 5;
+#endif
 
     assert(BattleScene::knight->getParent() == nullptr);
 
     this->cleanup(); //暂停该场景
-    Director::getInstance()->pushScene(TransitionFade::create(1.6f, BattleScene::createScene()));
+    Director::getInstance()->pushScene(TransitionFade::create(2.0f, BattleScene::createScene()));
   }
 }
 
