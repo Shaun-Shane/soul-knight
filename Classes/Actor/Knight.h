@@ -13,7 +13,7 @@ class Prop;
 class Knight : public Entity {
   friend class BattleScene;
   friend class SafeScene;
-  static constexpr float moveSpeed = 5.0f;
+  static constexpr float moveSpeed = 6.0f;
 
  public:
   Knight();
