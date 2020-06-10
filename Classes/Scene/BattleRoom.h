@@ -63,7 +63,7 @@ class BattleRoom : public Hall {
   INT32 x, y;  // row and column in SIZEMTX * SIZEMTX BattleRoom matrix
   INT32 roomType = NORMAL;
 
-  bool visDir[CNTDIR] = {false};
+  bool visDir[CNTDIR] = {false}, visDirCpy[CNTDIR];
 
   bool playerVisited = false;
 

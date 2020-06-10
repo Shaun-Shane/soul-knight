@@ -105,10 +105,10 @@ bool BattleScene::init() {
   miniMap = MiniMap::create(); //添加小地图
   this->addChild(miniMap);
 
-  initRoom(); //战斗房间初始化
+  initRoom(); //战斗房间初始化 
   initMiniMap();
   connectRoom(beginRoom); //从起始房间开始联通房间
-
+  log("%d", vecHall.size());
   this->scheduleUpdate(); //60帧跟新
 
   return true;
@@ -227,6 +227,8 @@ void BattleScene::initRoom() {
 
       curRoom->knight = knight;
       curRoom->createMap();
+
+      memcpy(curRoom->visDirCpy, curRoom->visDir, sizeof(curRoom->visDir));
     }
   }
 }
@@ -266,7 +268,7 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
   if (battleSceneNumber % 5 != 1 && battleSceneNumber % 5 != 2) {
     INT32 temp = battleSceneNumber % 5 ? battleSceneNumber % 5 : 4;
     additionalRoom = temp - 2;
-  } //关卡数靠后增加额外房间 暂时最多8个房间 房间太多会卡
+  } //关卡数靠后增加额外房间 暂时最多8个房间 房间太多可能会卡
 
   if (cntRoom >= MAXROOM + additionalRoom) return;
 
@@ -279,6 +281,10 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
 
     INT32 toX = x + DIRX[dir], toY = y + DIRY[dir];
     if (toX < 0 || toX >= SIZEMTX || toY < 0 || toY >= SIZEMTX) continue;
+
+    if (curRoom == beginRoom &&
+        ((curRoom->y < 2 && dir == DOWN) || (curRoom->y > 2 && dir == UP)))
+      continue;
 
     vecDir.push_back(dir);  // directions can go
   }
@@ -439,7 +445,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
   assert(curRoom != nullptr);
 
   for (INT32 dir = 0; dir < CNTDIR; dir++) { //4 directions
-    if (curRoom->visDir[dir] == false) continue;
+    if (curRoom->visDirCpy[dir] == false) continue;
     INT32 toX = curRoom->x + DIRX[dir];
     INT32 toY = curRoom->y + DIRY[dir];
 
@@ -449,7 +455,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     
     auto miniHall = DrawNode::create(); //生成小地图走廊
     miniHall->setGlobalZOrder(TOP);
-
+#define DEBUG
 #ifndef DEBUG
     miniHall->setVisible(false);
 #endif  // ! 
@@ -477,15 +483,13 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     miniMap->addChild(miniHall);
     vecHall.pushBack(hall);
     
-    curRoom->visDir[dir] = false; //标记不能来回连接
+    curRoom->visDirCpy[dir] = false;  //标记不能来回连接
     curMiniRoom->miniHall[dir] = miniHall;
-    toRoom->visDir[(dir + 2) % CNTDIR] = false; //标记不能来回连接
+    toRoom->visDirCpy[(dir + 2) % CNTDIR] = false;  //标记不能来回连接
     toMiniRoom->miniHall[(dir + 2) % CNTDIR] = miniHall;
 
     connectRoom(toRoom);
-    
-    curRoom->visDir[dir] = true; //back trace
-    toRoom->visDir[(dir + 2) % CNTDIR] = true;
+    // need to fix vis
   }
 }
 
