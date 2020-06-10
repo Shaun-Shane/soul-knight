@@ -40,12 +40,15 @@ class BattleScene : public Scene {
 
   void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
+  void setRoomType();
 
   void setHallWithWidth(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void setHallWithHeight(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void connectRoom(BattleRoom*);
 
  private:
+  static INT32 battleSceneNumber;
+
   INT32 cntRoom = 0;
 
  private:

@@ -67,14 +67,20 @@ void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
 void BattleRoom::createMap() {
   srand(time(nullptr));
 
-  if (roomType == END) {
-    sizeWidth -= 8, sizeHeight -= 8;
-    Sprite* portal = Sprite::create("Map//portal3.png");
-    portal->setPosition(Point(centerX, centerY));
-    addChild(portal);
-    portal->setGlobalZOrder(LayerPlayer - 1);
+  if (roomType == END || roomType == WEAPON || roomType == PROP) {
+    sizeWidth -= 6, sizeHeight -= 6;
 
-    this->portal = portal;
+    if (roomType == END) {
+      sizeWidth -= 2, sizeHeight -= 2;
+      Sprite* portal = Sprite::create("Map//portal3.png");
+      portal->setPosition(Point(centerX, centerY));
+      addChild(portal);
+      portal->setGlobalZOrder(LayerPlayer - 1);
+
+      this->portal = portal;
+    }
+  } else if (roomType == BOSS) {
+    sizeWidth += 6, sizeHeight += 6;
   }
 
   const float X = centerX - FLOORWIDTH * (sizeWidth / 2);
@@ -123,7 +129,10 @@ void BattleRoom::createMap() {
     curX = X, curY -= FLOORHEIGHT;
   }
 
-  if (roomType == NORMAL) createEnemy(); 
+  if (roomType == NORMAL)
+    createEnemy();
+  else if (roomType == BOSS)
+    /*createBoss*/;
 }
 
 void BattleRoom::createEnemy() {

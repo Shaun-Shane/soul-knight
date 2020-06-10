@@ -1,9 +1,6 @@
 ﻿#include "BattleScene.h"
-#include"SetScene.h"
-#include"StartScene.h"
-
-#include <vector>
-#include <cmath>
+#include "SetScene.h"
+#include "StartScene.h"
 
 using std::vector;
 using std::max;
@@ -14,6 +11,7 @@ bool BattleScene::init() {
   if (!Scene::init()) {
     return false;
   }
+  log("%d", battleSceneNumber);
 
   Size visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -132,7 +130,7 @@ void BattleScene::update(float delta) {
   if (knight->atBattleRoom == nullptr) return;
 
   for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
-    if (enemy->getParent() == nullptr) continue; //死亡的敌人指针可能还未被释放
+    if (enemy->getParent() == nullptr) continue; //防止死亡的敌人指针还未被释放
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
   }
 
@@ -140,13 +138,14 @@ void BattleScene::update(float delta) {
     if (knight->getPosition().distance(endRoom->portal->getPosition()) < 10.0f) {
       BattleScene::knight->retain();
       BattleScene::knight->removeFromParent();  //从该场景移除
+      BattleScene::battleSceneNumber++; //关卡编号+1
 
       assert(BattleScene::knight->getParent() == nullptr);
 
       this->cleanup();
       this->removeAllChildren(); //释放
       Director::getInstance()->pushScene( //进入下一个场景
-          TransitionFade::create(1.6f, BattleScene::createScene()));
+          TransitionFade::create(2.0f, BattleScene::createScene()));
     }
   }
 }
@@ -168,13 +167,14 @@ void BattleScene::updatePlayerPos() {
         knight->bindBattleRoom(curRoom), knight->bindHall(nullptr); 
 
         curMiniRoom->setVisible(true);  //修改小地图状态
-        if (curRoom != beginRoom && curRoom != endRoom)
+        if (curRoom->roomType == NORMAL)
           curMiniRoom->setColorWhite();
         curRoom->playerVisited = true;
 
         for (INT32 dir = 0; dir < CNTDIR; dir++) {
           if (curRoom->visDir[dir] == false) continue;
           BattleRoom* toRoom = battleRoom[x + DIRX[dir]][y + DIRY[dir]];
+          //修改迷你地图房间和走廊是否可见
           MiniRoom* toMiniRoom =
               miniMap->miniRoom[x + DIRX[dir]][y + DIRY[dir]];
           if (toRoom->playerVisited == false) toMiniRoom->setVisible(true);
@@ -182,24 +182,23 @@ void BattleScene::updatePlayerPos() {
           if (curMiniRoom->miniHall[dir]->isVisible() == false)
             curMiniRoom->miniHall[dir]->setVisible(true);
         }
-      } else if (curRoom->playerVisited && curRoom != beginRoom &&
-                 curRoom != endRoom)
+      } else if (curRoom->playerVisited && curRoom->roomType == NORMAL)
         curMiniRoom->setColorGrey();
     }
   }
-  for (auto hall : vecHall) {
+  for (auto hall : vecHall) { 
     bool inHall = hall->checkPlayerPosition(knight, ispeedX, ispeedY);
     if (inHall) knight->bindBattleRoom(nullptr), knight->bindHall(hall); 
   }
 
-  for (INT32 y = 0; y < SIZEMTX; y++) {
+  for (INT32 y = 0; y < SIZEMTX; y++) { //修改所有子类位置
     for (INT32 x = 0; x < SIZEMTX; x++) {
       if (battleRoom[x][y] == nullptr) continue;
       BattleRoom* curRoom = battleRoom[x][y];
       curRoom->changePositionBy(-ispeedX, -ispeedY);
     }
   }
-  for (auto hall : vecHall) {
+  for (auto hall : vecHall) { //修改所有子类位置
     hall->changePositionBy(-ispeedX, -ispeedY);
   }
 }
@@ -214,21 +213,17 @@ void BattleScene::initRoom() {
     }
   } // 25 roomss
 
-  srand(time(nullptr));
+  srand(static_cast<unsigned int>(time(nullptr)));
 
   //在5 * 5的矩阵中随机选取MAXROOM个房间
   randomGenerate(SIZEMTX / 2, 1 + rand() % 3);
+  //设置房间类型
+  setRoomType();
 
-  for (INT32 y = 0; y < SIZEMTX; y++) { //判断房间类型并生成地图
+  for (INT32 y = 0; y < SIZEMTX; y++) {  // 25 rooms
     for (INT32 x = 0; x < SIZEMTX; x++) {
       BattleRoom* curRoom = battleRoom[x][y];
       if (curRoom == nullptr) continue;
-
-      if (curRoom == beginRoom)
-        curRoom->roomType = BEGIN;
-      else if (curRoom == endRoom)
-        curRoom->roomType = END;
-      else curRoom->roomType = NORMAL;
 
       curRoom->knight = knight;
       curRoom->createMap();
@@ -266,9 +261,16 @@ void BattleScene::randomGenerate(INT32 stX, INT32 stY) {
 //随机生成下一个房间
 void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
                               queue<BattleRoom*>& q) {
-  if (cntRoom >= MAXROOM) return;
+  INT32 additionalRoom = 0;
 
-  srand(time(nullptr));
+  if (battleSceneNumber % 5 != 1 && battleSceneNumber % 5 != 2) {
+    INT32 temp = battleSceneNumber % 5 ? battleSceneNumber % 5 : 4;
+    additionalRoom = temp - 2;
+  } //关卡数靠后增加额外房间 暂时最多8个房间 房间太多会卡
+
+  if (cntRoom >= MAXROOM + additionalRoom) return;
+
+  srand(static_cast<unsigned int>(time(nullptr)));
 
   vector<INT32> vecDir;
 
@@ -283,7 +285,7 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
 
   if (vecDir.empty()) return;
 
-  INT32 cntDirChosen = max(2U, (rand() % (vecDir.size() + 1)));
+  INT32 cntDirChosen = max(2U, (rand() % (vecDir.size() + 1U)));
 
   // randomly choose direction
   for (INT32 i = 0; i < cntDirChosen; i++) {
@@ -309,17 +311,74 @@ void BattleScene::getToRoom(INT32 x, INT32 y, BattleRoom* curRoom,
   }
 }
 
-void BattleScene::initMiniMap() {
+void BattleScene::setRoomType() {
+  Vector<BattleRoom*> vecRoom;           //用于确定特殊房间
+  INT32 cntDirEndRoom = 0;
+  for (INT32 dir = 0; dir < CNTDIR; dir++)
+    if (endRoom->visDir[dir] == true) cntDirEndRoom++;
+
+  for (INT32 y = 0; y < SIZEMTX; y++) {  //判断房间类型并生成地图
+    for (INT32 x = 0; x < SIZEMTX; x++) {
+      BattleRoom* curRoom = battleRoom[x][y];
+      if (curRoom == nullptr) continue;
+
+      if (curRoom == beginRoom)
+        curRoom->roomType = BEGIN;
+      else if (curRoom == endRoom)
+        curRoom->roomType = END;
+      else
+        curRoom->roomType = NORMAL;
+
+      bool notConnectedToBeginAndEnd = true;
+      //判断一个房间是否与起点终点相连 相连则设为普通房间 否则待随机选择
+      for (INT32 dir = 0; dir < CNTDIR; dir++) {
+        if (curRoom == beginRoom || curRoom == endRoom) {
+          notConnectedToBeginAndEnd = false;
+          break;
+        }
+        if (curRoom->visDir[dir] == false) continue;
+
+        BattleRoom* toRoom = battleRoom[x + DIRX[dir]][y + DIRY[dir]];
+        if (toRoom == beginRoom || (toRoom == endRoom && cntDirEndRoom < 2))
+          notConnectedToBeginAndEnd = false;  //与起始房间和终点相连
+      }
+      if (notConnectedToBeginAndEnd) vecRoom.pushBack(curRoom);
+    }
+  }
+
+  log("room size %d", vecRoom.size());
+  for (INT32 i = 0, roomIndex = 0; i < 3; i++) {  //分别设置 武器 道具 Boss房间
+    if (vecRoom.size() == 0) break;
+
+    roomIndex = rand() % vecRoom.size(); //随机选一个房间
+    BattleRoom* curRoom = vecRoom.at(roomIndex);
+    vecRoom.erase(vecRoom.begin() + roomIndex);
+    if (i == 0)
+      curRoom->roomType = WEAPON;
+    else if (i == 1)
+      curRoom->roomType = PROP;
+    else if (i == 2 && battleSceneNumber % 5 == 0)
+      curRoom->roomType = BOSS;
+  }
+}
+
+void BattleScene::initMiniMap() { //初始化小地图
   for (int x = 0; x < SIZEMTX; x++) {
     for (int y = 0; y < SIZEMTX; y++) {
       if (battleRoom[x][y] == nullptr) continue;
-      Color4F color;
+      Color4F color; //根据房间类型选择小地图颜色
       if (battleRoom[x][y] == beginRoom)
         color = Color4F(.0f, 0.9f, .0f, 0.5f);
       else if (battleRoom[x][y] == endRoom)
         color = Color4F(.0f, .0f, 1.0f, 0.7f);
-      else
+      else if (battleRoom[x][y]->roomType == NORMAL)
         color = Color4F(0.0f, 0.0f, 0.0f, 0.75f);
+      else if (battleRoom[x][y]->roomType == BOSS)
+        color = Color4F(0.9f, 0.0f, 0.0f, 0.5f);
+      else if (battleRoom[x][y]->roomType == PROP)
+        color = Color4F(1.0f, 0.8f, 0.0f, 0.5f);
+      else if (battleRoom[x][y]->roomType == WEAPON)
+        color = Color4F(1.0f, 0.5f, 0.0f, 0.5f);
 
       miniMap->miniRoom[x][y] = MiniRoom::create();
       miniMap->miniRoom[x][y]->createRoom(x, y, color);
@@ -390,7 +449,10 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     
     auto miniHall = DrawNode::create(); //生成小地图走廊
     miniHall->setGlobalZOrder(TOP);
+
+#ifndef DEBUG
     miniHall->setVisible(false);
+#endif  // ! 
 
     auto hall = Hall::create(); //生成地图走廊
     hall->knight = knight;
