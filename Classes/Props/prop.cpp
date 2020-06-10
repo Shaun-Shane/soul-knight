@@ -27,6 +27,9 @@ void Prop::useProps(Knight* knight)
     knight->setHP(2 + (knight->getHP()));
       break;
   case 4:
+    INT32 curMP = knight->getMP() + 20;
+    if (curMP >= 200) curMP = 200;
+    knight->setMP(curMP);
     knight->setMP(25 + (knight->getMP()));
     break;
   }
