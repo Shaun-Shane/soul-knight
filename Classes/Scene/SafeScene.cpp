@@ -124,6 +124,9 @@ bool SafeScene::init() {
   this->knight = Knight::create();
   this->knight->bindSprite(Sprite::create("Character//Knight1.png"),
                            LayerPlayer);
+  this->knight->addShadow(Point(knight->getContentSize().width / 2,
+                                knight->getContentSize().height / 11),
+                          LayerPlayer);
 
   this->knight->setPosition(Point(visibleSize.width / 2, 40));
   this->addChild(this->knight);
