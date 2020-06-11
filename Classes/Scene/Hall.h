@@ -4,8 +4,10 @@
 #include "cocos2d.h"
 #include "Const/Const.h"
 #include "Actor/Knight.h"
-#include "Attack/Bullet.h"
+
 USING_NS_CC;
+
+class Bullet;
 
 class Hall : public Node{
   friend class BattleScene;
@@ -29,7 +31,7 @@ class Hall : public Node{
 
   Vector<Bullet*>& getVecPlayerBullet(); 
 
-  bool isInScreen(Vec2 pos);
+  bool isInRange(Vec2 pos);
 
   void bulletMove();
 
