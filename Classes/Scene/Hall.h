@@ -25,7 +25,7 @@ class Hall : public Node{
 
   void generateFloor(float, float, INT32);
 
-  void generateWall(float, float, INT32);
+  void generateWall(float, float, INT32, bool);
 
   Vector<Bullet*>& getVecPlayerBullet(); 
 

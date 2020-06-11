@@ -32,7 +32,7 @@ void Hall::generateFloor(float X, float Y, INT32 layer) {
   vecFloor.pushBack(tmpSprite);
 }
 
-void Hall::generateWall(float X, float Y, INT32 layer) {
+void Hall::generateWall(float X, float Y, INT32 layer, bool addShadow) {
   INT32 randomNum = rand();
   Sprite* tmpSprite = nullptr;
   Value imageName("");
@@ -54,8 +54,15 @@ void Hall::generateWall(float X, float Y, INT32 layer) {
   tmpSprite->setGlobalZOrder(LayerPlayer - 2);
   tmpSprite->setPosition(Point(X, Y + (WALLHEIGHT - FLOORHEIGHT) - 30));
   vecWall.pushBack(tmpSprite);
+  //downside of the wall
 
-  
+  if (addShadow) { //添加阴影
+    auto shadow = Sprite::create("Map//RectShadow.png");
+    shadow->setGlobalZOrder(LayerPlayer - 1);
+    shadow->setPosition(Point(20, -8));
+    shadow->setOpacity(130);
+    tmpSprite->addChild(shadow);
+  }
 }
 
 void Hall::createMap() {
@@ -70,11 +77,11 @@ void Hall::createMap() {
     for (INT32 W = 0; W <= sizeWidth - 1; W++) {
       if ((dir % 2 == 0) && (H == 0 || H == sizeHeight - 1)) {
         if (H == 0)
-          generateWall(curX, curY, LayerPlayer + 1);
+          generateWall(curX, curY, LayerPlayer + 1, false);
         else
-          generateWall(curX, curY, LayerPlayer - 1);
+          generateWall(curX, curY, LayerPlayer - 1, true);
       } else if ((dir % 2 == 1) && (W == 0 || W == sizeWidth - 1)) {
-        generateWall(curX, curY, LayerPlayer + 1);
+        generateWall(curX, curY, LayerPlayer + 1, false);
       } else {
         generateFloor(curX, curY, LayerPlayer - 2);
       }

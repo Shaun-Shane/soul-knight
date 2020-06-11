@@ -62,6 +62,13 @@ void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
 
   tmpSprite->setPosition(Point(X, Y + FLOORHEIGHT / 2));
   tmpSprite->setVisible(false);  // closeDoor images are not visible at first
+
+  auto shadow = Sprite::create("Map//RectShadow.png");
+  shadow->setGlobalZOrder(LayerPlayer - 1);
+  shadow->setPosition(Point(20, -8));
+  shadow->setOpacity(130);
+  tmpSprite->addChild(shadow);
+  //添加阴影
 }
 
 void BattleRoom::createMap() {
@@ -83,6 +90,15 @@ void BattleRoom::createMap() {
     sizeWidth += 6, sizeHeight += 6;
   }
 
+  addMapElement(); //添加地图元素: 地板 墙 门
+
+  if (roomType == NORMAL)
+    createEnemy();
+  else if (roomType == BOSS)
+    createBoss();
+}
+
+void BattleRoom::addMapElement() {
   const float X = centerX - FLOORWIDTH * (sizeWidth / 2);
   const float Y = centerY + FLOORHEIGHT * (sizeHeight / 2);
   //(X, Y) is upLeft Position;
@@ -112,27 +128,28 @@ void BattleRoom::createMap() {
           else
             generateDoor(curX, curY, LayerPlayer - 1);
         } else if (H != sizeHeight - 1 || W == 0 || W == sizeWidth - 1) {
-          generateWall(curX, curY, LayerPlayer + 1);
+          if (H == sizeHeight / 2 + SIZEHALL - 4)
+            generateWall(curX, curY, LayerPlayer + 1, true);
+          else
+            generateWall(curX, curY, LayerPlayer + 1, false);
         } else if (visDir[UP] && H == sizeHeight - 1 &&
                    (W == sizeWidth / 2 - 3 ||
                     W == sizeWidth / 2 + SIZEHALL - 4)) {
-          generateWall(curX, curY, LayerPlayer + 2);
+          generateWall(curX, curY, LayerPlayer + 2, true);
         } else {
-          generateWall(curX, curY, LayerPlayer - 1);
+          if (H == sizeHeight - 1)  //上方的墙添加阴影
+            generateWall(curX, curY, LayerPlayer - 1, true);
+          else
+            generateWall(curX, curY, LayerPlayer - 1, false);
         }
       } else {
         generateFloor(curX, curY, LayerPlayer - 2);
-      } // randomly generate floor and Wall
-      
+      }  // randomly generate floor and Wall
+
       curX += FLOORWIDTH;
     }
     curX = X, curY -= FLOORHEIGHT;
   }
-
-  if (roomType == NORMAL)
-    createEnemy();
-  else if (roomType == BOSS)
-    createBoss();
 }
 
 void BattleRoom::createEnemy() {

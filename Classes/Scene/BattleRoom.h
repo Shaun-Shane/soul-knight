@@ -25,6 +25,8 @@ class BattleRoom : public Hall {
 
   void createMap() override; //生成该房间地图
 
+  void addMapElement(); //添加地图元素: 地板 墙 门
+
   bool checkPlayerPosition(Knight*, float&, float&) override;
 
   void setCenter(float, float); // 设置中心
