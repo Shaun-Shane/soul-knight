@@ -34,6 +34,9 @@ class BattleScene : public Scene {
 
  private:
   void updatePlayerPos();
+  void updatePlayerInfoBar();
+  void updateEnemy();
+  void checkEndRoom();
 
   void initRoom(); //generate room randomly
   void initMiniMap();

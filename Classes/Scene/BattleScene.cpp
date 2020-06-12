@@ -114,40 +114,14 @@ bool BattleScene::init() {
 }
 
 void BattleScene::update(float delta) {
-  knight->resumeArmor();
-  updatePlayerPos();
+  knight->resumeArmor(); //更新护甲
 
-  /*进度条更新*/
-  BloodLoadingBar->setPercent(knight->getHP() * 100 / 5);
-  ArmorLoadingBar->setPercent(knight->getArmor() * 100 / 5);
-  MPLoadingBar->setPercent(float(knight->getMP()) / 200.0f * 100);
+  updatePlayerPos(); //画面位置更新
+  updatePlayerInfoBar(); //进度条更新
 
-  /*状态信息更新*/
-  HPLabel->setString(Value(knight->HP).asString() + "/5");
-  armorLabel->setString(Value(knight->armor).asString() + "/5");
-  MPLabel->setString(Value(knight->MP).asString() + "/200");
+  updateEnemy(); //更新敌人
 
-  if (knight->atBattleRoom == nullptr) return;
-
-  for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
-    if (enemy->getParent() == nullptr) continue; //防止死亡的敌人指针还未被释放
-    enemy->aiOfEnemy(knight, knight->atBattleRoom);
-  }
-
-  if (knight->atBattleRoom == endRoom) { //到达终点 进入
-    if (knight->getPosition().distance(endRoom->portal->getPosition()) < 10.0f) {
-      BattleScene::knight->retain();
-      BattleScene::knight->removeFromParent();  //从该场景移除
-      BattleScene::battleSceneNumber++; //关卡编号+1
-
-      assert(BattleScene::knight->getParent() == nullptr);
-
-      this->cleanup();
-      this->removeAllChildren(); //释放
-      Director::getInstance()->pushScene( //进入下一个场景
-          TransitionFade::create(2.0f, BattleScene::createScene()));
-    }
-  }
+  checkEndRoom(); //检查终点
 }
 
 void BattleScene::updatePlayerPos() {
@@ -195,11 +169,82 @@ void BattleScene::updatePlayerPos() {
     for (INT32 x = 0; x < SIZEMTX; x++) {
       if (battleRoom[x][y] == nullptr) continue;
       BattleRoom* curRoom = battleRoom[x][y];
+      curRoom->centerX -= ispeedX, curRoom->centerY -= ispeedY;
       curRoom->changePositionBy(-ispeedX, -ispeedY);
     }
   }
   for (auto hall : vecHall) { //修改所有子类位置
     hall->changePositionBy(-ispeedX, -ispeedY);
+  }
+}
+
+void BattleScene::updatePlayerInfoBar() { //更新人物信息显示
+  /*进度条更新*/
+  BloodLoadingBar->setPercent(knight->getHP() * 100 / 5);
+  ArmorLoadingBar->setPercent(knight->getArmor() * 100 / 5);
+  MPLoadingBar->setPercent(float(knight->getMP()) / 200.0f * 100);
+
+  /*状态信息更新*/
+  HPLabel->setString(Value(knight->HP).asString() + "/5");
+  armorLabel->setString(Value(knight->armor).asString() + "/5");
+  MPLabel->setString(Value(knight->MP).asString() + "/200");
+}
+
+void BattleScene::updateEnemy() { //更新敌人
+  if (knight->atBattleRoom == nullptr) return;
+
+  if (knight->atBattleRoom->allKilled()) {
+    auto curRoom = knight->atBattleRoom;
+
+    for (INT32 dir = 0; dir < CNTDIR; dir++) { //该房间怪物击杀后 相邻房间生成怪物
+      if (!curRoom->visDir[dir]) continue;
+      auto toRoom = battleRoom[curRoom->x + DIRX[dir]][curRoom->y + DIRY[dir]];
+      if (toRoom->allKilled() == false || toRoom->playerVisited) continue;
+
+      if (toRoom->roomType == NORMAL)
+        toRoom->createEnemy();
+      else if (toRoom->roomType == BOSS)
+        toRoom->createBoss();
+    }
+    return;
+  }
+
+  for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
+    if (enemy->getParent() == nullptr) continue;  //防止死亡的敌人指针还未被释放
+    enemy->aiOfEnemy(knight, knight->atBattleRoom);
+  }
+}
+
+void BattleScene::checkEndRoom() { //检查房间终点
+  if (knight->atBattleRoom == nullptr) return;
+
+  if (knight->atBattleRoom == endRoom) {  //到达终点 进入
+    if (endRoom->portal == nullptr) {
+      if (endRoom->boss->getParent() == nullptr || endRoom->boss->getHP() <= 0) {
+        //boss被击杀 加入传送门
+        Sprite* portal = Sprite::create("Map//portal3.png");
+        portal->setPosition(Point(endRoom->centerX, endRoom->centerY));
+        endRoom->portal = portal;
+
+        endRoom->addChild(portal);
+        portal->setGlobalZOrder(LayerPlayer - 1);
+      }
+      return;
+    }
+
+    if (knight->getPosition().distance(endRoom->portal->getPosition()) <
+        10.0f) {
+      BattleScene::knight->retain();
+      BattleScene::knight->removeFromParent();  //从该场景移除
+      BattleScene::battleSceneNumber++;         //关卡编号+1
+
+      assert(BattleScene::knight->getParent() == nullptr);
+
+      this->cleanup();
+      this->removeAllChildren();           //释放
+      Director::getInstance()->pushScene(  //进入下一个场景
+          TransitionFade::create(2.0f, BattleScene::createScene()));
+    }
   }
 }
 
@@ -330,30 +375,34 @@ void BattleScene::setRoomType() {
 
       if (curRoom == beginRoom)
         curRoom->roomType = BEGIN;
-      else if (curRoom == endRoom)
-        curRoom->roomType = END;
+      else if (curRoom == endRoom) {
+        if (battleSceneNumber % 5 == 0) //终点为boss房间
+          curRoom->roomType = BOSS;
+        else
+          curRoom->roomType = END;
+      }
       else
         curRoom->roomType = NORMAL;
 
-      bool notConnectedToBeginAndEnd = true;
-      //判断一个房间是否与起点终点相连 相连则设为普通房间 否则待随机选择
+      bool notConnectedToBegin = true;
+      //判断一个房间是否与起点相连 相连则设为普通房间 否则待随机选择
       for (INT32 dir = 0; dir < CNTDIR; dir++) {
         if (curRoom == beginRoom || curRoom == endRoom) {
-          notConnectedToBeginAndEnd = false;
+          notConnectedToBegin = false;
           break;
         }
         if (curRoom->visDir[dir] == false) continue;
 
         BattleRoom* toRoom = battleRoom[x + DIRX[dir]][y + DIRY[dir]];
-        if (toRoom == beginRoom || (toRoom == endRoom && cntDirEndRoom < 2))
-          notConnectedToBeginAndEnd = false;  //与起始房间和终点相连
+        if (toRoom == beginRoom)
+          notConnectedToBegin = false;  //与起始房间和终点相连
       }
-      if (notConnectedToBeginAndEnd) vecRoom.pushBack(curRoom);
+      if (notConnectedToBegin) vecRoom.pushBack(curRoom);
     }
   }
 
   log("room size %d", vecRoom.size());
-  for (INT32 i = 0, roomIndex = 0; i < 3; i++) {  //分别设置 武器 道具 Boss房间
+  for (INT32 i = 0, roomIndex = 0; i < 2; i++) {  //分别设置 武器 道具
     if (vecRoom.size() == 0) break;
 
     roomIndex = rand() % vecRoom.size(); //随机选一个房间
@@ -363,8 +412,6 @@ void BattleScene::setRoomType() {
       curRoom->roomType = WEAPON;
     else if (i == 1)
       curRoom->roomType = PROP;
-    else if (i == 2 && battleSceneNumber % 5 == 0)
-      curRoom->roomType = BOSS;
   }
 }
 
@@ -373,9 +420,9 @@ void BattleScene::initMiniMap() { //初始化小地图
     for (int y = 0; y < SIZEMTX; y++) {
       if (battleRoom[x][y] == nullptr) continue;
       Color4F color; //根据房间类型选择小地图颜色
-      if (battleRoom[x][y] == beginRoom)
+      if (battleRoom[x][y]->roomType == BEGIN)
         color = Color4F(.0f, 0.9f, .0f, 0.5f);
-      else if (battleRoom[x][y] == endRoom)
+      else if (battleRoom[x][y]->roomType == END)
         color = Color4F(.0f, .0f, 1.0f, 0.7f);
       else if (battleRoom[x][y]->roomType == NORMAL)
         color = Color4F(0.0f, 0.0f, 0.0f, 0.75f);
