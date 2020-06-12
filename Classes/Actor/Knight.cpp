@@ -209,7 +209,16 @@ void Knight::useUltimateSkill() {
 
       if (sqrt(pow(getPositionX() - enemyX, 2) +
                pow(getPositionY() - enemyY, 2)) <= 220.0f)
-        e->removeFromParent();  //秒杀怪物 从父类移除
+        e->retain(), e->removeFromParent();  //秒杀怪物 从父类移除
+    }
+
+    auto boss = atBattleRoom->getBoss();
+    if (boss != nullptr && boss->getParent() != nullptr) {
+        float bossX = boss->getPositionX(),
+              bossY = boss->getPositionY();
+        if (sqrt(pow(getPositionX() - bossX, 2) +
+                 pow(getPositionY() - bossY, 2)) <= 220.0f)
+          boss->retain(), boss->removeFromParent();  //秒杀boss 从父类移除
     }
 
     if (this->atBattleRoom != nullptr) {
@@ -245,7 +254,7 @@ void Knight::deductHP(INT32 delta) {
   armor = std::max(0, armor);
 }
 
-void Knight::resumeArmor() {
+void Knight::resumeArmor() { //恢复护甲
   curTime++;
   if (armor == 5) return;
   //2秒未被攻击 则每隔一秒恢复一护甲
