@@ -141,8 +141,14 @@ void BattleRoom::createEnemy() {
   for (int i = 1; i <= 5; i++) {
     Enemy* enemy = Enemy::create();
     enemy->startCount = i * 2;
-
-    enemy->bindSprite(Sprite::create("Enemy//enemy002.png"), LayerPlayer - 1);
+    if (i < 3) {
+        enemy->bindSprite(Sprite::create("Enemy//enemy002.png"), LayerPlayer - 1);
+        enemy->setType(0);
+    }
+    else {
+        enemy->bindSprite(Sprite::create("Enemy//enemy007.png"), LayerPlayer - 1);
+        enemy->setType(1);
+    }
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 8),
                     LayerPlayer - 1);  //添加阴影
