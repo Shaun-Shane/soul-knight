@@ -108,13 +108,13 @@ bool BattleScene::init() {
   initRoom(); //战斗房间初始化 
   initMiniMap();
   connectRoom(beginRoom); //从起始房间开始联通房间
-  log("%d", vecHall.size());
-  this->scheduleUpdate(); //60帧跟新
 
+  this->scheduleUpdate(); //60帧跟新
   return true;
 }
 
 void BattleScene::update(float delta) {
+  knight->resumeArmor();
   updatePlayerPos();
 
   /*进度条更新*/
@@ -134,7 +134,7 @@ void BattleScene::update(float delta) {
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
   }
 
-  if (knight->atBattleRoom == endRoom) {
+  if (knight->atBattleRoom == endRoom) { //到达终点 进入
     if (knight->getPosition().distance(endRoom->portal->getPosition()) < 10.0f) {
       BattleScene::knight->retain();
       BattleScene::knight->removeFromParent();  //从该场景移除

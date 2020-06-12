@@ -55,7 +55,6 @@ bool Knight::init() {
   isInvincible = false;
 
   registerKeyboardEvent();
-  this->scheduleUpdate();
   return true;
 }
 
@@ -235,6 +234,25 @@ INT32 Knight::getMP() { return this->MP; }
 INT32 Knight::getArmor() { return this->armor; }
 
 void Knight::setMP(INT32 mp) { this->MP = mp; }
+
+void Knight::deductHP(INT32 delta) {
+  preAttackedTime = curTime; //被攻击的时间 用于护甲的恢复判断
+
+  armor -= delta; //护甲先直接减去扣血值
+  if (armor < 0) { //小于零则HP加上护甲抵消后的扣血值
+    HP = std::max(0, HP + armor);
+  }
+  armor = std::max(0, armor);
+}
+
+void Knight::resumeArmor() {
+  curTime++;
+  if (armor == 5) return;
+  //2秒未被攻击 则每隔一秒恢复一护甲
+  if (curTime - preAttackedTime >= 120 && (curTime - preAttackedTime) % 55 == 0) {
+    armor++;
+  }
+}
 
 void Knight::weaponAttack(
     Vec2 last) {  //写得有点啰嗦，有空再精简，不过感觉不好精简了
