@@ -57,11 +57,9 @@ bool SetScene::init()
 	this->addChild(Menu02, 1);
 	this->addChild(Menu03, 1);
 
-	Menu02->setVisible(false);
-
 	/*音量控制按钮*/
 	auto volumeLab = Label::createWithTTF("Volume : ", "fonts/Marker Felt.ttf", 72);
-	volumeNumLab = Label::createWithTTF("50", "fonts/Marker Felt.ttf", 72);
+	volumeNumLab = Label::createWithTTF("100", "fonts/Marker Felt.ttf", 72);
 	auto volumeHigherLab = Label::createWithTTF("+", "fonts/Marker Felt.ttf", 150);
 	auto volumeLowerLab = Label::createWithTTF("-", "fonts/Marker Felt.ttf", 150);
 
@@ -80,6 +78,36 @@ bool SetScene::init()
 	this->addChild(volumeNumLab, 1);
 	this->addChild(MenuHigherVolume, 1);
 	this->addChild(MenuLowerVolume, 1);
+
+	/*修改音量数值*/
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+
+	/*获取音量数值（将其转成10的倍数）*/
+	INT32 tem = audio->getBackgroundMusicVolume() * 100 / 1;
+	if (tem % 10 >= 5) {
+		volume = tem / 10 * 10 + 10;
+	}
+	else {
+		volume = tem / 10 * 10;
+	}
+
+	volumeNumLab->setString(Value(volume).asString());
+
+	if (volume == 0) {
+		MenuLowerVolume->setOpacity(100);
+	}else if (volume == 100) {
+		MenuHigherVolume->setOpacity(100);
+	}
+
+	/*修改ON/OFF状态*/
+	if (audio->isBackgroundMusicPlaying()) {
+		Menu01->setVisible(true);
+		Menu02->setVisible(false);
+	}
+	else {
+		Menu01->setVisible(false);
+		Menu02->setVisible(true);
+	}
 
 	return true;
 }

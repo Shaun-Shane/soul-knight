@@ -88,7 +88,7 @@ void StartScene::menuCloseCallbackEnd(Ref* pSender)
 /*开始游戏*/
 void StartScene::menuCloseCallbackStart(Ref* pSender)
 {
-	Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f,SafeScene::createScene()));
+	Director::getInstance()->pushScene(TransitionCrossFade::create(2.0f,SafeScene::createScene()));
 }
 
 /*进入设置面板*/

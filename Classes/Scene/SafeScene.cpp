@@ -161,8 +161,7 @@ void SafeScene::initBG() {
 
 /*退出游戏*/
 void SafeScene::menuCloseCallbackEnd(Ref* pSender) {
-  Director::getInstance()->replaceScene(
-      TransitionFade::create(1.0f, StartScene::createScene()));
+	Director::getInstance()->popScene();
 }
 
 /*进入设置面板*/
