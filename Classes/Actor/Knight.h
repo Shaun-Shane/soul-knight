@@ -13,7 +13,7 @@ class Prop;
 class Knight : public Entity {
   friend class BattleScene;
   friend class SafeScene;
-  static constexpr float moveSpeed = 5.0f;
+  static constexpr float moveSpeed = 5.8f;
 
  public:
   Knight();
@@ -37,7 +37,8 @@ class Knight : public Entity {
   bool getNeedCreateBox();
   
   INT32 getMP();
-
+  void deductHP(INT32) override;  //扣血
+  void resumeArmor(); //恢复护甲
   INT32 getArmor();
 
   void setMP(INT32);
@@ -50,8 +51,9 @@ class Knight : public Entity {
 
  private:
   INT32 armor;
-
   INT32 MP;
+
+  time_t preAttackedTime = 0, curTime = 0;
 
   Weapon* weapon;
 

@@ -12,10 +12,12 @@ public :
 
   Sprite* getSprite();
   void bindSprite(Sprite* sprite, INT32 layer);
+  void addShadow(const Point&, INT32);  //添加影子
 
   INT32 getHP(); // return HP of this entity
-  void deductHP(INT32); //扣血
+  virtual void deductHP(INT32); //扣血
   void setHP(INT32 HP);
+
   float getMoveSpeedX();
   float getMoveSpeedY();
 

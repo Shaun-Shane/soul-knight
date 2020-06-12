@@ -32,6 +32,17 @@ void Entity::bindSprite(Sprite* sprite, INT32 layer) {
   sprite->setPosition(Point(size.width / 2, size.height / 2));
 }
 
+void Entity::addShadow(const Point& center, INT32 layer) { //添加阴影
+  auto entityCircle = DrawNode::create();
+
+  entityCircle->drawSolidCircle(center, this->getContentSize().width / 2.7f,
+                                CC_DEGREES_TO_RADIANS(360), 20, 1.0f, 0.35f,
+                                Color4F(.0f, .0f, .0f, 0.5f));
+
+  entityCircle->setGlobalZOrder(layer - 1);
+  this->addChild(entityCircle);
+}
+
 INT32 Entity::getHP() { //return HP of this entity
   if (getSprite() == nullptr) {
     log("null Sprite !");
@@ -46,7 +57,7 @@ float Entity::getMoveSpeedY() { return moveSpeedY; }
 
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
-  this->HP =this->HP- delta;
+  this->HP = std::max(0, this->HP - delta);
 }
 
 void Entity::setHP(INT32 HP) { this->HP = HP; }

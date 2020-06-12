@@ -4,6 +4,7 @@
 #include "Actor\Knight.h"
 #include "Enemy\Enemy.h"
 #include "BattleRoom.h"
+#include "SafeScene.h"
 #include "Hall.h"
 #include "Const\Const.h"
 #include "MiniMap\MiniMap.h"
@@ -16,11 +17,13 @@ USING_NS_CC;
 using std::queue;
 
 class BattleScene : public Scene {
+  friend class SafeScene;
   static constexpr INT32 SIZEMTX = 5;
   static constexpr INT32 MAXROOM = 6; // temporarily make it 6
 
  public:
   static Scene* createScene();
+
   virtual bool init();
   virtual void update(float delta);
   CREATE_FUNC(BattleScene);
@@ -31,21 +34,29 @@ class BattleScene : public Scene {
 
  private:
   void updatePlayerPos();
+  void updatePlayerInfoBar();
+  void updateEnemy();
+  void checkEndRoom();
 
   void initRoom(); //generate room randomly
   void initMiniMap();
 
   void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
+  void setRoomType();
 
   void setHallWithWidth(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void setHallWithHeight(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void connectRoom(BattleRoom*);
 
  private:
+  static INT32 battleSceneNumber;
+
   INT32 cntRoom = 0;
+
  private:
-  Knight* knight = nullptr;
+  static Knight* knight;
+
   MiniMap* miniMap = nullptr;
   
  // temporarily just one kind of map floor and wall
