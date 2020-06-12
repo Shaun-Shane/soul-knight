@@ -45,6 +45,8 @@ class BattleRoom : public Hall {
 
   Vector<Weapon*>& getVecWeapon();
 
+  Boss* getBoss(); //返回Boss指针
+
   void playerBulletCollistionCheck();
 
   bool allKilled();

@@ -93,11 +93,6 @@ void BattleRoom::createMap() {
   }
 
   addMapElement();  //添加地图元素: 地板 墙 门
-
-  if (roomType == NORMAL)
-    createEnemy();
-  else if (roomType == BOSS)
-    createBoss();
 }
 
 void BattleRoom::addMapElement() {
@@ -217,7 +212,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
   if (knightX >= upLeftX - FLOORWIDTH && knightX <= downRightX + FLOORWIDTH &&
       knightY <= upLeftY + FLOORHEIGHT && knightY >= downRightY - FLOORHEIGHT) {
     // log("%d %d %d %d", visDir[0], visDir[1], visDir[2], visDir[3]);
-    if (vecEnemy.empty()) {
+    if (allKilled()) {
       openDoor();
       if (roomType == BEGIN)
         knight->setNeedCreateBox(false);
@@ -236,7 +231,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
       closeDoor();
     }
 
-    if (!vecEnemy.empty()) {
+    if (!allKilled()) {
       if (ispeedX > 0 && knightX >= downRightX) ispeedX = .0f;
       if (ispeedX < 0 && knightX <= upLeftX) ispeedX = .0f;
       if (ispeedY > 0 && knightY >= upLeftY + 20) ispeedY = .0f;
@@ -275,6 +270,8 @@ Vector<Prop*>& BattleRoom::getVecProps() { return this->vecProps; }
 
 Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
 
+Boss* BattleRoom::getBoss() { return boss; }
+
 void BattleRoom::playerBulletCollistionCheck() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
     auto bullet = vecPlayerBullet.at(i);
@@ -307,6 +304,9 @@ bool BattleRoom::allKilled() {
   for (auto e : vecEnemy) {
     if (e->getParent() != nullptr) allKilled = false;
   }
+
+  if (boss != nullptr && boss->getParent() != nullptr) allKilled = false;
+
   return allKilled;
 }
 
@@ -326,19 +326,19 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setFireSpeed(25.0f);
       weapon->setAttack(1);
       weapon->setMPConsumption(1);
-      weapon->bindSprite(Sprite::create("Weapon//weapon2.png"), TOP);
+      weapon->bindSprite(Sprite::create("Weapon//weapon2.png"), LayerPlayer);
       break;
     case 1:
       weapon->setFireSpeed(23.0f);
       weapon->setAttack(4);
       weapon->setMPConsumption(3);
-      weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), TOP);
+      weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), LayerPlayer);
       break;
     case 2:
       weapon->setFireSpeed(24.0f);
       weapon->setAttack(6);
       weapon->setMPConsumption(4);
-      weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), TOP);
+      weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
       break;
   }
   weapon->setPosition(
