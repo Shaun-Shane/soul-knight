@@ -7,11 +7,18 @@ using std::max;
 
 Scene* BattleScene::createScene() { return BattleScene::create(); }
 
+INT32 BattleScene::getSceneNumber() { return battleSceneNumber; }
+
+const vector<string>& BattleScene::getVecSceneType() { return vecSceneType; }
+
 bool BattleScene::init() {
   if (!Scene::init()) {
     return false;
   }
   log("%d", battleSceneNumber);
+  for (auto s : vecSceneType) {
+    log("%s", Value(s).asString().c_str());
+  }
 
   Size visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -237,6 +244,13 @@ void BattleScene::checkEndRoom() { //检查房间终点
       BattleScene::knight->retain();
       BattleScene::knight->removeFromParent();  //从该场景移除
       BattleScene::battleSceneNumber++;         //关卡编号+1
+
+      INT32 num = BattleScene::battleSceneNumber;
+      num = num % 5 == 0 ? num / 5 : num / 5 + 1;
+      if (num % vecSceneType.size() == 1) { //每过size关再随机打乱一次
+        std::random_shuffle(BattleScene::vecSceneType.begin(),
+                            BattleScene::vecSceneType.end());
+      }
 
       assert(BattleScene::knight->getParent() == nullptr);
 

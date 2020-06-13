@@ -15,6 +15,8 @@
 
 USING_NS_CC;
 using std::queue;
+using std::vector;
+using std::string;
 
 class BattleScene : public Scene {
   friend class SafeScene;
@@ -23,6 +25,8 @@ class BattleScene : public Scene {
 
  public:
   static Scene* createScene();
+  static INT32 getSceneNumber(); //获取场景编号
+  static const vector<string>& getVecSceneType(); //获取场景类型容器
 
   virtual bool init();
   virtual void update(float delta);
@@ -51,6 +55,7 @@ class BattleScene : public Scene {
 
  private:
   static INT32 battleSceneNumber;
+  static vector<string> vecSceneType; //场景类型
 
   INT32 cntRoom = 0;
 

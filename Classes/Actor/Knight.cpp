@@ -1,5 +1,5 @@
 ﻿#include "Knight.h"
-
+#define DEBUG
 #include "Attack/Weapon.h"
 #include "Scene\BattleRoom.h"
 #include "Scene\Hall.h"
@@ -176,7 +176,10 @@ void Knight::registerKeyboardEvent() {
 void Knight::useUltimateSkill() {
   if (this->MP >= 120) {
     log("using ultimate skill!");
+
+   #ifndef DEBUG
     this->setMP(this->getMP() - 120);
+   #endif  //
 
     auto skillCircle = DrawNode::create();
     skillCircle->drawSolidCircle(Point(this->getContentSize().width / 2,

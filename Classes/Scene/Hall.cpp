@@ -1,5 +1,6 @@
 ﻿#include "Hall.h"
 #include "Attack/Bullet.h"
+#include "BattleScene.h"
 
 bool Hall::init() {
   upLeftX = .0f, upLeftY = .0f;
@@ -15,15 +16,22 @@ void Hall::update(float delta) { this->bulletMove(); }
 
 void Hall::generateFloor(float X, float Y, INT32 layer) {
   INT32 randomNum = rand();
+
   Sprite* tmpSprite = nullptr;
-  Value imageName("");
+
+  INT32 sceneTypeIndex = BattleScene::getSceneNumber();
+  sceneTypeIndex =
+      sceneTypeIndex % 5 == 0 ? sceneTypeIndex / 5 : sceneTypeIndex / 5 + 1;
+  (sceneTypeIndex -= 1) %= BattleScene::getVecSceneType().size();
+  Value imageName = Value(BattleScene::getVecSceneType().at(sceneTypeIndex));
+  //选取场景类型
 
   if (randomNum % 4 == 0)
-    imageName = "Map//floor3.png";
+    imageName = imageName.asString() + "floor3.png";
   else if (randomNum % 3 == 0)
-    imageName = "Map//floor2.png";
+    imageName = imageName.asString() + "floor2.png";
   else
-    imageName = "Map//floor1.png";
+    imageName = imageName.asString() + "floor1.png";
 
   tmpSprite = Sprite::create(imageName.asString().c_str());
   this->addChild(tmpSprite);
@@ -34,13 +42,19 @@ void Hall::generateFloor(float X, float Y, INT32 layer) {
 
 void Hall::generateWall(float X, float Y, INT32 layer, bool addShadow) {
   INT32 randomNum = rand();
+
   Sprite* tmpSprite = nullptr;
-  Value imageName("");
+  INT32 sceneTypeIndex = BattleScene::getSceneNumber();
+  sceneTypeIndex =
+      sceneTypeIndex % 5 == 0 ? sceneTypeIndex / 5 : sceneTypeIndex / 5 + 1;
+  (sceneTypeIndex -= 1) %= BattleScene::getVecSceneType().size();
+  Value imageName = Value(BattleScene::getVecSceneType().at(sceneTypeIndex));
+  //选取场景类型
 
   if (randomNum % 6 == 0)
-    imageName = "Map//wall2.png";
+    imageName = imageName.asString() + "wall2.png";
   else
-    imageName = "Map//wall1.png";
+    imageName = imageName.asString()  + "wall1.png";
 
   tmpSprite = Sprite::create(imageName.asString().c_str(), Rect(0, 0, 40, 35));
   this->addChild(tmpSprite, layer);

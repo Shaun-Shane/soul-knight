@@ -12,6 +12,10 @@ Knight* BattleScene::knight = nullptr;
 
 INT32 BattleScene::battleSceneNumber = 0;
 
+vector<string> BattleScene::vecSceneType = {"Map//Forest//", "Map//Knight//",
+                                            "Map//Lava//", "Map//Alien//",
+                                            "Map//Skeleton//"};
+
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 
 void SafeScene::update(float delta) {
@@ -48,8 +52,10 @@ void SafeScene::update(float delta) {
   if (isInDoor()) {
     BattleScene::knight = this->knight;
     BattleScene::knight->retain();
-    BattleScene::knight->removeFromParent(); //从该场景移除
+    BattleScene::knight->removeFromParent();  //从该场景移除
     BattleScene::battleSceneNumber++;
+    std::random_shuffle(BattleScene::vecSceneType.begin(),
+                        BattleScene::vecSceneType.end()); //打乱场景类型
 
 #ifdef DEBUG
     BattleScene::battleSceneNumber = 5;
@@ -57,8 +63,9 @@ void SafeScene::update(float delta) {
 
     assert(BattleScene::knight->getParent() == nullptr);
 
-    this->cleanup(); //暂停该场景
-    Director::getInstance()->pushScene(TransitionFade::create(2.0f, BattleScene::createScene()));
+    this->cleanup();  //暂停该场景
+    Director::getInstance()->pushScene(
+        TransitionFade::create(2.0f, BattleScene::createScene()));
   }
 }
 
@@ -161,7 +168,7 @@ void SafeScene::initBG() {
 
 /*退出游戏*/
 void SafeScene::menuCloseCallbackEnd(Ref* pSender) {
-	Director::getInstance()->popScene();
+  Director::getInstance()->popScene();
 }
 
 /*进入设置面板*/
