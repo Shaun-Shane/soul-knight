@@ -77,13 +77,16 @@ class BattleScene : public Scene {
   BattleRoom* endRoom = nullptr;
   BattleRoom* battleRoom[SIZEMTX][SIZEMTX] = {nullptr};  // room
 
-  ui::LoadingBar* BloodLoadingBar = ui::LoadingBar::create();
-  ui::LoadingBar* ArmorLoadingBar = ui::LoadingBar::create();
-  ui::LoadingBar* MPLoadingBar = ui::LoadingBar::create();
+  ui::LoadingBar* BloodLoadingBar;
+  ui::LoadingBar* ArmorLoadingBar;
+  ui::LoadingBar* MPLoadingBar;
 
   Label* HPLabel;
   Label* armorLabel;
   Label* MPLabel;
+
+  Sprite* BOSSBloodBg;
+  ui::LoadingBar* BOSSLoadingBar;
 };
 
 #endif

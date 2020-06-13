@@ -116,11 +116,40 @@ bool BattleScene::init() {
   initMiniMap();
   connectRoom(beginRoom); //从起始房间开始联通房间
 
+  if (endRoom->roomType == BOSS) {
+	  BOSSBloodBg = Sprite::create("Enemy//bossBloodBg.png");
+
+	  BOSSLoadingBar = ui::LoadingBar::create("Enemy//bossBlood.png");
+
+	  BOSSLoadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
+
+	  BOSSBloodBg->setPosition(Vec2(600, 650));
+	  BOSSLoadingBar->setPosition(Vec2(600,650));
+
+	  BOSSLoadingBar->setOpacity(150);
+
+	  this->addChild(BOSSBloodBg, TOP);
+	  this->addChild(BOSSLoadingBar, TOP);
+
+	  /*置顶*/
+	  BOSSBloodBg->setGlobalZOrder(TOP);
+	  BOSSLoadingBar->setGlobalZOrder(TOP);
+
+	  BOSSBloodBg->setVisible(false);
+	  BOSSLoadingBar->setVisible(false);//BOSS未出现时隐藏血条
+  }
   this->scheduleUpdate(); //60帧跟新
   return true;
 }
 
 void BattleScene::update(float delta) {
+	if (knight->atBattleRoom == endRoom && endRoom->roomType == BOSS) {
+		BOSSBloodBg->setVisible(true);
+		BOSSLoadingBar->setVisible(true);//显示血条
+
+		BOSSLoadingBar->setPercent((endRoom->getBoss()->getHP())*100/50);//血量更新
+	}
+
   knight->resumeArmor(); //更新护甲
 
   updatePlayerPos(); //画面位置更新
