@@ -74,12 +74,37 @@ bool Enemy::inRoom(const BattleRoom* battleRoom,Point myPos){
     return false;
 }
 
+void Enemy::spriteChangeDirection() {
+    Texture2D* change;
+    if (moveSpeedX == 0) {
+        return;
+    }
+    if (enemyType == 0) {
+        if (moveSpeedX > 0) {
+            change = TextureCache::getInstance()->addImage("Enemy//enemy002.png");
+        }
+        else{
+            change = TextureCache::getInstance()->addImage("Enemy//enemy002opposite.png");
+        }
+    }
+    else if (enemyType == 1) {
+        if (moveSpeedX > 0) {
+            change = TextureCache::getInstance()->addImage("Enemy//enemy007.png");
+        }
+        else {
+            change = TextureCache::getInstance()->addImage("Enemy//enemy007opposite.png");
+        }
+    }
+    this->getSprite()->setTexture(change);
+
+}
+
 void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   const Point enemyPos = this->getPosition();
 
   if (paceCount % 40) {
-    this->setPosition(
-        Point(enemyPos.x + 3 * DIRX[wayOfPace], enemyPos.y + 3 * DIRY[wayOfPace]));
+      moveSpeedX = 3 * DIRX[wayOfPace];
+      moveSpeedY = 3 * DIRY[wayOfPace];
     //3.0f是合移动速度
     paceCount++;
     return;
@@ -105,8 +130,8 @@ void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   assert(wayCanBeSelected.size() != 0);
 
   wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
-  this->setPosition(
-      Point(enemyPos.x + 3 * DIRX[wayOfPace], enemyPos.y + 3 * DIRY[wayOfPace]));
+  moveSpeedX = 3 * DIRX[wayOfPace];
+  moveSpeedY = 3 * DIRY[wayOfPace];
 
 }  //在没探测到骑士的时候正常的巡逻路线
 
@@ -134,14 +159,16 @@ void Enemy::aiOfEnemy(Knight* knight, const BattleRoom* battleRoom) {
             srand(static_cast<unsigned>(time(nullptr)));
             shiftSeed = rand_0_1() - 0.5;
         }
-      this->setPosition(Point(enemyPos.x + 3.0f * (knightPos.x - enemyPos.x) /
-                                               disBetweenEnemyAndKnight +3.0f*shiftSeed,
-                              enemyPos.y + 3.0f * (knightPos.y - enemyPos.y) /
-                                               disBetweenEnemyAndKnight+ 3.0f * shiftSeed));
+        moveSpeedX = 3.0f * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight + 3.0f * shiftSeed;
+        moveSpeedY = 3.0f * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight + 3.0f * shiftSeed;
       followCount++;
     } else {
       attackTheKnight(knight, disBetweenEnemyAndKnight,battleRoom);
     }
+  }
+  if (inRoom(battleRoom, Point(enemyPos.x + moveSpeedX, enemyPos.y + moveSpeedY))) {
+      this->setPosition(enemyPos.x + moveSpeedX, enemyPos.y + moveSpeedY);
+      spriteChangeDirection();
   }
 }
 
@@ -190,24 +217,22 @@ void Enemy::boarAttack(Knight* knight, float disBetweenEnemyAndKnight, const Bat
         }
         if (inRoom(battleRoom,Point(enemyPos.x + 5.0f * boarBumpDirection[0] + 0.5f * shiftSeed,
             enemyPos.y + 5.0f * boarBumpDirection[1] + 0.5f * shiftSeed))) {
-            this->setPosition(Point(enemyPos.x + 5.0f * boarBumpDirection[0] + 0.5f * shiftSeed,
-                enemyPos.y + 5.0f * boarBumpDirection[1] + 0.5f * shiftSeed));
+            moveSpeedX = 5.0f * boarBumpDirection[0] + 0.5f * shiftSeed;
+            moveSpeedY = 5.0f * boarBumpDirection[1] + 0.5f * shiftSeed;
         }
         return;
     }
 
     if (!boarRest&&boarRushCount < 90) {
         if (disBetweenEnemyAndKnight >= 50) {
-            this->setPosition(Point(enemyPos.x + 6.0f * (knightPos.x - enemyPos.x) /
-                disBetweenEnemyAndKnight,
-                enemyPos.y + 6.0f * (knightPos.y - enemyPos.y) /
-                disBetweenEnemyAndKnight));
+            moveSpeedX = 6.0f * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight;
+            moveSpeedY = 6.0f * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;
             boarBumpDirection[0] = (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight;
             boarBumpDirection[1] = (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;//保存最近的方向，给之后冲走使用
         }
         else{
-            this->setPosition(Point(enemyPos.x + 8.0f * boarBumpDirection[0],
-                enemyPos.y + 8.0f * boarBumpDirection[1]));
+            moveSpeedX = 8.0f * boarBumpDirection[0];
+            moveSpeedY = 8.0f * boarBumpDirection[1];
         }
         boarRushCount++;
     }

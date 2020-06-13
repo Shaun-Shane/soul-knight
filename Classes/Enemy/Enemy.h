@@ -34,6 +34,7 @@ class Enemy : public Entity {
   void attackTheKnight(Knight* knight, float disBetweenEnemyAndKnight, const BattleRoom* battleRoom);
   void setAttackRange();
   bool inRoom(const BattleRoom* battleRoom,Point myPos);
+  void spriteChangeDirection();
 
 private:
     void archerAttack(Knight* knight, float disBetweenEnemyAndKnight);//当敌人设定类型为弓箭手时调用的攻击函数
@@ -54,6 +55,10 @@ private:
   std::vector<INT32> wayCanBeSelected;  //可供选择的行走方向
   float shiftSeed=0.0f;
   INT32 followCount = 0;
+
+  float moveSpeedX = 0;
+  float moveSpeedY = 0;
+
 };
 
 #endif
