@@ -35,7 +35,6 @@ class Enemy : public Entity {
   void setAttackRange();
   bool inRoom(const BattleRoom* battleRoom,Point myPos);
   void spriteChangeDirection();
-  void recordX(float x);
 
 private:
     void archerAttack(Knight* knight, float disBetweenEnemyAndKnight);//当敌人设定类型为弓箭手时调用的攻击函数
@@ -57,9 +56,9 @@ private:
   float shiftSeed=0.0f;
   INT32 followCount = 0;
 
-  bool xWayJustChanged = false;//判断x方向速度的正负是否刚改变过
-  bool xIsPositive = true;//判断x方向正负，与上面一行变量配套使用
-  bool lastXIsPositive = true;//更前面一步x正负
+  float moveSpeedX = 0;
+  float moveSpeedY = 0;
+
 };
 
 #endif
