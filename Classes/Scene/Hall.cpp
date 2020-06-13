@@ -27,11 +27,11 @@ void Hall::generateFloor(float X, float Y, INT32 layer) {
   //选取场景类型
 
   if (randomNum % 4 == 0)
-    imageName = imageName.asString() + "floor3.png";
+    imageName = "Map//" + imageName.asString() + "floor3.png";
   else if (randomNum % 3 == 0)
-    imageName = imageName.asString() + "floor2.png";
+    imageName = "Map//" + imageName.asString() + "floor2.png";
   else
-    imageName = imageName.asString() + "floor1.png";
+    imageName = "Map//" + imageName.asString() + "floor1.png";
 
   tmpSprite = Sprite::create(imageName.asString().c_str());
   this->addChild(tmpSprite);
@@ -52,9 +52,9 @@ void Hall::generateWall(float X, float Y, INT32 layer, bool addShadow) {
   //选取场景类型
 
   if (randomNum % 6 == 0)
-    imageName = imageName.asString() + "wall2.png";
+    imageName = "Map//" + imageName.asString() + "wall2.png";
   else
-    imageName = imageName.asString()  + "wall1.png";
+    imageName = "Map//" + imageName.asString() + "wall1.png";
 
   tmpSprite = Sprite::create(imageName.asString().c_str(), Rect(0, 0, 40, 35));
   this->addChild(tmpSprite, layer);
