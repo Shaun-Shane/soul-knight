@@ -74,6 +74,37 @@ bool Enemy::inRoom(const BattleRoom* battleRoom,Point myPos){
     return false;
 }
 
+void Enemy::spriteChangeDirection() {
+    if (!xWayJustChanged) {
+        return;
+    }
+    Texture2D* change;
+    if (enemyType == 0) {
+		if (xIsPositive) {
+			change = TextureCache::getInstance()->addImage("Enemy//enemy002.png");
+		}
+		else {
+			change = TextureCache::getInstance()->addImage("Enemy//enemy002opposite.png");
+		}
+    }
+    else if (enemyType == 1) {
+        if (xIsPositive) {
+            change = TextureCache::getInstance()->addImage("Enemy//enemy007.png");
+        }
+        else {
+            change = TextureCache::getInstance()->addImage("Enemy//enemy007opposite.png");
+        }
+    }
+    this->getSprite()->setTexture(change);
+
+}
+
+void Enemy::recordX(float x){
+    lastXIsPositive = xIsPositive;
+    xIsPositive = (x >= 0);
+    xWayJustChanged = (lastXIsPositive != xIsPositive);
+}
+
 void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   const Point enemyPos = this->getPosition();
 
@@ -82,6 +113,7 @@ void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
         Point(enemyPos.x + 3 * DIRX[wayOfPace], enemyPos.y + 3 * DIRY[wayOfPace]));
     //3.0f是合移动速度
     paceCount++;
+	recordX(DIRX[wayOfPace]);
     return;
   }
 
@@ -107,6 +139,7 @@ void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
   this->setPosition(
       Point(enemyPos.x + 3 * DIRX[wayOfPace], enemyPos.y + 3 * DIRY[wayOfPace]));
+  recordX(DIRX[wayOfPace]);
 
 }  //在没探测到骑士的时候正常的巡逻路线
 
@@ -139,10 +172,13 @@ void Enemy::aiOfEnemy(Knight* knight, const BattleRoom* battleRoom) {
                               enemyPos.y + 3.0f * (knightPos.y - enemyPos.y) /
                                                disBetweenEnemyAndKnight+ 3.0f * shiftSeed));
       followCount++;
+      recordX((knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight);
     } else {
       attackTheKnight(knight, disBetweenEnemyAndKnight,battleRoom);
     }
   }
+
+  spriteChangeDirection();
 }
 
 void Enemy::attackTheKnight(Knight* knight,
@@ -192,6 +228,7 @@ void Enemy::boarAttack(Knight* knight, float disBetweenEnemyAndKnight, const Bat
             enemyPos.y + 5.0f * boarBumpDirection[1] + 0.5f * shiftSeed))) {
             this->setPosition(Point(enemyPos.x + 5.0f * boarBumpDirection[0] + 0.5f * shiftSeed,
                 enemyPos.y + 5.0f * boarBumpDirection[1] + 0.5f * shiftSeed));
+            recordX(boarBumpDirection[0]);
         }
         return;
     }
@@ -204,10 +241,12 @@ void Enemy::boarAttack(Knight* knight, float disBetweenEnemyAndKnight, const Bat
                 disBetweenEnemyAndKnight));
             boarBumpDirection[0] = (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight;
             boarBumpDirection[1] = (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;//保存最近的方向，给之后冲走使用
+            recordX(boarBumpDirection[0]);
         }
         else{
             this->setPosition(Point(enemyPos.x + 8.0f * boarBumpDirection[0],
                 enemyPos.y + 8.0f * boarBumpDirection[1]));
+            recordX(boarBumpDirection[0]);
         }
         boarRushCount++;
     }
