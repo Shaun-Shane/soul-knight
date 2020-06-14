@@ -1,8 +1,8 @@
 ﻿#include "Boss.h"
 
 Boss::Boss() {
-	attack = 5;
-	HP = 50;
+	attack = 6;
+	HP = 500;
 	uniSkiTimeCount = 0;
 }
 
