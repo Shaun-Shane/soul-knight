@@ -75,28 +75,15 @@ bool Enemy::inRoom(const BattleRoom* battleRoom,Point myPos){
 }
 
 void Enemy::spriteChangeDirection() {
-    Texture2D* change;
     if (moveSpeedX == 0) {
         return;
     }
-    if (enemyType == 0) {
-        if (moveSpeedX > 0) {
-            change = TextureCache::getInstance()->addImage("Enemy//enemy002.png");
-        }
-        else{
-            change = TextureCache::getInstance()->addImage("Enemy//enemy002opposite.png");
-        }
+    if (moveSpeedX < 0) {
+        this->getSprite()->setFlipX(true);
     }
-    else if (enemyType == 1) {
-        if (moveSpeedX > 0) {
-            change = TextureCache::getInstance()->addImage("Enemy//enemy007.png");
-        }
-        else {
-            change = TextureCache::getInstance()->addImage("Enemy//enemy007opposite.png");
-        }
+    else {
+        this->getSprite()->setFlipX(false);
     }
-    this->getSprite()->setTexture(change);
-
 }
 
 void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
