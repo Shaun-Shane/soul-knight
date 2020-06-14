@@ -40,6 +40,7 @@ class BattleScene : public Scene {
   void updatePlayerPos();
   void updatePlayerInfoBar();
   void updateEnemy();
+  void updateBossInfoBar();
   void checkEndRoom();
 
   void initRoom(); //generate room randomly
@@ -85,8 +86,8 @@ class BattleScene : public Scene {
   Label* armorLabel;
   Label* MPLabel;
 
-  Sprite* BOSSBloodBg;
-  ui::LoadingBar* BOSSLoadingBar;
+  Sprite* BOSSBloodBg = nullptr;
+  ui::LoadingBar* BOSSLoadingBar = nullptr;
 };
 
 #endif

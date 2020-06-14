@@ -143,19 +143,13 @@ bool BattleScene::init() {
 }
 
 void BattleScene::update(float delta) {
-	if (knight->atBattleRoom == endRoom && endRoom->roomType == BOSS) {
-		BOSSBloodBg->setVisible(true);
-		BOSSLoadingBar->setVisible(true);//显示血条
-
-		BOSSLoadingBar->setPercent((endRoom->getBoss()->getHP())*100/50);//血量更新
-	}
-
   knight->resumeArmor(); //更新护甲
 
   updatePlayerPos(); //画面位置更新
   updatePlayerInfoBar(); //进度条更新
 
   updateEnemy(); //更新敌人
+  updateBossInfoBar(); //更新boss信息
 
   checkEndRoom(); //检查终点
 }
@@ -248,6 +242,24 @@ void BattleScene::updateEnemy() { //更新敌人
   for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
     if (enemy->getParent() == nullptr) continue;  //防止死亡的敌人指针还未被释放
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
+  }
+}
+
+void BattleScene::updateBossInfoBar() {
+  if (knight->atBattleRoom == endRoom && endRoom->roomType == BOSS) {
+    auto boss = endRoom->getBoss();
+    if (boss->getHP() > 0) {  // boss 存活 显示血条
+      BOSSBloodBg->setVisible(true);
+      BOSSLoadingBar->setVisible(true);
+
+      BOSSLoadingBar->setPercent((boss->getHP()) * 100 / 500);  //血量更新
+    } else {  // boss 死亡 隐藏血条
+      BOSSBloodBg->setVisible(false);
+      BOSSLoadingBar->setVisible(false);
+    }
+  } else if (endRoom->roomType == BOSS) {
+    BOSSBloodBg->setVisible(false);
+    BOSSLoadingBar->setVisible(false);
   }
 }
 
