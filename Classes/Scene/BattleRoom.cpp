@@ -187,6 +187,7 @@ void BattleRoom::createBoss() {
                   LayerPlayer);  //添加阴影
 
   boss->setPosition(Point(centerX, centerY));
+  boss->setHP(500);
   this->addChild(boss);
 }
 
