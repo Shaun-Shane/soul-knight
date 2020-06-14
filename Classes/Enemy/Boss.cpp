@@ -1,34 +1,36 @@
 ﻿#include "Boss.h"
+#include "Scene/BattleRoom.h"
 
 Boss::Boss() {
-	attack = 6;
-	HP = 500;
 	uniSkiTimeCount = 0;
 }
 
-Boss::Boss(INT32 att, INT32 hp) {
-	attack = att;
-	HP = hp;
-	uniSkiTimeCount = 0;
-}
+
 
 Boss::~Boss() { }
 
+bool Boss::init()
+{
+	this->setHP(500);
+	attack = 6;
+	return true;
+}
+
 /*操纵boss行为的函数，会根据帧数计时计算自己是需要普通动作还是调用大招*/
-void Boss::aiOfBoss(Knight* knight, const std::vector<float>& boundaryOfRoom) {
+void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 	if (knight == nullptr) {
 		return;
 	}
+	const Point myPos = this->getPosition();
 	if (uniSkiTimeCount < UNISKITIMEINTERVAL) {
 		//开始写没发大招的时候的动作
 		if (!(uniSkiTimeCount % 400)) {
 			srand(static_cast<unsigned>(time(nullptr)));
 			aiChoice = rand() % 2;
 		}//两种类型的动作，二选一
-		const Point myPos = this->getPosition();
+		
 		if (aiChoice) {
-			this->setPosition(myPos.x - knight->getMoveSpeedX(), myPos.y - knight->getMoveSpeedY());
-			this->makeCoinside();
+			moveSpeedX = 0, moveSpeedY = 0;
 			if (!(uniSkiTimeCount%50)&&myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
 				knight->deductHP(2);
 			}//近战
@@ -39,12 +41,13 @@ void Boss::aiOfBoss(Knight* knight, const std::vector<float>& boundaryOfRoom) {
 		else {
 			if (!(uniSkiTimeCount % 80)) {
 				wayCanBeSelected.clear();
-
+				Point upLeftPos = battleRoom->getUpleftVertex();
+				Point downRightPos = battleRoom->getDownRightVertex();
 				for (unsigned i = 0; i < 4; i++) {
-					if (myPos.x + 240 * DIRX[i] >= boundaryOfRoom[LEFT] && 
-						myPos.x + 240 * DIRX[i] <= boundaryOfRoom[RIGHT] &&
-						myPos.y + 240 * DIRY[i] >= boundaryOfRoom[DOWN] &&
-						myPos.y + 240 * DIRY[i] <= boundaryOfRoom[UP]) {
+					if (myPos.x + 240 * DIRX[i] >= upLeftPos.x&& 
+						myPos.x + 240 * DIRX[i] <= downRightPos.x&&
+						myPos.y + 240 * DIRY[i] >= downRightPos.y &&
+						myPos.y + 240 * DIRY[i] <= upLeftPos.y) {
 						wayCanBeSelected.push_back(i);
 					}//判断可走方向
 				}
@@ -52,9 +55,7 @@ void Boss::aiOfBoss(Knight* knight, const std::vector<float>& boundaryOfRoom) {
 				srand(static_cast<unsigned>(time(nullptr)));
 				wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
 			}
-			this->setPosition(myPos.x + 3 * DIRX[wayOfPace] - knight->getMoveSpeedX(), 
-				myPos.y + 3 * DIRY[wayOfPace] - knight->getMoveSpeedY());
-			this->makeCoinside();
+			moveSpeedX = 3 * DIRX[wayOfPace], moveSpeedY = 3 * DIRY[wayOfPace];
 			if (!(uniSkiTimeCount % 50) &&
 				myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
 				knight->deductHP(2);
@@ -68,6 +69,10 @@ void Boss::aiOfBoss(Knight* knight, const std::vector<float>& boundaryOfRoom) {
 	else {
 		uniSkiTimeCount = 0;
 		uniqueSkill(knight);
+	}
+	if (inRoom(battleRoom,Point(myPos.x + moveSpeedX, myPos.y + moveSpeedY))) {
+		this->setPosition(myPos.x + moveSpeedX, myPos.y + moveSpeedY);
+		spriteChangeDirection();
 	}
 }
 
@@ -92,7 +97,7 @@ void Boss::uniqueSkill(Knight* knight){
 
 void Boss::addHP(){
 	srand(static_cast<unsigned>(time(nullptr)));
-	 HP += 1 + (rand() % 4) * 2;
+	 HP += 5 + (rand() % 8) * 2;
 }
 
 void Boss::heavilyAttackTheKnight(Knight* knight){
@@ -111,18 +116,12 @@ void Boss::flashMove(Knight* knight){
 	const Point knightPos = knight->getPosition();
 	const INT32 distance = myPos.getDistance(knightPos);
 	if (distance <= MAXFLASHRANGE) {
-		this->setPosition(knightPos);
-		this->makeCoinside();
+		moveSpeedX = knightPos.x - myPos.x;
+		moveSpeedY = knightPos.y - myPos.y;
 	}
 	else {
-		float xMove = (knightPos.x - myPos.x) * (MAXFLASHRANGE / distance);
-		float yMove = (knightPos.y - myPos.y) * (MAXFLASHRANGE / distance);
-		this->setPosition(Point(myPos.x + xMove, myPos.y + yMove));
-		this->makeCoinside();
+		moveSpeedX = (knightPos.x - myPos.x) * (MAXFLASHRANGE / distance);
+		moveSpeedY = (knightPos.y - myPos.y) * (MAXFLASHRANGE / distance);
 	}
-}
-
-void Boss::makeCoinside(){
-	this->getSprite()->setPosition(this->getPosition());
 }
 

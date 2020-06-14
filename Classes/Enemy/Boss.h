@@ -18,12 +18,12 @@ class Boss :public Enemy {
 	static constexpr INT32 DOWN = 3;
 public:
 	Boss();
-	Boss(INT32, INT32);
 	~Boss();
 
 	CREATE_FUNC(Boss);
+	virtual bool init();
 
-	void aiOfBoss(Knight* knight, const std::vector<float>& boundaryOfRoom);//boundaryOfRoom是一个封装了边界的vector，按顺序依次应为右边界、上、左、下
+	void aiOfBoss(Knight* knight, BattleRoom* battleRoom);//boundaryOfRoom是一个封装了边界的vector，按顺序依次应为右边界、上、左、下
 
 private:
 	void uniqueSkill(Knight* knight);
@@ -31,8 +31,6 @@ private:
 	void addHP();//加血绝招
 	void heavilyAttackTheKnight(Knight* knight);//大范围攻击骑士的绝招
 	void flashMove(Knight* knight);//瞬移至骑士坐标或尽力向骑士方向瞬移的绝招
-
-	void makeCoinside();
 private:
 	INT32 uniSkiTimeCount;
 	INT32 aiChoice;
