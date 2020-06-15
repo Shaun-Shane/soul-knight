@@ -40,6 +40,7 @@ class BattleScene : public Scene {
   void updatePlayerPos();
   void updatePlayerInfoBar();
   void updateEnemy();
+  void updateBoss();
   void updateBossInfoBar();
   void checkEndRoom();
 

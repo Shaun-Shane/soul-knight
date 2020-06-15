@@ -149,6 +149,7 @@ void BattleScene::update(float delta) {
   updatePlayerInfoBar(); //进度条更新
 
   updateEnemy(); //更新敌人
+  updateBoss();
   updateBossInfoBar(); //更新boss信息
 
   checkEndRoom(); //检查终点
@@ -242,6 +243,14 @@ void BattleScene::updateEnemy() { //更新敌人
   for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
     if (enemy->getParent() == nullptr) continue;  //防止死亡的敌人指针还未被释放
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
+  }
+}
+
+void BattleScene::updateBoss() {
+  if (knight->atBattleRoom == endRoom && endRoom->roomType == BOSS) {
+    auto boss = endRoom->getBoss();
+    if (boss->getParent() == nullptr) return;
+    boss->aiOfBoss(knight, knight->atBattleRoom);
   }
 }
 
