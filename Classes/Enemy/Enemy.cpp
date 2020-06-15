@@ -57,8 +57,13 @@ void Enemy::setAttackRange(){
     {
     case 0:
         ATTACKRANGE = 200;//弓箭手
+        break;
     case 1:
         ATTACKRANGE = SIGHTRANGE;//野猪
+        break;
+    case 2:
+        ATTACKRANGE = 50;//持矛怪物
+        break;
     default://暂时还没想出别的
         break;
     }
@@ -170,6 +175,8 @@ void Enemy::attackTheKnight(Knight* knight,
         case 1:
             boarAttack(knight, disBetweenEnemyAndKnight,battleRoom);
             break;
+        case 2:
+            spearAttack(knight, disBetweenEnemyAndKnight);
         default:
             break;
         }
@@ -196,9 +203,9 @@ void Enemy::boarAttack(Knight* knight, float disBetweenEnemyAndKnight, const Bat
 	auto enemyPos = this->getPosition();
     auto knightPos = knight->getPosition();
 
-    if (boarHaveAttacked) {
+    if (haveAttacked) {
         if (attackTimeCount++ >= 60) {
-            boarHaveAttacked = false;
+            haveAttacked = false;
             attackTimeCount = 0;
             return;
         }
@@ -239,9 +246,35 @@ void Enemy::boarAttack(Knight* knight, float disBetweenEnemyAndKnight, const Bat
         knight->deductHP(2);
         log("%d", knight->getHP());
         attackTimeCount = 0;
-        boarHaveAttacked = true;
+        haveAttacked = true;
     }
     else {
         attackTimeCount++;
     }  
+}
+
+void Enemy::spearAttack(Knight* knight, float disBetweenEnemyAndKnight) {
+	auto enemyPos = this->getPosition();
+	auto knightPos = knight->getPosition();
+	if (!haveAttacked) {
+		if (disBetweenEnemyAndKnight >= 15) {
+			moveSpeedX = 4.0f * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight;
+			moveSpeedY = 4.0f * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;
+		}
+		else {
+			moveSpeedX = 7.5f * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight;
+			moveSpeedY = 7.5f * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;
+		}
+		if (disBetweenEnemyAndKnight <= 5) {
+			knight->deductHP(3);
+			haveAttacked = true;
+		}
+	}
+	else {
+		if (restCount >= 120) {
+			restCount = 0;
+			haveAttacked = false;
+		}
+		restCount++;
+	}
 }
