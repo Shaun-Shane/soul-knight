@@ -13,7 +13,7 @@ Knight* BattleScene::knight = nullptr;
 INT32 BattleScene::battleSceneNumber = 0;
 
 vector<string> BattleScene::vecSceneType = {"Forest//", "Knight//",   "Lava//",
-                                            "Alien//",  "Skeleton//", "Ice//", "Ghost//"};
+                                            "Alien//",  "Skeleton//", "Ice//"};
 
 Scene* SafeScene::createScene() { return SafeScene::create(); }
 

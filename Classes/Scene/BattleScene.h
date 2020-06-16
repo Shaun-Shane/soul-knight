@@ -40,8 +40,6 @@ class BattleScene : public Scene {
   void updatePlayerPos();
   void updatePlayerInfoBar();
   void updateEnemy();
-  void updateBoss();
-  void updateBossInfoBar();
   void checkEndRoom();
 
   void initRoom(); //generate room randomly
@@ -79,16 +77,13 @@ class BattleScene : public Scene {
   BattleRoom* endRoom = nullptr;
   BattleRoom* battleRoom[SIZEMTX][SIZEMTX] = {nullptr};  // room
 
-  ui::LoadingBar* BloodLoadingBar;
-  ui::LoadingBar* ArmorLoadingBar;
-  ui::LoadingBar* MPLoadingBar;
+  ui::LoadingBar* BloodLoadingBar = ui::LoadingBar::create();
+  ui::LoadingBar* ArmorLoadingBar = ui::LoadingBar::create();
+  ui::LoadingBar* MPLoadingBar = ui::LoadingBar::create();
 
   Label* HPLabel;
   Label* armorLabel;
   Label* MPLabel;
-
-  Sprite* BOSSBloodBg = nullptr;
-  ui::LoadingBar* BOSSLoadingBar = nullptr;
 };
 
 #endif
