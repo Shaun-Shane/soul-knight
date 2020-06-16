@@ -16,7 +16,7 @@ class Knight : public Entity {
   static constexpr float moveSpeed = 5.8f;
 
  public:
-  Knight();
+  Knight() = default;
   ~Knight();
   CREATE_FUNC(Knight);
   virtual bool init();
@@ -50,12 +50,12 @@ class Knight : public Entity {
   Prop* collisionWithCropCheck();
 
  private:
-  INT32 armor;
-  INT32 MP;
+  INT32 armor = 5;
+  INT32 MP = 200;
 
   time_t preAttackedTime = 0, curTime = 0;
 
-  Weapon* weapon;
+  Weapon* weapon = nullptr;
 
   bool needCreateBox;
   

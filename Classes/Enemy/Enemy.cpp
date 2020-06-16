@@ -6,7 +6,8 @@ Enemy::Enemy() { enemyIsAlive = false; }
 Enemy::~Enemy() {}
 
 bool Enemy::init() { 
-  this->setHP(5);
+  HP = 5;
+  isKilled = false;
   return true; 
 }
 

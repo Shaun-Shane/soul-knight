@@ -6,17 +6,19 @@ USING_NS_CC;
 
 class Entity : public Node {
 public : 
-  Entity();
-  Entity(INT32, INT32, float, float, float);
-  Entity(Sprite* sprite);
+  Entity() = default;
 
   Sprite* getSprite();
   void bindSprite(Sprite* sprite, INT32 layer);
   void addShadow(const Point&, INT32);  //添加影子
+  virtual void showDeathEffect();
 
   INT32 getHP(); // return HP of this entity
   virtual void deductHP(INT32); //扣血
   void setHP(INT32 HP);
+
+  bool getIsKilled() const;
+  void setIsKilled(bool);
 
   float getMoveSpeedX();
   float getMoveSpeedY();
@@ -29,9 +31,11 @@ protected:
   INT32 attack = 3;
   INT32 HP = 5;
 
-  float attackSpeed;  //攻击速度
-  float moveSpeedX;  //x方向移动速度
-  float moveSpeedY; //y方向移动速度
+  float attackSpeed = 0.0f;  //攻击速度
+  float moveSpeedX = 0.0f;  //x方向移动速度
+  float moveSpeedY = 0.0f; //y方向移动速度
+
+  bool isKilled = false;
 };
 
 #endif;
