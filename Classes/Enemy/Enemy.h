@@ -57,9 +57,6 @@ private:
   float shiftSeed=0.0f;
   INT32 followCount = 0;
 
-  INT32 lastHP;
-  bool beAttacked = false;
-  INT32 shakeTimeCount = 0;
 
 protected:
 
@@ -67,7 +64,9 @@ protected:
   float moveSpeedY = 0;
   bool inRoom(const BattleRoom* battleRoom, Point myPos);
   void spriteChangeDirection();
-
+  INT32 lastHP;
+  bool beAttacked = false;
+  INT32 shakeTimeCount = 0;
   void shake(const BattleRoom* battleRoom);
 
 
