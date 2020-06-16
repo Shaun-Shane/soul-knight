@@ -1,4 +1,5 @@
 ﻿#include "Entity.h"
+#include"FlowWord.h"
 
 Entity::Entity() : attack(0), HP(0), attackSpeed(.0f), moveSpeedX(.0f), moveSpeedY(.0f) { this->sprite = nullptr; }
 
@@ -58,6 +59,11 @@ float Entity::getMoveSpeedY() { return moveSpeedY; }
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
   this->HP = std::max(0, this->HP - delta);
+
+  /*受伤特效*/
+  FlowWord* flowWord = FlowWord::create();
+  this->addChild(flowWord);
+  flowWord->showWord(-delta, getSprite()->getPosition());
 }
 
 void Entity::setHP(INT32 HP) { this->HP = HP; }
