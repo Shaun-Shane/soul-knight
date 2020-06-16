@@ -12,6 +12,7 @@ Boss::~Boss() { }
 bool Boss::init()
 {
 	this->setHP(500);
+	lastHP = HP;
 	attack = 6;
 	return true;
 }
@@ -57,9 +58,16 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 		uniSkiTimeCount = 0;
 		uniqueSkill(knight);
 	}
+	if (lastHP != HP) {
+		lastHP = HP;
+		beAttacked = true;
+	}
 	if (inRoom(battleRoom,Point(myPos.x + moveSpeedX, myPos.y + moveSpeedY))) {
 		this->setPosition(myPos.x + moveSpeedX, myPos.y + moveSpeedY);
 		spriteChangeDirection();
+	}
+	if (beAttacked) {
+		shake(battleRoom);
 	}
 }
 
