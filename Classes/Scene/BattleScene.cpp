@@ -241,7 +241,8 @@ void BattleScene::updateEnemy() { //更新敌人
   }
 
   for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
-    if (enemy->getParent() == nullptr) continue;  //防止死亡的敌人指针还未被释放
+    if (enemy->getParent() == nullptr || enemy->getIsKilled()) continue;  
+    //防止死亡的敌人继续攻击
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
   }
 }
@@ -249,7 +250,7 @@ void BattleScene::updateEnemy() { //更新敌人
 void BattleScene::updateBoss() {
   if (knight->atBattleRoom == endRoom && endRoom->roomType == BOSS) {
     auto boss = endRoom->getBoss();
-    if (boss->getParent() == nullptr) return;
+    if (boss->getParent() == nullptr || boss->getIsKilled()) return;
     boss->aiOfBoss(knight, knight->atBattleRoom);
   }
 }

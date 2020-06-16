@@ -49,6 +49,8 @@ class BattleRoom : public Hall {
 
   void playerBulletCollistionCheck();
 
+  void removeKilledEnemy();
+
   bool allKilled();
   
   void createTreasureBox();

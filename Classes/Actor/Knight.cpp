@@ -5,8 +5,6 @@
 #include "Scene\Hall.h"
 #include"FlowWord.h"
 
-Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(200) {}
-
 Knight::~Knight() {}
 
 Animate* Knight::getAnimate() {
@@ -40,6 +38,8 @@ Animate* Knight::getAnimate() {
 }
 
 bool Knight::init() {
+  this->HP = 5, this->armor = 5, this->MP = 200;
+
   this->moveSpeedX = 0, this->moveSpeedY = 0;
 
   this->weapon = Weapon::create();
@@ -207,13 +207,14 @@ void Knight::useUltimateSkill() {
     Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
 
     for (auto& e : vecEnemy) {
-      if (e == nullptr) continue;
+      if (e ->getParent() == nullptr) continue;
 
       float enemyX = e->getPositionX(), enemyY = e->getPositionY();
 
       if (sqrt(pow(getPositionX() - enemyX, 2) +
-               pow(getPositionY() - enemyY, 2)) <= 220.0f)
-        e->retain(), e->removeFromParent();  //秒杀怪物 从父类移除
+          pow(getPositionY() - enemyY, 2)) <= 220.0f) {
+        e->deductHP(999); //在技能圆内 扣血
+      }
     }
 
     auto boss = atBattleRoom->getBoss();
@@ -221,8 +222,9 @@ void Knight::useUltimateSkill() {
         float bossX = boss->getPositionX(),
               bossY = boss->getPositionY();
         if (sqrt(pow(getPositionX() - bossX, 2) +
-                 pow(getPositionY() - bossY, 2)) <= 220.0f)
-          boss->retain(), boss->removeFromParent();  //秒杀boss 从父类移除
+            pow(getPositionY() - bossY, 2)) <= 220.0f) {
+          boss->deductHP(100); //在技能圆内 扣血
+        }
     }
 
     if (this->atBattleRoom != nullptr) {
@@ -260,7 +262,8 @@ void Knight::deductHP(INT32 delta) {
   /*受伤特效*/
   FlowWord* flowWord = FlowWord::create();
   this->addChild(flowWord);
-  flowWord->showWord(-delta, getSprite()->getPosition());
+  flowWord->showWord(-delta, getSprite()->getPosition() +
+                                 Vec2(0, this->getContentSize().height / 2.3f));
 }
 
 void Knight::resumeArmor() { //恢复护甲
@@ -287,7 +290,7 @@ void Knight::weaponAttack(
     Enemy* nearNeast = nullptr;
     float distance = 99999;
     for (auto e : vecEnemy) {
-      if (e->getParent() != nullptr) {
+      if (e->getParent() != nullptr && e->getIsKilled() == false) {
         Vec2 enemyPos = e->getPosition();
         if (enemyPos.distance(curPos) < distance) {
           nearNeast = e;

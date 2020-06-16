@@ -22,6 +22,7 @@ bool BattleRoom::init() {
 void BattleRoom::update(float delta) {
   this->bulletMove();
   this->playerBulletCollistionCheck();
+  this->removeKilledEnemy(); //移除血量<=0的敌人
 }
 
 bool BattleRoom::createRoom(BattleRoom*& toRoom, BattleRoom* curRoom, INT32 dir,
@@ -288,23 +289,35 @@ void BattleRoom::playerBulletCollistionCheck() {
     Rect bulletRect = bullet->getBoundingBox();
     for (INT32 j = 0; j < vecEnemy.size(); ++j) {
       auto enemy = vecEnemy.at(j);
-      if (enemy->getParent() == nullptr) continue;
+      if (enemy->getParent() == nullptr || enemy->getIsKilled()) continue;
       Rect enemyRect = enemy->getBoundingBox();
       if (bulletRect.intersectsRect(enemyRect)) {
         INT32 hp = knight->getHP();
         enemy->deductHP(bullet->getAttack());
-        if ((enemy->getHP()) <= 0) {
-          enemy->removeFromParent();
-          if (this->allKilled() == true) vecEnemy.clear();
-        }
 
         bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
-
         bullet->removeFromParent();
         vecPlayerBullet.eraseObject(bullet);
         --i;
         break;
       }
+    }
+  }
+}
+
+void BattleRoom::removeKilledEnemy() {
+  for (auto& e : vecEnemy) {
+    if (e->getParent() == nullptr || e->getIsKilled()) continue;
+    if (e->getHP() <= 0) { //血量小于零 移除
+      e->setIsKilled(true);
+      e->showDeathEffect(); //死亡特效
+    }
+  }
+
+  if (boss != nullptr && boss->getParent() != nullptr && boss->getIsKilled() == false) {
+    if (boss->getHP() <= 0) { // 血量小于零 移除
+      boss->setIsKilled(true);
+      boss->showDeathEffect(); //死亡特效
     }
   }
 }
