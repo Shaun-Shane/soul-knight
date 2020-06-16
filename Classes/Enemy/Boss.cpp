@@ -11,7 +11,7 @@ Boss::~Boss() { }
 
 bool Boss::init()
 {
-	this->setHP(500);
+    this->HP = this->maxHP = 500; //设定血量与最大血量
 	attack = 6;
 	return true;
 }
