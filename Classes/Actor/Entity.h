@@ -13,9 +13,10 @@ public :
   void addShadow(const Point&, INT32);  //添加影子
   virtual void showDeathEffect();
 
-  INT32 getHP(); // return HP of this entity
+  INT32 getHP() const; // return HP of this entity
   virtual void deductHP(INT32); //扣血
   void setHP(INT32 HP);
+  INT32 getMaxHP() const;
 
   bool getIsKilled() const;
   void setIsKilled(bool);
@@ -29,7 +30,7 @@ private:
   Sprite* sprite;
 protected:
   INT32 attack = 3;
-  INT32 HP = 5;
+  INT32 HP = 5, maxHP = 5;
 
   float attackSpeed = 0.0f;  //攻击速度
   float moveSpeedX = 0.0f;  //x方向移动速度
