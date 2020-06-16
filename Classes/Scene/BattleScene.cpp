@@ -209,16 +209,19 @@ void BattleScene::updatePlayerPos() {
   }
 }
 
-void BattleScene::updatePlayerInfoBar() { //更新人物信息显示
+void BattleScene::updatePlayerInfoBar() {  //更新人物信息显示
   /*进度条更新*/
-  BloodLoadingBar->setPercent(knight->getHP() * 100 / 5);
-  ArmorLoadingBar->setPercent(knight->getArmor() * 100 / 5);
-  MPLoadingBar->setPercent(float(knight->getMP()) / 200.0f * 100);
+  BloodLoadingBar->setPercent(knight->getHP() * 100.0f / knight->maxHP);
+  ArmorLoadingBar->setPercent(knight->getArmor() * 100.0f / knight->maxArmor);
+  MPLoadingBar->setPercent(knight->getMP() * 100.0f / knight->maxMP);
 
   /*状态信息更新*/
-  HPLabel->setString(Value(knight->HP).asString() + "/5");
-  armorLabel->setString(Value(knight->armor).asString() + "/5");
-  MPLabel->setString(Value(knight->MP).asString() + "/200");
+  HPLabel->setString(Value(knight->HP).asString() + "/" +
+                     Value(knight->maxHP).asString());
+  armorLabel->setString(Value(knight->armor).asString() + "/" +
+                        Value(knight->maxArmor).asString());
+  MPLabel->setString(Value(knight->MP).asString() + "/" +
+                     Value(knight->maxMP).asString());
 }
 
 void BattleScene::updateEnemy() { //更新敌人
@@ -262,7 +265,7 @@ void BattleScene::updateBossInfoBar() {
       BOSSBloodBg->setVisible(true);
       BOSSLoadingBar->setVisible(true);
 
-      BOSSLoadingBar->setPercent((boss->getHP()) * 100 / 500);  //血量更新
+      BOSSLoadingBar->setPercent(boss->getHP() * 100.0f / boss->getMaxHP());  //血量更新
     } else {  // boss 死亡 隐藏血条
       BOSSBloodBg->setVisible(false);
       BOSSLoadingBar->setVisible(false);
