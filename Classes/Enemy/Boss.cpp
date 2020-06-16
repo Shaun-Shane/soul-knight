@@ -44,9 +44,9 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 			wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
 		}
 		moveSpeedX = 3.5 * DIRX[wayOfPace], moveSpeedY = 3.5 * DIRY[wayOfPace];
-		if (!(uniSkiTimeCount % 25) &&
+		if (!(uniSkiTimeCount % 20) &&
 			myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
-			knight->deductHP(5);
+			knight->deductHP(4);
 		}//近战
 		else {
 			/*后期在此处加上武器*/
@@ -59,8 +59,10 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 		uniqueSkill(knight);
 	}
 	if (lastHP != HP) {
+		if (lastHP > HP) {
+			beAttacked = true;
+		}
 		lastHP = HP;
-		beAttacked = true;
 	}
 	if (inRoom(battleRoom,Point(myPos.x + moveSpeedX, myPos.y + moveSpeedY))) {
 		this->setPosition(myPos.x + moveSpeedX, myPos.y + moveSpeedY);
@@ -117,6 +119,10 @@ void Boss::flashMove(Knight* knight){
 	else {
 		moveSpeedX = (knightPos.x - myPos.x) * (MAXFLASHRANGE / distance);
 		moveSpeedY = (knightPos.y - myPos.y) * (MAXFLASHRANGE / distance);
+	}
+	if (distance <= 10) {
+		srand(static_cast<unsigned>(time(nullptr)));
+		knight->deductHP(rand() % 6);
 	}
 }
 
