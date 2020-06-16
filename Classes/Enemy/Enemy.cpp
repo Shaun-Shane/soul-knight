@@ -7,6 +7,7 @@ Enemy::~Enemy() {}
 
 bool Enemy::init() { 
   HP = 5;
+  lastHP = HP;
   isKilled = false;
   return true; 
 }
@@ -92,6 +93,24 @@ void Enemy::spriteChangeDirection() {
     }
 }
 
+void Enemy::shake(const BattleRoom* battleRoom){
+    auto enemyPos = this->getPosition();
+    if (shakeTimeCount++ % 2) {
+        if (inRoom(battleRoom, Point(enemyPos.x + 15, enemyPos.y))) {
+            this->setPosition(Point(enemyPos.x + 15, enemyPos.y));
+        }
+    }
+    else {
+		if (inRoom(battleRoom, Point(enemyPos.x - 15, enemyPos.y))) {
+			this->setPosition(Point(enemyPos.x - 15, enemyPos.y));
+		}
+    }
+    if (shakeTimeCount >= 20) {
+        shakeTimeCount = 0;
+        beAttacked = false;
+    }
+}
+
 void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   const Point enemyPos = this->getPosition();
 
@@ -159,9 +178,16 @@ void Enemy::aiOfEnemy(Knight* knight, const BattleRoom* battleRoom) {
       attackTheKnight(knight, disBetweenEnemyAndKnight,battleRoom);
     }
   }
+  if (lastHP != HP) {
+      lastHP = HP;
+      beAttacked = true;
+  }
   if (inRoom(battleRoom, Point(enemyPos.x + moveSpeedX, enemyPos.y + moveSpeedY))) {
       this->setPosition(enemyPos.x + moveSpeedX, enemyPos.y + moveSpeedY);
       spriteChangeDirection();
+  }
+  if (beAttacked) {
+	  shake(battleRoom);
   }
 }
 
@@ -279,3 +305,4 @@ void Enemy::spearAttack(Knight* knight, float disBetweenEnemyAndKnight) {
 		restCount++;
 	}
 }
+
