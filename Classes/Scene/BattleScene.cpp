@@ -116,6 +116,28 @@ bool BattleScene::init() {
   initMiniMap();
   connectRoom(beginRoom); //从起始房间开始联通房间
 
+  if (endRoom->roomType == BOSS) {
+	  BOSSBloodBg = Sprite::create("Enemy//bossBloodBg.png");
+
+	  BOSSLoadingBar = ui::LoadingBar::create("Enemy//bossBlood.png");
+
+	  BOSSLoadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
+
+	  BOSSBloodBg->setPosition(Vec2(600, 650));
+	  BOSSLoadingBar->setPosition(Vec2(600,650));
+
+	  BOSSLoadingBar->setOpacity(150);
+
+	  this->addChild(BOSSBloodBg, TOP);
+	  this->addChild(BOSSLoadingBar, TOP);
+
+	  /*置顶*/
+	  BOSSBloodBg->setGlobalZOrder(TOP);
+	  BOSSLoadingBar->setGlobalZOrder(TOP);
+
+	  BOSSBloodBg->setVisible(false);
+	  BOSSLoadingBar->setVisible(false);//BOSS未出现时隐藏血条
+  }
   this->scheduleUpdate(); //60帧跟新
   return true;
 }
@@ -127,6 +149,8 @@ void BattleScene::update(float delta) {
   updatePlayerInfoBar(); //进度条更新
 
   updateEnemy(); //更新敌人
+  updateBoss();
+  updateBossInfoBar(); //更新boss信息
 
   checkEndRoom(); //检查终点
 }
@@ -222,6 +246,32 @@ void BattleScene::updateEnemy() { //更新敌人
   }
 }
 
+void BattleScene::updateBoss() {
+  if (knight->atBattleRoom == endRoom && endRoom->roomType == BOSS) {
+    auto boss = endRoom->getBoss();
+    if (boss->getParent() == nullptr) return;
+    boss->aiOfBoss(knight, knight->atBattleRoom);
+  }
+}
+
+void BattleScene::updateBossInfoBar() {
+  if (knight->atBattleRoom == endRoom && endRoom->roomType == BOSS) {
+    auto boss = endRoom->getBoss();
+    if (boss->getHP() > 0) {  // boss 存活 显示血条
+      BOSSBloodBg->setVisible(true);
+      BOSSLoadingBar->setVisible(true);
+
+      BOSSLoadingBar->setPercent((boss->getHP()) * 100 / 500);  //血量更新
+    } else {  // boss 死亡 隐藏血条
+      BOSSBloodBg->setVisible(false);
+      BOSSLoadingBar->setVisible(false);
+    }
+  } else if (endRoom->roomType == BOSS) {
+    BOSSBloodBg->setVisible(false);
+    BOSSLoadingBar->setVisible(false);
+  }
+}
+
 void BattleScene::checkEndRoom() { //检查房间终点
   if (knight->atBattleRoom == nullptr) return;
 
@@ -248,6 +298,7 @@ void BattleScene::checkEndRoom() { //检查房间终点
       INT32 num = BattleScene::battleSceneNumber;
       num = num % 5 == 0 ? num / 5 : num / 5 + 1;
       if (num % vecSceneType.size() == 1) { //每过size关再随机打乱一次
+        srand(static_cast<unsigned int>(time(nullptr)));
         std::random_shuffle(BattleScene::vecSceneType.begin(),
                             BattleScene::vecSceneType.end());
       }
