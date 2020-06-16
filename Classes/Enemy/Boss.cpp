@@ -26,15 +26,15 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 		//开始写没发大招的时候的动作
 		
 
-		if (!(uniSkiTimeCount % 80)) {
+		if (!(uniSkiTimeCount % 60)) {
 			wayCanBeSelected.clear();
 			Point upLeftPos = battleRoom->getUpleftVertex();
 			Point downRightPos = battleRoom->getDownRightVertex();
 			for (unsigned i = 0; i < 4; i++) {
-				if (myPos.x + 280 * DIRX[i] >= upLeftPos.x &&
-					myPos.x + 280 * DIRX[i] <= downRightPos.x &&
-					myPos.y + 280 * DIRY[i] >= downRightPos.y &&
-					myPos.y + 280 * DIRY[i] <= upLeftPos.y) {
+				if (myPos.x + 210 * DIRX[i] >= upLeftPos.x &&
+					myPos.x + 210 * DIRX[i] <= downRightPos.x &&
+					myPos.y + 210 * DIRY[i] >= downRightPos.y &&
+					myPos.y + 210 * DIRY[i] <= upLeftPos.y) {
 					wayCanBeSelected.push_back(i);
 				}//判断可走方向
 			}
@@ -43,7 +43,7 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 			wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
 		}
 		moveSpeedX = 3.5 * DIRX[wayOfPace], moveSpeedY = 3.5 * DIRY[wayOfPace];
-		if (!(uniSkiTimeCount % 50) &&
+		if (!(uniSkiTimeCount % 25) &&
 			myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
 			knight->deductHP(5);
 		}//近战
