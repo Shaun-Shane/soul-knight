@@ -3,6 +3,7 @@
 #include "Attack/Weapon.h"
 #include "Scene\BattleRoom.h"
 #include "Scene\Hall.h"
+#include"FlowWord.h"
 
 Knight::Knight() : Entity(4, 5, 1.5f, .0f, .0f), armor(5), MP(200) {}
 
@@ -255,6 +256,11 @@ void Knight::deductHP(INT32 delta) {
     HP = std::max(0, HP + armor);
   }
   armor = std::max(0, armor);
+
+  /*受伤特效*/
+  FlowWord* flowWord = FlowWord::create();
+  this->addChild(flowWord);
+  flowWord->showWord(-delta, getSprite()->getPosition());
 }
 
 void Knight::resumeArmor() { //恢复护甲
