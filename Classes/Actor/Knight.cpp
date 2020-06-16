@@ -221,12 +221,8 @@ void Knight::useUltimateSkill() {
         float bossX = boss->getPositionX(),
               bossY = boss->getPositionY();
         if (sqrt(pow(getPositionX() - bossX, 2) +
-                 pow(getPositionY() - bossY, 2)) <= 220.0f) {
-          boss->deductHP(100);
-          if (boss->getHP() <= 0)
-            boss->retain(), boss->removeFromParent();  //boss血量为0 从父类移除
-        }
-          
+                 pow(getPositionY() - bossY, 2)) <= 220.0f)
+          boss->retain(), boss->removeFromParent();  //秒杀boss 从父类移除
     }
 
     if (this->atBattleRoom != nullptr) {

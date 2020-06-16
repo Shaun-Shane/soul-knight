@@ -161,9 +161,13 @@ void BattleRoom::createEnemy() {
         enemy->bindSprite(Sprite::create("Enemy//enemy002.png"), LayerPlayer - 1);
         enemy->setType(0);
     }
-    else {
+    else if (i < 5) {
         enemy->bindSprite(Sprite::create("Enemy//enemy007.png"), LayerPlayer - 1);
         enemy->setType(1);
+    }
+    else {
+		enemy->bindSprite(Sprite::create("Enemy//enemy001.png"), LayerPlayer - 1);
+		enemy->setType(2);
     }
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
@@ -187,7 +191,6 @@ void BattleRoom::createBoss() {
                   LayerPlayer);  //添加阴影
 
   boss->setPosition(Point(centerX, centerY));
-  boss->setHP(500);
   this->addChild(boss);
 }
 
