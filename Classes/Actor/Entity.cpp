@@ -49,9 +49,13 @@ INT32 Entity::getHP() const { //return HP of this entity
   return this->HP;
 }
 
-float Entity::getMoveSpeedX() { return moveSpeedX; }
+float Entity::getMoveSpeedX() const { return moveSpeedX; }
 
-float Entity::getMoveSpeedY() { return moveSpeedY; }
+void Entity::setMoveSpeedX(float speedX) { this->moveSpeedX = speedX; }
+
+float Entity::getMoveSpeedY() const { return moveSpeedY; }
+
+void Entity::setMoveSpeedY(float speedY) { this->moveSpeedY = speedY; }
 
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;

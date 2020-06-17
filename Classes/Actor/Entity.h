@@ -21,8 +21,10 @@ public :
   bool getIsKilled() const;
   void setIsKilled(bool);
 
-  float getMoveSpeedX();
-  float getMoveSpeedY();
+  float getMoveSpeedX() const;
+  void setMoveSpeedX(float);
+  float getMoveSpeedY() const;
+  void setMoveSpeedY(float);
 
   ~Entity();
 
