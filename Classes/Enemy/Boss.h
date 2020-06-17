@@ -8,9 +8,9 @@
 #include <vector>
 
 class Boss :public Enemy {
-	static constexpr INT32 HEAVYATTACKRANGE = 250;//最大强力攻击距离
-	static constexpr INT32 MAXFLASHRANGE = 200;//最大瞬移距离
-	static constexpr INT32 UNISKITIMEINTERVAL = 1200;//两次发大招的时间间隔
+	static constexpr INT32 HEAVYATTACKRANGE = 400;//最大强力攻击距离
+	static constexpr INT32 MAXFLASHRANGE = 300;//最大瞬移距离
+	static constexpr INT32 UNISKITIMEINTERVAL = 180;//两次发大招的时间间隔
 	static constexpr INT32 CLOSECOMBATRANGE = 40;//近距离攻击距离
 	static constexpr INT32 RIGHT = 0;
 	static constexpr INT32 UP = 1;

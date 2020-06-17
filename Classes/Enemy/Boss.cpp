@@ -11,7 +11,8 @@ Boss::~Boss() { }
 
 bool Boss::init()
 {
-    this->HP = this->maxHP = 500; //设定血量与最大血量
+	this->setHP(500);
+	lastHP = HP;
 	attack = 6;
 	return true;
 }
@@ -24,55 +25,51 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 	const Point myPos = this->getPosition();
 	if (uniSkiTimeCount < UNISKITIMEINTERVAL) {
 		//开始写没发大招的时候的动作
-		if (!(uniSkiTimeCount % 400)) {
-			srand(static_cast<unsigned>(time(nullptr)));
-			aiChoice = rand() % 2;
-		}//两种类型的动作，二选一
 		
-		if (aiChoice) {
-			moveSpeedX = 0, moveSpeedY = 0;
-			if (!(uniSkiTimeCount%50)&&myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
-				knight->deductHP(2);
-			}//近战
-			else {
-				/*后期在此处加上武器*/
-			}
-		}//静止
-		else {
-			if (!(uniSkiTimeCount % 80)) {
-				wayCanBeSelected.clear();
-				Point upLeftPos = battleRoom->getUpleftVertex();
-				Point downRightPos = battleRoom->getDownRightVertex();
-				for (unsigned i = 0; i < 4; i++) {
-					if (myPos.x + 240 * DIRX[i] >= upLeftPos.x&& 
-						myPos.x + 240 * DIRX[i] <= downRightPos.x&&
-						myPos.y + 240 * DIRY[i] >= downRightPos.y &&
-						myPos.y + 240 * DIRY[i] <= upLeftPos.y) {
-						wayCanBeSelected.push_back(i);
-					}//判断可走方向
-				}
 
-				srand(static_cast<unsigned>(time(nullptr)));
-				wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
+		if (!(uniSkiTimeCount % 60)) {
+			wayCanBeSelected.clear();
+			Point upLeftPos = battleRoom->getUpleftVertex();
+			Point downRightPos = battleRoom->getDownRightVertex();
+			for (unsigned i = 0; i < 4; i++) {
+				if (myPos.x + 210 * DIRX[i] >= upLeftPos.x &&
+					myPos.x + 210 * DIRX[i] <= downRightPos.x &&
+					myPos.y + 210 * DIRY[i] >= downRightPos.y &&
+					myPos.y + 210 * DIRY[i] <= upLeftPos.y) {
+					wayCanBeSelected.push_back(i);
+				}//判断可走方向
 			}
-			moveSpeedX = 3 * DIRX[wayOfPace], moveSpeedY = 3 * DIRY[wayOfPace];
-			if (!(uniSkiTimeCount % 50) &&
-				myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
-				knight->deductHP(2);
-			}//近战
-			else {
-				/*后期在此处加上武器*/
-			}
+
+			srand(static_cast<unsigned>(time(nullptr)));
+			wayOfPace = wayCanBeSelected[rand() % wayCanBeSelected.size()];
 		}
+		moveSpeedX = 3.5 * DIRX[wayOfPace], moveSpeedY = 3.5 * DIRY[wayOfPace];
+		if (!(uniSkiTimeCount % 20) &&
+			myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
+			knight->deductHP(4);
+		}//近战
+		else {
+			/*后期在此处加上武器*/
+		}
+
 		uniSkiTimeCount++;
 	}
 	else {
 		uniSkiTimeCount = 0;
 		uniqueSkill(knight);
 	}
+	if (lastHP != HP) {
+		if (lastHP > HP) {
+			beAttacked = true;
+		}
+		lastHP = HP;
+	}
 	if (inRoom(battleRoom,Point(myPos.x + moveSpeedX, myPos.y + moveSpeedY))) {
 		this->setPosition(myPos.x + moveSpeedX, myPos.y + moveSpeedY);
 		spriteChangeDirection();
+	}
+	if (beAttacked) {
+		shake(battleRoom);
 	}
 }
 
@@ -97,7 +94,7 @@ void Boss::uniqueSkill(Knight* knight){
 
 void Boss::addHP(){
 	srand(static_cast<unsigned>(time(nullptr)));
-	 HP += 5 + (rand() % 8) * 2;
+	 HP += 40 + (rand() % 30) * 2;
 }
 
 void Boss::heavilyAttackTheKnight(Knight* knight){
@@ -106,7 +103,7 @@ void Boss::heavilyAttackTheKnight(Knight* knight){
 	const INT32 distance = myPos.getDistance(knightPos);
 	if (distance <= HEAVYATTACKRANGE) {
 		srand(static_cast<unsigned>(time(nullptr)));
-		INT32 harmToKnight = 3 + rand() % 5;
+		INT32 harmToKnight = 4 + rand() % 4;
 		knight->deductHP(harmToKnight);
 	}
 }
@@ -122,6 +119,10 @@ void Boss::flashMove(Knight* knight){
 	else {
 		moveSpeedX = (knightPos.x - myPos.x) * (MAXFLASHRANGE / distance);
 		moveSpeedY = (knightPos.y - myPos.y) * (MAXFLASHRANGE / distance);
+	}
+	if (distance <= 10) {
+		srand(static_cast<unsigned>(time(nullptr)));
+		knight->deductHP(rand() % 6);
 	}
 }
 
