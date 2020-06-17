@@ -1,5 +1,5 @@
 ﻿#include "BattleRoom.h"
-
+#include "BattleScene.h"
 #include "Props/prop.h"
 
 bool BattleRoom::init() {
@@ -152,22 +152,34 @@ void BattleRoom::addMapElement() {
 
 void BattleRoom::createEnemy() {
   srand(static_cast<unsigned int>(time(nullptr)));
-
   INT32 enemyNumber = 4 + rand() % 4; //敌人数量 再后续修改
+
+  INT32 sceneTypeIndex = BattleScene::getSceneNumber();
+  sceneTypeIndex =
+      sceneTypeIndex % 5 == 0 ? sceneTypeIndex / 5 : sceneTypeIndex / 5 + 1;
+  (sceneTypeIndex -= 1) %= BattleScene::getVecSceneType().size();
+  Value sceneName = Value(BattleScene::getVecSceneType().at(sceneTypeIndex));
+  //选取场景类型
 
   for (INT32 i = 1; i <= enemyNumber; i++) {
     Enemy* enemy = Enemy::create();
     enemy->startCount = i * 2;
     if (i < 3) {
-        enemy->bindSprite(Sprite::create("Enemy//enemy002.png"), LayerPlayer - 1);
-        enemy->setType(0);
+      enemy->bindSprite(
+          Sprite::create("Enemy//" + sceneName.asString() + "enemy002.png"),
+          LayerPlayer - 1);
+      enemy->setType(0);
     }
     else if (i < 5) {
-        enemy->bindSprite(Sprite::create("Enemy//enemy007.png"), LayerPlayer - 1);
+      enemy->bindSprite(
+          Sprite::create("Enemy//" + sceneName.asString() + "enemy007.png"),
+          LayerPlayer - 1);
         enemy->setType(1);
     }
     else {
-		enemy->bindSprite(Sprite::create("Enemy//enemy001.png"), LayerPlayer - 1);
+      enemy->bindSprite(
+          Sprite::create("Enemy//" + sceneName.asString() + "enemy001.png"),
+          LayerPlayer - 1);
 		enemy->setType(2);
     }
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
