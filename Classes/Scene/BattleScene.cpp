@@ -312,7 +312,7 @@ void BattleScene::checkEndRoom() { //检查房间终点
 
       this->cleanup();
       this->removeAllChildren();           //释放
-      Director::getInstance()->pushScene(  //进入下一个场景
+      Director::getInstance()->replaceScene(  //进入下一个场景
           TransitionFade::create(2.0f, BattleScene::createScene()));
     }
   }
