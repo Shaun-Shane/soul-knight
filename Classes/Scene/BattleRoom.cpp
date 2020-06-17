@@ -150,6 +150,7 @@ void BattleRoom::addMapElement() {
   }
 }
 
+#define YYZ_DEBUG
 void BattleRoom::createEnemy() {
   srand(static_cast<unsigned int>(time(nullptr)));
   INT32 enemyNumber = 4 + rand() % 4; //敌人数量 再后续修改
@@ -160,6 +161,9 @@ void BattleRoom::createEnemy() {
   (sceneTypeIndex -= 1) %= BattleScene::getVecSceneType().size();
   Value sceneName = Value(BattleScene::getVecSceneType().at(sceneTypeIndex));
   //选取场景类型
+  #ifdef YYZ_DEBUG
+    sceneName = Value("Forest//");
+  #endif
 
   for (INT32 i = 1; i <= enemyNumber; i++) {
     Enemy* enemy = Enemy::create();
