@@ -305,6 +305,14 @@ void BattleRoom::playerBulletCollistionCheck() {
   }
 }
 
+void BattleRoom::checkObstacle(Entity* entity) { //玩家 敌人检测障碍物
+    //普通障碍物
+}
+
+void BattleRoom::checkStatue(Knight* knight) { //玩家 检测雕像
+    //雕像...
+}
+
 void BattleRoom::removeKilledEnemy() {
   for (auto& e : vecEnemy) {
     if (e->getParent() == nullptr || e->getIsKilled()) continue;
