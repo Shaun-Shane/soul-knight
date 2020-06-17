@@ -96,16 +96,16 @@ void Enemy::spriteChangeDirection() {
 void Enemy::shake(const BattleRoom* battleRoom){
     auto enemyPos = this->getPosition();
     if (shakeTimeCount++ % 2) {
-        if (inRoom(battleRoom, Point(enemyPos.x + 15, enemyPos.y))) {
-            this->setPosition(Point(enemyPos.x + 15, enemyPos.y));
+        if (inRoom(battleRoom, Point(enemyPos.x + 25, enemyPos.y))) {
+            this->setPosition(Point(enemyPos.x + 25, enemyPos.y));
         }
     }
     else {
-		if (inRoom(battleRoom, Point(enemyPos.x - 15, enemyPos.y))) {
-			this->setPosition(Point(enemyPos.x - 15, enemyPos.y));
+		if (inRoom(battleRoom, Point(enemyPos.x - 25, enemyPos.y))) {
+			this->setPosition(Point(enemyPos.x - 25, enemyPos.y));
 		}
     }
-    if (shakeTimeCount >= 20) {
+    if (shakeTimeCount >= 4) {
         shakeTimeCount = 0;
         beAttacked = false;
     }
