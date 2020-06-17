@@ -162,13 +162,17 @@ void BattleRoom::createEnemy() {
         enemy->bindSprite(Sprite::create("Enemy//enemy002.png"), LayerPlayer - 1);
         enemy->setType(0);
     }
-    else if (i < 5) {
+    else if (i < 4) {
         enemy->bindSprite(Sprite::create("Enemy//enemy007.png"), LayerPlayer - 1);
         enemy->setType(1);
     }
+    else if (i < 6) {
+        enemy->bindSprite(Sprite::create("Enemy//enemy001.png"), LayerPlayer - 1);
+        enemy->setType(2);
+    }
     else {
-		enemy->bindSprite(Sprite::create("Enemy//enemy001.png"), LayerPlayer - 1);
-		enemy->setType(2);
+		enemy->bindSprite(Sprite::create("Enemy//enemy003.png"), LayerPlayer - 1);
+		enemy->setType(3);
     }
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
