@@ -41,6 +41,7 @@ bool Knight::init() {
   this->HP = this->maxHP = 5;
   this->armor = this->maxArmor = 5;
   this->MP = this->maxMP = 200;
+  this->gold = 0;
   this->moveSpeedX = 0, this->moveSpeedY = 0;
 
   this->weapon = Weapon::create();
@@ -249,13 +250,27 @@ bool Knight::getNeedCreateBox() { return this->needCreateBox; }
 
 INT32 Knight::getMP() const { return this->MP; }
 
+void Knight::setMP(INT32 mp) { this->MP = std::max(0, mp); }
+
 INT32 Knight::getMaxMP() const { return this->maxMP; }
+
+void Knight::setMaxMP(INT32 maxMP) { this->maxMP = maxMP; }
 
 INT32 Knight::getArmor() const { return this->armor; }
 
+void Knight::setArmor(INT32 armor) { this->armor = armor; }
+
 INT32 Knight::getMaxArmor() const { return this->maxArmor; }
 
-void Knight::setMP(INT32 mp) { this->MP = std::max(0, mp); }
+void Knight::setMaxArmor(INT32 maxArmor) { this->maxArmor = maxArmor; }
+
+INT32 Knight::getDamageBuff() const { return this->damageBuff; }
+
+void Knight::setDamageBuff(INT32 damageBuff) { this->damageBuff = damageBuff; }
+
+INT32 Knight::getMoveSpeedBuff() const { return this->moveSpeedBuff; }
+
+void Knight::setMoveSpeedBuff(INT32 msBuff) { this->moveSpeedBuff = msBuff; } 
 
 void Knight::deductHP(INT32 delta) {
   preAttackedTime = curTime; //被攻击的时间 用于护甲的恢复判断
