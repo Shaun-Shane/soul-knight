@@ -38,6 +38,7 @@ private:
     void archerAttack(Knight* knight, float disBetweenEnemyAndKnight);//当敌人设定类型为弓箭手时调用的攻击函数
 	void boarAttack(Knight* knight, float disBetweenEnemyAndKnight, const BattleRoom* battleRoom);//当敌人设定类型为野猪时调用的攻击函数
 	void spearAttack(Knight* knight, float disBetweenEnemyAndKnight);//当敌人设定类型为持矛怪物时调用的攻击函数
+    void gunnerAttack(Knight* knight, float disBetweenEnemyAndKnight);//
 
     INT32 boarRushCount;//记录野猪冲的时长，满了一定就停一会儿，以免它太具攻击性了
     bool boarRest = false;//与上面一行变量配套

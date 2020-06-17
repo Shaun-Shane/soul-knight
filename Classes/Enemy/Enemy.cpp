@@ -66,6 +66,8 @@ void Enemy::setAttackRange(){
     case 2:
         ATTACKRANGE = 50;//持矛怪物
         break;
+    case 3:
+        ATTACKRANGE = 400;//枪手
     default://暂时还没想出别的
         break;
     }
@@ -96,16 +98,16 @@ void Enemy::spriteChangeDirection() {
 void Enemy::shake(const BattleRoom* battleRoom){
     auto enemyPos = this->getPosition();
     if (shakeTimeCount++ % 2) {
-        if (inRoom(battleRoom, Point(enemyPos.x + 15, enemyPos.y))) {
-            this->setPosition(Point(enemyPos.x + 15, enemyPos.y));
+        if (inRoom(battleRoom, Point(enemyPos.x + 25, enemyPos.y))) {
+            this->setPosition(Point(enemyPos.x + 25, enemyPos.y));
         }
     }
     else {
-		if (inRoom(battleRoom, Point(enemyPos.x - 15, enemyPos.y))) {
-			this->setPosition(Point(enemyPos.x - 15, enemyPos.y));
+		if (inRoom(battleRoom, Point(enemyPos.x - 25, enemyPos.y))) {
+			this->setPosition(Point(enemyPos.x - 25, enemyPos.y));
 		}
     }
-    if (shakeTimeCount >= 20) {
+    if (shakeTimeCount >= 4) {
         shakeTimeCount = 0;
         beAttacked = false;
     }
@@ -204,6 +206,8 @@ void Enemy::attackTheKnight(Knight* knight,
             break;
         case 2:
             spearAttack(knight, disBetweenEnemyAndKnight);
+        case 3:
+            gunnerAttack(knight, disBetweenEnemyAndKnight);
         default:
             break;
         }
@@ -215,7 +219,7 @@ void Enemy::archerAttack(Knight* knight, float disBetweenEnemyAndKnight){
 	auto enemyPos = this->getPosition();
 	auto knightPos = knight->getPosition();
 
-    if (attackTimeCount >= 80) {
+    if (attackTimeCount >= 120) {
         knight->deductHP(3);
         log("%d", knight->getHP());
         attackTimeCount = 0;
@@ -294,6 +298,7 @@ void Enemy::spearAttack(Knight* knight, float disBetweenEnemyAndKnight) {
 		}
 		if (disBetweenEnemyAndKnight <= 5) {
 			knight->deductHP(3);
+            log("%d", knight->getHP());
 			haveAttacked = true;
 		}
 	}
@@ -305,4 +310,23 @@ void Enemy::spearAttack(Knight* knight, float disBetweenEnemyAndKnight) {
 		restCount++;
 	}
 }
+
+void Enemy::gunnerAttack(Knight* knight, float disBetweenEnemyAndKnight){
+	auto enemyPos = this->getPosition();
+	auto knightPos = knight->getPosition();
+    if (disBetweenEnemyAndKnight > 5) {
+        moveSpeedX = 2.0f * (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight;
+        moveSpeedY = 2.0f * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;
+    }
+
+    if (attackTimeCount >= 90 && knight->getMoveSpeedX() == 0 && knight->getMoveSpeedY() == 0) {
+        knight->deductHP(1);
+        log("%d", knight->getHP());
+        attackTimeCount = 0;
+    }
+	else {
+		attackTimeCount++;
+	}
+}
+
 
