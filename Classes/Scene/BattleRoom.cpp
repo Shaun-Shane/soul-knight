@@ -338,19 +338,31 @@ void BattleRoom::playerBulletCollistionCheck() {
       }
     }
 
-    for (INT32 j = 0; j < vecEnemy.size(); ++j) { //检测怪物
-      auto enemy = vecEnemy.at(j);
-      if (enemy->getParent() == nullptr || enemy->getIsKilled()) continue;
-      Rect enemyRect = enemy->getBoundingBox();
-      if (bulletRect.intersectsRect(enemyRect)) {
-        INT32 hp = knight->getHP();
-        enemy->deductHP(bullet->getAttack());
-
+    if (getBoss() != nullptr && getBoss()->getIsKilled() == false) {
+      Rect bossRect = getBoss()->getBoundingBox();
+      if (bulletRect.intersectsRect(bossRect)) {
+        getBoss()->deductHP(bullet->getAttack());
         bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
         bullet->removeFromParent();
         vecPlayerBullet.eraseObject(bullet);
         --i;
-        break;
+      }
+    }
+    else {
+      for (INT32 j = 0; j < vecEnemy.size(); ++j) { //检测怪物
+        auto enemy = vecEnemy.at(j);
+        if (enemy->getParent() == nullptr || enemy->getIsKilled()) continue;
+        Rect enemyRect = enemy->getBoundingBox();
+        if (bulletRect.intersectsRect(enemyRect)) {
+          INT32 hp = knight->getHP();
+          enemy->deductHP(bullet->getAttack());
+
+          bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
+          bullet->removeFromParent();
+          vecPlayerBullet.eraseObject(bullet);
+          --i;
+          break;
+        }
       }
     }
   }
@@ -415,8 +427,8 @@ bool BattleRoom::allKilled() {
 
 void BattleRoom::createTreasureBox() {
   srand(time(NULL));
-  int randomDigit = rand() % 6;
-  if (randomDigit <= 2)
+  int randomDigit = rand() % 7;
+  if (randomDigit <= 3)
     crearteWeapon(randomDigit);
   else
     createProps(randomDigit);
@@ -446,6 +458,13 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
       weapon->setWeaponState(true);
       break;
+    case 3:
+      weapon->setFireSpeed(0.0f);
+      weapon->setAttack(4);
+      weapon->setMPConsumption(0);
+      weapon->bindSprite(Sprite::create("Weapon//weapon5.png"), LayerPlayer);
+      weapon->setWeaponState(false);
+      break;
   }
   weapon->setPosition(
       Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
@@ -458,15 +477,15 @@ void BattleRoom::crearteWeapon(int randomDigit) {
 void BattleRoom::createProps(int randomDigit) {
   Prop* props = Prop::create();
   switch (randomDigit) {
-    case 3:
+    case 4:
       props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
       props->setPropIndex(3);
       break;
-    case 4:
+    case 5:
       props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
       props->setPropIndex(4);
       break;
-    case 5:  //不出任何道具
+    case 6:  //不出任何道具
       return;
   }
   props->setPosition(
