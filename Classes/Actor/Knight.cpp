@@ -13,11 +13,20 @@ bool Knight::init() {
   this->weapon=Weapon::create();
   this->weapon->setFireSpeed(10.0);
   this->weapon->setAttack(1);
+<<<<<<< Updated upstream
   this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"), LayerPlayer + 1);
 <<<<<<< Updated upstream
   this->weapon->setPosition(Vec2(5, -10));
 =======
   this->weapon->setPosition(Vec2(25, 10));
+>>>>>>> Stashed changes
+=======
+  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"),
+                           LayerPlayer + 1);
+  this->weapon->setWeaponState(true);
+
+  this->weapon->setPosition(Vec2(40, 20));
+
 >>>>>>> Stashed changes
   this->weapon->setMPConsumption(0);
   this->addChild(weapon);

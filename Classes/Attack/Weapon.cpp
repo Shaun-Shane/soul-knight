@@ -24,6 +24,16 @@ INT32 Weapon::getMPConsumption() {  return mpConsumption;}
 
 void Weapon::setMPConsumption(INT32 deta) { this->mpConsumption = deta;}
 
+bool Weapon::getWeaponState()
+{
+  return this->weaponState;
+}
+
+void Weapon::setWeaponState(bool state)
+{
+  this->weaponState = state;
+}
+
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
   Bullet* bullet = Bullet::create();

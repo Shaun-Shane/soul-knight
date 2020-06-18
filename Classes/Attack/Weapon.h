@@ -26,6 +26,10 @@ public:
 
   void setMPConsumption(INT32);
 
+  bool getWeaponState();
+
+  void setWeaponState(bool state);
+
 
 
   
@@ -33,6 +37,7 @@ protected:
   float fireSpeed;
   INT32 attack;
   INT32 mpConsumption;
+  bool weaponState;
 
 };
 
