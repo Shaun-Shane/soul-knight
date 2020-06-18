@@ -4,6 +4,7 @@
 #include "Bullet.h"
 #include "Scene/BattleRoom.h"
 #include "Scene/Hall.h"
+#include "Actor/Knight.h"
 
 USING_NS_CC;
 
@@ -30,6 +31,8 @@ public:
 
   void setWeaponState(bool state);
 
+  void attackEnemy(Vec2 speed, INT32 firePower,Knight* knight);
+  void knifeAttack(Knight* knight);
 
 
   

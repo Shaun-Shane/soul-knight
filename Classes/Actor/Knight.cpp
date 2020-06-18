@@ -298,6 +298,16 @@ void Knight::resumeArmor() { //恢复护甲
   }
 }
 
+BattleRoom* Knight::getAtBattleRoom()
+{
+  return this->atBattleRoom;
+}
+
+Hall* Knight::getAtHall()
+{
+  return atHall;
+}
+
 void Knight::weaponAttack(
     Vec2 last) {  //写得有点啰嗦，有空再精简，不过感觉不好精简了
   if (this->MP <= 0 && this->weapon->getMPConsumption() > 0) return;
