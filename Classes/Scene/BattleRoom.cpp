@@ -426,18 +426,21 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setAttack(1);
       weapon->setMPConsumption(1);
       weapon->bindSprite(Sprite::create("Weapon//weapon2.png"), LayerPlayer);
+      weapon->setWeaponState(true);
       break;
     case 1:
       weapon->setFireSpeed(23.0f);
       weapon->setAttack(4);
       weapon->setMPConsumption(3);
       weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), LayerPlayer);
+      weapon->setWeaponState(true);
       break;
     case 2:
       weapon->setFireSpeed(24.0f);
       weapon->setAttack(6);
       weapon->setMPConsumption(4);
       weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
+      weapon->setWeaponState(true);
       break;
   }
   weapon->setPosition(
