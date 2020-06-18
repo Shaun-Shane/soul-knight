@@ -55,7 +55,12 @@ class Knight : public Entity {
   void setMoveSpeedBuff(INT32);
 
   void deductHP(INT32) override;  //扣血
+
   void resumeArmor();             //恢复护甲
+
+  BattleRoom* getAtBattleRoom();
+
+  Hall* getAtHall();
 
   Animate* getAnimate();
 

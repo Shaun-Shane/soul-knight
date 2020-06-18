@@ -24,6 +24,33 @@ INT32 Weapon::getMPConsumption() {  return mpConsumption;}
 
 void Weapon::setMPConsumption(INT32 deta) { this->mpConsumption = deta;}
 
+bool Weapon::getWeaponState()
+{
+  return this->weaponState;
+}
+
+void Weapon::setWeaponState(bool state)
+{
+  this->weaponState = state;
+}
+
+void Weapon::knifeAttack(Knight* knight)
+{
+  if (knight->getAtBattleRoom() == nullptr) return;
+  Vector<Enemy*>& vecEnemy = knight->getAtBattleRoom()->getVecEnemy();
+
+  for (auto& e : vecEnemy) {
+    if (e->getParent() == nullptr) continue;
+
+    float enemyX = e->getPositionX(), enemyY = e->getPositionY();
+
+    if (sqrt(pow(knight->getPositionX() - enemyX, 2) +
+      pow(knight->getPositionY() - enemyY, 2)) <= 75.0f) {
+      e->deductHP(this->attack); //在技能圆内 扣血
+    }
+  }
+}
+
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
   Bullet* bullet = Bullet::create();

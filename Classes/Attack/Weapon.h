@@ -4,6 +4,7 @@
 #include "Bullet.h"
 #include "Scene/BattleRoom.h"
 #include "Scene/Hall.h"
+#include "Actor/Knight.h"
 
 USING_NS_CC;
 
@@ -26,6 +27,10 @@ public:
 
   void setMPConsumption(INT32);
 
+  bool getWeaponState();
+
+  void setWeaponState(bool state);
+  void knifeAttack(Knight* knight);
 
 
   
@@ -33,6 +38,7 @@ protected:
   float fireSpeed;
   INT32 attack;
   INT32 mpConsumption;
+  bool weaponState;
 
 };
 
