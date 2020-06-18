@@ -1,4 +1,4 @@
-#include "Statue.h"
+﻿#include "Statue.h"
 
 bool Statue::init() { 
   playerVisited = false;
@@ -26,8 +26,23 @@ bool Statue::init() {
   return true; 
 }
 
-void Statue::bindSprite(Sprite* sprite, INT32 layer) {
+void Statue::bindSprite(Sprite* sprite, INT32 layer) { 
+  //将Node中心和sprite中心重合
+  Size size = sprite->getContentSize();
+  this->setContentSize(size);  //设置大小
+  this->setAnchorPoint(Point(0.5f, 0.5f));  //设置锚点
+  setPosition(Point(.0f, .0f));
 
+  //分割精灵
+  auto tmpSprite = Sprite::create(sprite->getResourceName(), Rect(0, 0, 120, 100));
+  tmpSprite->setPosition(Point(60, 150));
+  tmpSprite->setGlobalZOrder(layer);
+  this->addChild(tmpSprite);
+
+  tmpSprite = Sprite::create(sprite->getResourceName(), Rect(0, 100, 120, 100));
+  tmpSprite->setPosition(Point(60, 50));
+  tmpSprite->setGlobalZOrder(LayerPlayer - 1);
+  this->addChild(tmpSprite);
 }
 
 Label* Statue::getLabel() const { return this->label; }

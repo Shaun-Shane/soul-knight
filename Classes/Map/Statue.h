@@ -1,4 +1,4 @@
-#ifndef _STATUE_H_
+ï»¿#ifndef _STATUE_H_
 #define _STATUE_H
 
 #include "cocos2d.h"
@@ -16,13 +16,12 @@ class Statue : public Node {
   void bindSprite(Sprite*, INT32);
 
   void setGoldCost(INT32);
-  INT32 getGoldCost() const; //½ğ±Ò»¨·Ñ
-  INT32 getStatueType() const; //µñÏñÀàĞÍ
+  INT32 getGoldCost() const; //é‡‘å¸èŠ±è´¹
+  INT32 getStatueType() const; //é›•åƒç±»å‹
 
   Label* getLabel() const;
 
  private:
-  Sprite* sprite = nullptr;
   Label* label = nullptr;
 
  private:
