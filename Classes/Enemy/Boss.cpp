@@ -11,7 +11,7 @@ Boss::~Boss() { }
 
 bool Boss::init()
 {
-	this->setHP(500);
+    HP = maxHP = 500;
 	lastHP = HP;
 	attack = 6;
 	return true;

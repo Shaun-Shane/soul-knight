@@ -49,7 +49,10 @@ class BattleRoom : public Hall {
 
   void playerBulletCollistionCheck();
 
-  void removeKilledEnemy();
+  void checkObstacle(Entity*); //检测障碍物
+  void checkStatue(Knight*); //检测雕像
+
+  void removeKilledEnemy(); //将死亡的敌人removeFromParent 有死亡效果
 
   bool allKilled();
   

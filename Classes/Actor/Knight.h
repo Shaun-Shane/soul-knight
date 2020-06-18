@@ -36,12 +36,26 @@ class Knight : public Entity {
 
   bool getNeedCreateBox();
   
-  INT32 getMP();
-  void deductHP(INT32) override;  //扣血
-  void resumeArmor(); //恢复护甲
-  INT32 getArmor();
-
+  INT32 getMP() const; //法力值
   void setMP(INT32);
+
+  INT32 getMaxMP() const; //最大生命值
+  void setMaxMP(INT32);
+
+  INT32 getArmor() const; //护甲
+  void setArmor(INT32);
+
+  INT32 getMaxArmor() const; //最大护甲
+  void setMaxArmor(INT32);
+
+  INT32 getDamageBuff() const; //伤害buff
+  void setDamageBuff(INT32);
+
+  INT32 getMoveSpeedBuff() const; //移速buff
+  void setMoveSpeedBuff(INT32);
+
+  void deductHP(INT32) override;  //扣血
+  void resumeArmor();             //恢复护甲
 
   Animate* getAnimate();
 
@@ -50,8 +64,10 @@ class Knight : public Entity {
   Prop* collisionWithCropCheck();
 
  private:
-  INT32 armor = 5;
-  INT32 MP = 200;
+  INT32 armor = 5, maxArmor = 5;
+  INT32 MP = 200, maxMP = 200;
+  INT32 damageBuff = 0, moveSpeedBuff = 0;
+  INT32 gold = 0;
 
   time_t preAttackedTime = 0, curTime = 0;
 

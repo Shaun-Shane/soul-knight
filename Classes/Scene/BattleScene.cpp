@@ -156,9 +156,10 @@ void BattleScene::update(float delta) {
 }
 
 void BattleScene::updatePlayerPos() {
-  float ispeedX = knight->moveSpeedX;
-  float ispeedY = knight->moveSpeedY;
-  if (abs(ispeedX) > 0 && abs(ispeedY) > 0)  //确保任意方向速度相同
+  float ispeedX = knight->moveSpeedX + knight->getMoveSpeedBuff();
+  float ispeedY = knight->moveSpeedY + knight->getMoveSpeedBuff();
+  if (abs(ispeedX) > 0 && abs(ispeedY) > 0 && abs(abs(ispeedX) - abs(ispeedY)) < 0.0001f)  
+    //确保任意方向速度相同
     ispeedX /= sqrt(2.0f), ispeedY /= sqrt(2.0f);  
 
   for (INT32 y = 0; y < SIZEMTX; y++) {
@@ -209,16 +210,19 @@ void BattleScene::updatePlayerPos() {
   }
 }
 
-void BattleScene::updatePlayerInfoBar() { //更新人物信息显示
+void BattleScene::updatePlayerInfoBar() {  //更新人物信息显示
   /*进度条更新*/
-  BloodLoadingBar->setPercent(knight->getHP() * 100 / 5);
-  ArmorLoadingBar->setPercent(knight->getArmor() * 100 / 5);
-  MPLoadingBar->setPercent(float(knight->getMP()) / 200.0f * 100);
+  BloodLoadingBar->setPercent(knight->getHP() * 100.0f / knight->maxHP);
+  ArmorLoadingBar->setPercent(knight->getArmor() * 100.0f / knight->maxArmor);
+  MPLoadingBar->setPercent(knight->getMP() * 100.0f / knight->maxMP);
 
   /*状态信息更新*/
-  HPLabel->setString(Value(knight->HP).asString() + "/5");
-  armorLabel->setString(Value(knight->armor).asString() + "/5");
-  MPLabel->setString(Value(knight->MP).asString() + "/200");
+  HPLabel->setString(Value(knight->HP).asString() + "/" +
+                     Value(knight->maxHP).asString());
+  armorLabel->setString(Value(knight->armor).asString() + "/" +
+                        Value(knight->maxArmor).asString());
+  MPLabel->setString(Value(knight->MP).asString() + "/" +
+                     Value(knight->maxMP).asString());
 }
 
 void BattleScene::updateEnemy() { //更新敌人
@@ -262,7 +266,7 @@ void BattleScene::updateBossInfoBar() {
       BOSSBloodBg->setVisible(true);
       BOSSLoadingBar->setVisible(true);
 
-      BOSSLoadingBar->setPercent((boss->getHP()) * 100 / 500);  //血量更新
+      BOSSLoadingBar->setPercent(boss->getHP() * 100.0f / boss->getMaxHP());  //血量更新
     } else {  // boss 死亡 隐藏血条
       BOSSBloodBg->setVisible(false);
       BOSSLoadingBar->setVisible(false);
@@ -308,7 +312,7 @@ void BattleScene::checkEndRoom() { //检查房间终点
 
       this->cleanup();
       this->removeAllChildren();           //释放
-      Director::getInstance()->pushScene(  //进入下一个场景
+      Director::getInstance()->replaceScene(  //进入下一个场景
           TransitionFade::create(2.0f, BattleScene::createScene()));
     }
   }
@@ -609,7 +613,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
 /*退出游戏*/
 void BattleScene::menuCloseCallbackEnd(Ref* pSender)
 {
-	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartScene::createScene()));
+	Director::getInstance()->popScene();
 }
 
 /*进入设置面板*/

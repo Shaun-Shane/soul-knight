@@ -45,17 +45,17 @@ void Entity::showDeathEffect() {
   this->getSprite()->runAction(sequence);
 }
 
-INT32 Entity::getHP() { //return HP of this entity
-  if (getSprite() == nullptr) {
-    log("null Sprite !");
-    return 0;
-  }
+INT32 Entity::getHP() const { //return HP of this entity
   return this->HP;
 }
 
-float Entity::getMoveSpeedX() { return moveSpeedX; }
+float Entity::getMoveSpeedX() const { return moveSpeedX; }
 
-float Entity::getMoveSpeedY() { return moveSpeedY; }
+void Entity::setMoveSpeedX(float speedX) { this->moveSpeedX = speedX; }
+
+float Entity::getMoveSpeedY() const { return moveSpeedY; }
+
+void Entity::setMoveSpeedY(float speedY) { this->moveSpeedY = speedY; }
 
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
@@ -66,10 +66,12 @@ void Entity::deductHP(INT32 delta) { //minus HP of this entity
   this->addChild(flowWord);
   flowWord->showWord(-delta,
                      getSprite()->getPosition() +
-                         Vec2(0, this->getContentSize().height / 2.3f));
+                         Vec2(0, this->getContentSize().height / 2.2f));
 }
 
 void Entity::setHP(INT32 HP) { this->HP = HP; }
+
+INT32 Entity::getMaxHP() const { return this->maxHP; }
 
 bool Entity::getIsKilled() const { return isKilled; }
 

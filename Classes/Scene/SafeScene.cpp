@@ -65,7 +65,7 @@ void SafeScene::update(float delta) {
     assert(BattleScene::knight->getParent() == nullptr);
 
     this->cleanup();  //暂停该场景
-    Director::getInstance()->pushScene(
+    Director::getInstance()->replaceScene(
         TransitionFade::create(2.0f, BattleScene::createScene()));
   }
 }
