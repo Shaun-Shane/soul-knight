@@ -424,7 +424,7 @@ bool BattleRoom::allKilled() {
 void BattleRoom::createTreasureBox() {
   srand(time(NULL));
   int randomDigit = rand() % 7;
-  if (randomDigit <= 2)
+  if (randomDigit <= 3)
     crearteWeapon(randomDigit);
   else
     createProps(randomDigit);
