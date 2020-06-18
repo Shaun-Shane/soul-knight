@@ -411,7 +411,7 @@ bool BattleRoom::allKilled() {
 
 void BattleRoom::createTreasureBox() {
   srand(time(NULL));
-  int randomDigit = rand() % 6;
+  int randomDigit = rand() % 7;
   if (randomDigit <= 2)
     crearteWeapon(randomDigit);
   else
@@ -441,6 +441,13 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(4);
       weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
       weapon->setWeaponState(true);
+    case 3:
+      weapon->setFireSpeed(0.0f);
+      weapon->setAttack(4);
+      weapon->setMPConsumption(0);
+      weapon->bindSprite(Sprite::create("Weapon//weapon5.png"), LayerPlayer);
+      weapon->setWeaponState(false);
+
       break;
   }
   weapon->setPosition(
@@ -454,15 +461,15 @@ void BattleRoom::crearteWeapon(int randomDigit) {
 void BattleRoom::createProps(int randomDigit) {
   Prop* props = Prop::create();
   switch (randomDigit) {
-    case 3:
+    case 4:
       props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
       props->setPropIndex(3);
       break;
-    case 4:
+    case 5:
       props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
       props->setPropIndex(4);
       break;
-    case 5:  //不出任何道具
+    case 6:  //不出任何道具
       return;
   }
   props->setPosition(
