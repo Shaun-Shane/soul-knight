@@ -27,6 +27,9 @@ class Enemy : public Entity {
 
   void aiOfEnemy(Knight* knight, const BattleRoom* battleRoom);  
 
+  BattleRoom* getAtBattleRoom() const; //获取所在房间
+  void bindAtBattleRoom(BattleRoom*); //绑定所在房间
+
   INT32 startCount;
 
  private:
@@ -70,6 +73,7 @@ protected:
   INT32 shakeTimeCount = 0;
   void shake(const BattleRoom* battleRoom);
 
+  BattleRoom* atBattleRoom = nullptr; //敌人对应房间
 
 };
 

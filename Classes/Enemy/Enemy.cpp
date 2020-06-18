@@ -11,6 +11,10 @@ bool Enemy::init() {
   isKilled = false;
   return true; 
 }
+//返回所在房间指针
+BattleRoom* Enemy::getAtBattleRoom() const { return this->atBattleRoom; }
+
+void Enemy::bindAtBattleRoom(BattleRoom* room) { this->atBattleRoom = room; }
 
 void Enemy::show() {
   if (getSprite() != nullptr) {

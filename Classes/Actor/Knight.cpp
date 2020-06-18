@@ -46,9 +46,10 @@ bool Knight::init() {
 
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
-  this->weapon->setAttack(1);
-  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"),
+  this->weapon->setAttack(20);
+  this->weapon->bindSprite(Sprite::create("Weapon//weapon1.png"),
                            LayerPlayer + 1);
+  this->weapon->setWeaponState(true);
 
   this->weapon->setPosition(Vec2(40, 20));
 
@@ -297,34 +298,59 @@ void Knight::resumeArmor() { //恢复护甲
   }
 }
 
+BattleRoom* Knight::getAtBattleRoom()
+{
+  return this->atBattleRoom;
+}
+
+Hall* Knight::getAtHall()
+{
+  return atHall;
+}
+
 void Knight::weaponAttack(
     Vec2 last) {  //写得有点啰嗦，有空再精简，不过感觉不好精简了
   if (this->MP <= 0 && this->weapon->getMPConsumption() > 0) return;
 
   this->setMP(this->getMP() - this->weapon->getMPConsumption());
-
+  if (this->weapon->getWeaponState() == false)
+  {
+    //在这里添加砍刀落下动画
+    this->weapon->knifeAttack(this);
+    return;
+  }
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
   INT32 firePower = this->weapon->getAttack();
   Vec2 curPos = this->getPosition();
   Vec2 target;
   if (this->atBattleRoom != nullptr) {
-    Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
-    Enemy* nearNeast = nullptr;
-    float distance = 99999;
-    for (auto e : vecEnemy) {
-      if (e->getParent() != nullptr && e->getIsKilled() == false) {
-        Vec2 enemyPos = e->getPosition();
-        if (enemyPos.distance(curPos) < distance) {
-          nearNeast = e;
-          distance = enemyPos.distance(curPos);
+    Boss* boss = this->atBattleRoom->getBoss();
+    if (boss != nullptr && boss->getIsKilled() == false) {
+        target =boss->getPosition() - curPos;
+        target.set(target.x / target.length(), target.y / target.length());
+        fireSpeed = target * this->weapon->getFireSpeed();
+    }
+    else {
+      Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
+      Enemy* nearNeast = nullptr;
+      float distance = 99999;
+      for (auto e : vecEnemy) {
+        if (e->getParent() != nullptr && e->getIsKilled() == false) {
+          Vec2 enemyPos = e->getPosition();
+          if (enemyPos.distance(curPos) < distance) {
+            nearNeast = e;
+            distance = enemyPos.distance(curPos);
+          }
         }
       }
+      if (nearNeast != nullptr) {
+        target = nearNeast->getPosition() - curPos;
+        target.set(target.x / target.length(), target.y / target.length());
+        fireSpeed = target * this->weapon->getFireSpeed();
+      }
     }
-    if (nearNeast != nullptr) {
-      target = nearNeast->getPosition() - curPos;
-      target.set(target.x / target.length(), target.y / target.length());
-      fireSpeed = target * this->weapon->getFireSpeed();
-    }
+    
+    
   }
 
   Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);

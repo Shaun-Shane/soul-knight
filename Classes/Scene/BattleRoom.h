@@ -12,6 +12,8 @@
 
 USING_NS_CC;
 
+class Statue;
+
 class BattleRoom : public Hall {
   friend class BattleScene;
   static bool createRoom(BattleRoom*&, BattleRoom*, INT32, INT32, INT32);
@@ -33,6 +35,8 @@ class BattleRoom : public Hall {
 
   void generateDoor(float, float, INT32 layer);
 
+  void generateStatue();
+
   void closeDoor();
 
   void openDoor();
@@ -50,7 +54,7 @@ class BattleRoom : public Hall {
   void playerBulletCollistionCheck();
 
   void checkObstacle(Entity*); //检测障碍物
-  void checkStatue(Knight*); //检测雕像
+  void checkStatue(); //检测雕像
 
   void removeKilledEnemy(); //将死亡的敌人removeFromParent 有死亡效果
 
@@ -64,7 +68,7 @@ class BattleRoom : public Hall {
 
  private:
   void createEnemy();  //生成敌人
-  void createBoss();
+  void createBoss(); //生成boss
 
  private:
   float centerX, centerY;
@@ -79,6 +83,7 @@ class BattleRoom : public Hall {
  private:
   Sprite* portal = nullptr; //传送门
   Boss* boss = nullptr; //Boss
+  Statue* statue = nullptr;
 
 protected:
   Vector<Sprite*> vecDoorOpen, vecDoorClose; 
