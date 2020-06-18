@@ -1,4 +1,4 @@
-﻿#ifndef _AIOFENEMY_H_
+#ifndef _AIOFENEMY_H_
 #define _AIOFENEMY_H_
 #include <vector>
 #include "Enemy.h"
@@ -27,7 +27,6 @@ class AIOfEnemy {
   Enemy* myEnemy;
   INT32 paceCount;                      //用于保证至少20步都在走同一方向
   INT32 wayOfPace;                      //选择走的方向
-  INT32 attackTimeCount;
   std::vector<INT32> wayCanBeSelected;  //可供选择的行走方向
 };
 #endif  // _AIOFENEMY_H_

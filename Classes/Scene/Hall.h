@@ -4,10 +4,8 @@
 #include "cocos2d.h"
 #include "Const/Const.h"
 #include "Actor/Knight.h"
-
+#include "Attack/Bullet.h"
 USING_NS_CC;
-
-class Bullet;
 
 class Hall : public Node{
   friend class BattleScene;
@@ -27,17 +25,14 @@ class Hall : public Node{
 
   void generateFloor(float, float, INT32);
 
-  void generateWall(float, float, INT32, bool);
+  void generateWall(float, float, INT32);
 
   Vector<Bullet*>& getVecPlayerBullet(); 
 
-  bool isInRange(Vec2 pos);
+  bool isInScreen(Vec2 pos);
 
   void bulletMove();
 
-  Point getUpleftVertex() const;  //获得房间内左上角顶点坐标
-
-  Point getDownRightVertex() const;  //获得房间内右下角顶点坐标
 
  private:
   INT32 dir; //direction of this hall

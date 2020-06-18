@@ -4,30 +4,22 @@
 #include "Actor\Knight.h"
 #include "Enemy\Enemy.h"
 #include "BattleRoom.h"
-#include "SafeScene.h"
 #include "Hall.h"
 #include "Const\Const.h"
 #include "MiniMap\MiniMap.h"
 #include "MiniMap\MiniRoom.h"
 #include "cocos2d.h"
 #include <queue>
-#include"ui/CocosGUI.h"
 
 USING_NS_CC;
 using std::queue;
-using std::vector;
-using std::string;
 
 class BattleScene : public Scene {
-  friend class SafeScene;
   static constexpr INT32 SIZEMTX = 5;
   static constexpr INT32 MAXROOM = 6; // temporarily make it 6
 
  public:
   static Scene* createScene();
-  static INT32 getSceneNumber(); //获取场景编号
-  static const vector<string>& getVecSceneType(); //获取场景类型容器
-
   virtual bool init();
   virtual void update(float delta);
   CREATE_FUNC(BattleScene);
@@ -38,32 +30,21 @@ class BattleScene : public Scene {
 
  private:
   void updatePlayerPos();
-  void updatePlayerInfoBar();
-  void updateEnemy();
-  void updateBoss();
-  void updateBossInfoBar();
-  void checkEndRoom();
 
   void initRoom(); //generate room randomly
   void initMiniMap();
 
   void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
   void randomGenerate(INT32, INT32);
-  void setRoomType();
 
   void setHallWithWidth(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void setHallWithHeight(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void connectRoom(BattleRoom*);
 
  private:
-  static INT32 battleSceneNumber;
-  static vector<string> vecSceneType; //场景类型
-
   INT32 cntRoom = 0;
-
  private:
-  static Knight* knight;
-
+  Knight* knight = nullptr;
   MiniMap* miniMap = nullptr;
   
  // temporarily just one kind of map floor and wall
@@ -78,17 +59,6 @@ class BattleScene : public Scene {
   BattleRoom* beginRoom = nullptr;
   BattleRoom* endRoom = nullptr;
   BattleRoom* battleRoom[SIZEMTX][SIZEMTX] = {nullptr};  // room
-
-  ui::LoadingBar* BloodLoadingBar;
-  ui::LoadingBar* ArmorLoadingBar;
-  ui::LoadingBar* MPLoadingBar;
-
-  Label* HPLabel;
-  Label* armorLabel;
-  Label* MPLabel;
-
-  Sprite* BOSSBloodBg = nullptr;
-  ui::LoadingBar* BOSSLoadingBar = nullptr;
 };
 
 #endif
