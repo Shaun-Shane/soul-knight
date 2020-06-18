@@ -46,7 +46,7 @@ bool Knight::init() {
 
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
-  this->weapon->setAttack(1);
+  this->weapon->setAttack(20);
   this->weapon->bindSprite(Sprite::create("Weapon//weapon1.png"),
                            LayerPlayer + 1);
   this->weapon->setWeaponState(true);
@@ -327,6 +327,8 @@ void Knight::weaponAttack(
     Boss* boss = this->atBattleRoom->getBoss();
     if (boss != nullptr && boss->getIsKilled() == false) {
         target =boss->getPosition() - curPos;
+        target.set(target.x / target.length(), target.y / target.length());
+        fireSpeed = target * this->weapon->getFireSpeed();
     }
     else {
       Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
@@ -343,11 +345,11 @@ void Knight::weaponAttack(
       }
       if (nearNeast != nullptr) {
         target = nearNeast->getPosition() - curPos;
-        
+        target.set(target.x / target.length(), target.y / target.length());
+        fireSpeed = target * this->weapon->getFireSpeed();
       }
     }
-    target.set(target.x / target.length(), target.y / target.length());
-    fireSpeed = target * this->weapon->getFireSpeed();
+    
     
   }
 
