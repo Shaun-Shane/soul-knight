@@ -47,7 +47,7 @@ bool Knight::init() {
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
   this->weapon->setAttack(1);
-  this->weapon->bindSprite(Sprite::create("Weapon//1.png"),
+  this->weapon->bindSprite(Sprite::create("Weapon//weapon5.png"),
                            LayerPlayer + 1);
   this->weapon->setWeaponState(false);
 
