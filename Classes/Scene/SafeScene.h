@@ -1,6 +1,7 @@
 ﻿#ifndef _SAfESCENE_H
 #define _SAfESCENE_H
 #include "cocos2d.h"
+#include "ui/CocosGUI.h"
 
 #include "Actor\Knight.h"
 
@@ -27,6 +28,14 @@ class SafeScene : public Scene {
 	 Sprite* portal = nullptr;
 
   Knight* knight = nullptr;
+
+  ui::LoadingBar* BloodLoadingBar = ui::LoadingBar::create();
+  ui::LoadingBar* ArmorLoadingBar = ui::LoadingBar::create();
+  ui::LoadingBar* MPLoadingBar = ui::LoadingBar::create();
+
+  Label* HPLabel;
+  Label* armorLabel;
+  Label* MPLabel;
 };
 
 #endif

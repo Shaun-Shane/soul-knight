@@ -1,16 +1,5 @@
 ﻿#include "Entity.h"
-
-Entity::Entity() : attack(0), HP(0), attackSpeed(.0f), moveSpeedX(.0f), moveSpeedY(.0f) { this->sprite = nullptr; }
-
-Entity::Entity(INT32 _attack, INT32 _HP, float _attackSpeed, float _moveSpeedX, float _moveSpeedY)
-    : attack(_attack), HP(_HP), attackSpeed(_attackSpeed), moveSpeedX(_moveSpeedX), moveSpeedY(_moveSpeedY) {
-  this->sprite = nullptr;
-}
-
-Entity::Entity(Sprite* sprite) : attack(3), HP(5), attackSpeed(0.5f) {
-  this->sprite = sprite;
-  this->addChild(this->sprite);
-}
+#include"FlowWord.h"
 
 Entity::~Entity() {}
 
@@ -32,21 +21,58 @@ void Entity::bindSprite(Sprite* sprite, INT32 layer) {
   sprite->setPosition(Point(size.width / 2, size.height / 2));
 }
 
-INT32 Entity::getHP() { //return HP of this entity
-  if (getSprite() == nullptr) {
-    log("null Sprite !");
-    return 0;
-  }
+void Entity::addShadow(const Point& center, INT32 layer) { //添加阴影
+  auto entityCircle = DrawNode::create();
+
+  entityCircle->drawSolidCircle(center, this->getContentSize().width / 2.7f,
+                                CC_DEGREES_TO_RADIANS(360), 20, 1.0f, 0.35f,
+                                Color4F(.0f, .0f, .0f, 0.5f));
+
+  entityCircle->setGlobalZOrder(layer - 1);
+  this->addChild(entityCircle);
+}
+
+void Entity::showDeathEffect() { 
+  auto blink = Blink::create(0.3f, 3);
+  auto FadeOut = FadeOut::create(0.3f);
+
+  auto callFunc = CallFunc::create([&]() {
+    this->retain();
+    this->removeFromParent();
+  });
+
+  auto sequence = Sequence::create(Spawn::create(blink, FadeOut, NULL), callFunc, NULL); 
+  this->getSprite()->runAction(sequence);
+}
+
+INT32 Entity::getHP() const { //return HP of this entity
   return this->HP;
 }
 
-float Entity::getMoveSpeedX() { return moveSpeedX; }
+float Entity::getMoveSpeedX() const { return moveSpeedX; }
 
-float Entity::getMoveSpeedY() { return moveSpeedY; }
+void Entity::setMoveSpeedX(float speedX) { this->moveSpeedX = speedX; }
+
+float Entity::getMoveSpeedY() const { return moveSpeedY; }
+
+void Entity::setMoveSpeedY(float speedY) { this->moveSpeedY = speedY; }
 
 void Entity::deductHP(INT32 delta) { //minus HP of this entity
   if (getSprite() == nullptr) return;
-  this->HP =this->HP- delta;
+  this->HP = std::max(0, this->HP - delta);
+
+  /*受伤特效*/
+  FlowWord* flowWord = FlowWord::create();
+  this->addChild(flowWord);
+  flowWord->showWord(-delta,
+                     getSprite()->getPosition() +
+                         Vec2(0, this->getContentSize().height / 2.2f));
 }
 
 void Entity::setHP(INT32 HP) { this->HP = HP; }
+
+INT32 Entity::getMaxHP() const { return this->maxHP; }
+
+bool Entity::getIsKilled() const { return isKilled; }
+
+void Entity::setIsKilled(bool status) { isKilled = status; }

@@ -26,7 +26,17 @@ constexpr INT32 LayerPlayer = 6;
 
 constexpr INT32 TOP = 100;
 
-constexpr float PI = 3.1415926;
+constexpr float PI = 3.1415926f;
 
 enum RoomType { BEGIN, END, NORMAL, BOSS, WEAPON, PROP/*道具*/ };
+
+enum StatueType {
+  RESUME_HP, //恢复生命 free
+  ADD_HP,   //增加最大生命值
+  DOUBLE_HP, //生命值翻倍
+  ADD_ARMOR, //增加最大护甲
+  DOUBLE_ARMOR, //护甲翻倍
+  DOUBLE_DAMAGE, //双倍伤害
+  ADD_MOVE_SPEED //增加移动速度
+};
 #endif  // !_CONST_H_
