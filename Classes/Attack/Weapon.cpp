@@ -34,9 +34,15 @@ void Weapon::setWeaponState(bool state)
   this->weaponState = state;
 }
 
+void Weapon::attackEnemy(Vec2 speed, INT32 firePower, Knight* knight)
+{
+  if (this->weaponState == true) createBullet(speed, firePower);
+  else knifeAttack(knight);
+}
+
 void Weapon::knifeAttack(Knight* knight)
 {
-  if (knight->getAtBattleRoom() == nullptr) return;
+  if (knight->getAtHall() != nullptr) return;
   Vector<Enemy*>& vecEnemy = knight->getAtBattleRoom()->getVecEnemy();
 
   for (auto& e : vecEnemy) {
@@ -44,8 +50,8 @@ void Weapon::knifeAttack(Knight* knight)
 
     float enemyX = e->getPositionX(), enemyY = e->getPositionY();
 
-    if (sqrt(pow(knight->getPositionX() - enemyX, 2) +
-      pow(knight->getPositionY() - enemyY, 2)) <= 75.0f) {
+    if (sqrt(pow(getPositionX() - enemyX, 2) +
+      pow(getPositionY() - enemyY, 2)) <= 40.0f) {
       e->deductHP(this->attack); //在技能圆内 扣血
     }
   }
