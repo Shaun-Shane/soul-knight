@@ -47,9 +47,9 @@ bool Knight::init() {
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
   this->weapon->setAttack(1);
-  this->weapon->bindSprite(Sprite::create("Weapon//pistol.png"),
+  this->weapon->bindSprite(Sprite::create("Weapon//1.png"),
                            LayerPlayer + 1);
-  this->weapon->setWeaponState(true);
+  this->weapon->setWeaponState(false);
 
   this->weapon->setPosition(Vec2(40, 20));
 
@@ -313,7 +313,12 @@ void Knight::weaponAttack(
   if (this->MP <= 0 && this->weapon->getMPConsumption() > 0) return;
 
   this->setMP(this->getMP() - this->weapon->getMPConsumption());
-
+  if (this->weapon->getWeaponState() == false)
+  {
+    //在这里添加砍刀落下动画
+    this->weapon->knifeAttack(this);
+    return;
+  }
   Vec2 fireSpeed = last * (this->weapon->getFireSpeed());
   INT32 firePower = this->weapon->getAttack();
   Vec2 curPos = this->getPosition();
