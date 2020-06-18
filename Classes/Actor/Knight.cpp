@@ -46,7 +46,7 @@ bool Knight::init() {
 
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
-  this->weapon->setAttack(1);
+  this->weapon->setAttack(20);
   this->weapon->bindSprite(Sprite::create("Weapon//weapon1.png"),
                            LayerPlayer + 1);
   this->weapon->setWeaponState(true);
@@ -324,23 +324,33 @@ void Knight::weaponAttack(
   Vec2 curPos = this->getPosition();
   Vec2 target;
   if (this->atBattleRoom != nullptr) {
-    Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
-    Enemy* nearNeast = nullptr;
-    float distance = 99999;
-    for (auto e : vecEnemy) {
-      if (e->getParent() != nullptr && e->getIsKilled() == false) {
-        Vec2 enemyPos = e->getPosition();
-        if (enemyPos.distance(curPos) < distance) {
-          nearNeast = e;
-          distance = enemyPos.distance(curPos);
+    Boss* boss = this->atBattleRoom->getBoss();
+    if (boss != nullptr && boss->getIsKilled() == false) {
+        target =boss->getPosition() - curPos;
+        target.set(target.x / target.length(), target.y / target.length());
+        fireSpeed = target * this->weapon->getFireSpeed();
+    }
+    else {
+      Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
+      Enemy* nearNeast = nullptr;
+      float distance = 99999;
+      for (auto e : vecEnemy) {
+        if (e->getParent() != nullptr && e->getIsKilled() == false) {
+          Vec2 enemyPos = e->getPosition();
+          if (enemyPos.distance(curPos) < distance) {
+            nearNeast = e;
+            distance = enemyPos.distance(curPos);
+          }
         }
       }
+      if (nearNeast != nullptr) {
+        target = nearNeast->getPosition() - curPos;
+        target.set(target.x / target.length(), target.y / target.length());
+        fireSpeed = target * this->weapon->getFireSpeed();
+      }
     }
-    if (nearNeast != nullptr) {
-      target = nearNeast->getPosition() - curPos;
-      target.set(target.x / target.length(), target.y / target.length());
-      fireSpeed = target * this->weapon->getFireSpeed();
-    }
+    
+    
   }
 
   Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);

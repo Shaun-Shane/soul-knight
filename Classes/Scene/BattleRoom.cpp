@@ -334,19 +334,31 @@ void BattleRoom::playerBulletCollistionCheck() {
       }
     }
 
-    for (INT32 j = 0; j < vecEnemy.size(); ++j) { //检测怪物
-      auto enemy = vecEnemy.at(j);
-      if (enemy->getParent() == nullptr || enemy->getIsKilled()) continue;
-      Rect enemyRect = enemy->getBoundingBox();
-      if (bulletRect.intersectsRect(enemyRect)) {
-        INT32 hp = knight->getHP();
-        enemy->deductHP(bullet->getAttack());
-
+    if (getBoss() != nullptr && getBoss()->getIsKilled() == false) {
+      Rect bossRect = getBoss()->getBoundingBox();
+      if (bulletRect.intersectsRect(bossRect)) {
+        getBoss()->deductHP(bullet->getAttack());
         bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
         bullet->removeFromParent();
         vecPlayerBullet.eraseObject(bullet);
         --i;
-        break;
+      }
+    }
+    else {
+      for (INT32 j = 0; j < vecEnemy.size(); ++j) { //检测怪物
+        auto enemy = vecEnemy.at(j);
+        if (enemy->getParent() == nullptr || enemy->getIsKilled()) continue;
+        Rect enemyRect = enemy->getBoundingBox();
+        if (bulletRect.intersectsRect(enemyRect)) {
+          INT32 hp = knight->getHP();
+          enemy->deductHP(bullet->getAttack());
+
+          bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
+          bullet->removeFromParent();
+          vecPlayerBullet.eraseObject(bullet);
+          --i;
+          break;
+        }
       }
     }
   }
@@ -441,13 +453,13 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(4);
       weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
       weapon->setWeaponState(true);
+      break;
     case 3:
       weapon->setFireSpeed(0.0f);
       weapon->setAttack(4);
       weapon->setMPConsumption(0);
       weapon->bindSprite(Sprite::create("Weapon//weapon5.png"), LayerPlayer);
       weapon->setWeaponState(false);
-
       break;
   }
   weapon->setPosition(
