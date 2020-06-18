@@ -9,9 +9,10 @@
 #include "Const/Const.h"
 #include "Attack/Weapon.h"
 #include "Props/prop.h"
-#include "Map/Statue.h"
 
 USING_NS_CC;
+
+class Statue;
 
 class BattleRoom : public Hall {
   friend class BattleScene;

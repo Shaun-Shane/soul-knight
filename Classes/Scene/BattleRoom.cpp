@@ -1,6 +1,7 @@
 ﻿#include "BattleRoom.h"
 #include "BattleScene.h"
 #include "Props/prop.h"
+#include "Map/Statue.h"
 
 bool BattleRoom::init() {
   centerX = .0f, centerY = .0f;
@@ -180,6 +181,8 @@ void BattleRoom::createEnemy() {
 
   for (INT32 i = 1; i <= enemyNumber; i++) {
     Enemy* enemy = Enemy::create();
+    enemy->bindAtBattleRoom(this); //绑定所在房间
+
     enemy->startCount = i * 2;
     if (i < 3) {
       enemy->bindSprite(
@@ -220,6 +223,7 @@ void BattleRoom::createEnemy() {
 
 void BattleRoom::createBoss() {
   boss = Boss::create();
+  boss->bindAtBattleRoom(this);
 
   boss->bindSprite(Sprite::create("Enemy//boss.png"), LayerPlayer);
   boss->addShadow(Point(boss->getContentSize().width / 2,
