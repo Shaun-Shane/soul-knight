@@ -1,4 +1,4 @@
-#include "AIOfEnemy.h"
+﻿#include "AIOfEnemy.h"
 
 /*
 bindEnemy是用来捆绑敌人的 既然要合并到Enemy类里头应该就可以删掉了
@@ -19,6 +19,7 @@ AIOfEnemy::AIOfEnemy() {
   myEnemy = nullptr;
   paceCount = 0;
   wayOfPace = -1;  //-1代表未确定方向
+  attackTimeCount = 1;
 }
 
 AIOfEnemy::~AIOfEnemy() {}
@@ -33,7 +34,6 @@ void AIOfEnemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight,
     myEnemy->setPosition(
         Point(enemyPos.x + DIRX[wayOfPace] - knight->getMoveSpeedX(),
               enemyPos.y + DIRY[wayOfPace] - knight->getMoveSpeedY()));
-    myEnemy->makeCoinside();
     paceCount++;
     return;
   }
@@ -54,7 +54,6 @@ void AIOfEnemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight,
   myEnemy->setPosition(
       Point(enemyPos.x + DIRX[wayOfPace] - knight->getMoveSpeedX(),
             enemyPos.y + DIRY[wayOfPace] - knight->getMoveSpeedY()));
-  myEnemy->makeCoinside();
 
 }  //在没探测到骑士的时候正常的巡逻路线
 
@@ -82,7 +81,6 @@ void AIOfEnemy::aiOfEnemy(Knight* knight, BattleRoom* battleRoom,
                 enemyPos.y +
                     2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight -
                     knight->getMoveSpeedY()));
-      myEnemy->makeCoinside();
     } else {
       attackTheKnight(knight, disBetweenEnemyAndKnight);
     }
@@ -92,7 +90,11 @@ void AIOfEnemy::aiOfEnemy(Knight* knight, BattleRoom* battleRoom,
 void AIOfEnemy::attackTheKnight(Knight* knight,
                                 INT32 disBetweenEnemyAndKnight) {
   if (disBetweenEnemyAndKnight <= 5) {
-    knight->deductHP(3);
+      if (attackTimeCount % 40 == 0) {
+          knight->deductHP(3);
+          attackTimeCount = 1;
+      }
+      attackTimeCount++;
     return;
   }
 
@@ -104,6 +106,5 @@ void AIOfEnemy::attackTheKnight(Knight* knight,
             knight->getMoveSpeedX(),
         enemyPos.y + 2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight -
             knight->getMoveSpeedY()));
-    myEnemy->makeCoinside();
   }  //等武器那一块出来加上武器
 }

@@ -1,4 +1,7 @@
 ﻿#include "MiniRoom.h"
+#ifndef DEBUG
+#define DEBUG  // DEBUG模式，直接进入有BOSS地图
+#endif
 
 void MiniRoom::createRoom(float _x, float _y, Color4F color) { //5 * 5矩阵中的位置
   this->color = GREY;
@@ -15,7 +18,10 @@ void MiniRoom::createRoom(float _x, float _y, Color4F color) { //5 * 5矩阵中�
   this->drawSolidRect(Vec2(downLeftX, downLeftY), Vec2(upRightX, upRightY),
                             color);
   this->setGlobalZOrder(TOP);
+
+#ifndef DEBUG
   this->setVisible(false);
+#endif  // ! 
 }
 
 void MiniRoom::setColorWhite() {
