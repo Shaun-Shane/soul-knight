@@ -19,10 +19,10 @@ class Statue : public Node {
   INT32 getGoldCost() const; //金币花费
   INT32 getStatueType() const; //雕像类型
 
-  Label* getLabel() const;
+  Label* getTextLabel() const;
 
  private:
-  Label* label = nullptr;
+  Label* textLabel = nullptr;
 
  private:
   INT32 statueType = 0;
