@@ -1,4 +1,5 @@
 ﻿#include "Boss.h"
+#include "Actor/FlowWord.h"
 #include "Scene/BattleRoom.h"
 
 Boss::Boss() {
@@ -94,18 +95,34 @@ void Boss::uniqueSkill(Knight* knight, BattleRoom* battleRoom){
 
 void Boss::addHP(){
 	srand(static_cast<unsigned>(time(nullptr)));
-	 HP += 40 + (rand() % 30) * 2;
+	INT32 hpPlus =40 + (rand() % 30) * 2;
+	/*判断是否超过上限*/
+	if (HP + hpPlus <= 500) {
+		HP += hpPlus;
+	}
+	else {
+		hpPlus = 500 - HP;
+		HP = 500;
+	}
+
+	/*加血特效*/
+	 FlowWord* flowWord = FlowWord::create();
+	 this->addChild(flowWord);
+	 flowWord->showWord(+hpPlus,
+		 getSprite()->getPosition() +
+		 Vec2(0, this->getContentSize().height / 2.2f));
 }
 
 void Boss::heavilyAttackTheKnight(Knight* knight){
 	const Point myPos = this->getPosition();
 	const Point knightPos = knight->getPosition();
 	const INT32 distance = myPos.getDistance(knightPos);
+
 	if (distance <= HEAVYATTACKRANGE) {
 		srand(static_cast<unsigned>(time(nullptr)));
 		INT32 harmToKnight = 4 + rand() % 4;
 		knight->deductHP(harmToKnight);
-	}
+	}//在距离内就扣血
 
 	auto skillCircle = DrawNode::create();
 	skillCircle->drawSolidCircle(this->getSprite()->getPosition(), HEAVYATTACKRANGE,
@@ -132,12 +149,12 @@ void Boss::flashMove(Knight* knight, BattleRoom* battleRoom) {
 	if (distance <= MAXFLASHRANGE) {
 		moveSpeedX = knightPos.x - myPos.x;
 		moveSpeedY = knightPos.y - myPos.y;
-	}
+	}//在最大瞬移距离内就直接瞬移过去
 	else {
 		moveSpeedX = (knightPos.x - myPos.x) * (static_cast<float>(MAXFLASHRANGE) / distance);
 		moveSpeedY = (knightPos.y - myPos.y) * (static_cast<float>(MAXFLASHRANGE) / distance);
 		log("%d,%d", moveSpeedX, moveSpeedY);
-	}
+	}//在最大瞬移距离外就往该方向瞬移最大距离
 	if (distance <= 10) {
 		srand(static_cast<unsigned>(time(nullptr)));
 		knight->deductHP(rand() % 6);
