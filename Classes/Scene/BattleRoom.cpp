@@ -79,7 +79,6 @@ void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
 
 void BattleRoom::generateStatue() {
   auto statue = Statue::create(); 
-  statue->bindSprite(Sprite::create("Statue//statue1.png"), TOP);
 
   statue->setPosition(Point(centerX, centerY + 50));
   this->addChild(statue);
