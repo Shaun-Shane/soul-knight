@@ -56,7 +56,7 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 	}
 	else {
 		uniSkiTimeCount = 0;
-		uniqueSkill(knight);
+		uniqueSkill(knight,battleRoom);
 	}
 	if (lastHP != HP) {
 		if (lastHP > HP) {
@@ -73,7 +73,7 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 	}
 }
 
-void Boss::uniqueSkill(Knight* knight){
+void Boss::uniqueSkill(Knight* knight, BattleRoom* battleRoom){
 	srand(static_cast<unsigned>(time(nullptr)));
 	int choice = rand() % 3;
 	switch (choice)
@@ -85,7 +85,7 @@ void Boss::uniqueSkill(Knight* knight){
 		heavilyAttackTheKnight(knight);
 		break;
 	case 2:
-		flashMove(knight);
+		flashMove(knight,battleRoom);
 		break;
 	default:
 		break;
@@ -106,23 +106,52 @@ void Boss::heavilyAttackTheKnight(Knight* knight){
 		INT32 harmToKnight = 4 + rand() % 4;
 		knight->deductHP(harmToKnight);
 	}
+
+	auto skillCircle = DrawNode::create();
+	skillCircle->drawSolidCircle(this->getSprite()->getPosition(), HEAVYATTACKRANGE,
+		CC_DEGREES_TO_RADIANS(360), 100, Color4F(1.0f, 0.2f, 0.2f, 0.2f));
+	skillCircle->setGlobalZOrder(LayerPlayer - 1);
+
+	auto fadeIn = FadeIn::create(0.2f);
+	auto fadeOut = FadeOut::create(0.3f);
+	auto blink = Blink::create(0.5f, 2);
+
+	auto sequence = Sequence::create(
+		Spawn::create(Sequence::create(fadeIn, fadeOut, NULL), blink, NULL),
+		RemoveSelf::create(), NULL);  //生成动作序列
+
+	this->addChild(skillCircle);
+
+	skillCircle->runAction(sequence);  //执行动画
 }
 
-void Boss::flashMove(Knight* knight){
+void Boss::flashMove(Knight* knight, BattleRoom* battleRoom) {
 	const Point myPos = this->getPosition();
 	const Point knightPos = knight->getPosition();
-	const INT32 distance = myPos.getDistance(knightPos);
+	const float distance = myPos.getDistance(knightPos);
 	if (distance <= MAXFLASHRANGE) {
 		moveSpeedX = knightPos.x - myPos.x;
 		moveSpeedY = knightPos.y - myPos.y;
 	}
 	else {
-		moveSpeedX = (knightPos.x - myPos.x) * (MAXFLASHRANGE / distance);
-		moveSpeedY = (knightPos.y - myPos.y) * (MAXFLASHRANGE / distance);
+		moveSpeedX = (knightPos.x - myPos.x) * (static_cast<float>(MAXFLASHRANGE) / distance);
+		moveSpeedY = (knightPos.y - myPos.y) * (static_cast<float>(MAXFLASHRANGE) / distance);
+		log("%d,%d", moveSpeedX, moveSpeedY);
 	}
 	if (distance <= 10) {
 		srand(static_cast<unsigned>(time(nullptr)));
 		knight->deductHP(rand() % 6);
 	}
+	auto fadeIn = FadeIn::create(0.02f);
+	auto fadeOut = FadeOut::create(0.03f);
+
+	auto tempSprite = Sprite::create("Enemy//boss.png");
+	tempSprite->setGlobalZOrder(LayerPlayer - 1);
+	tempSprite->setPosition(myPos.x+moveSpeedX / 2, myPos.y+moveSpeedY / 2);
+	auto sequence = Sequence::create(Spawn::create(Sequence::create(fadeIn, fadeOut, NULL),NULL), 
+		RemoveSelf::create(), NULL);
+
+	battleRoom->addChild(tempSprite);
+	tempSprite->runAction(sequence);
 }
 
