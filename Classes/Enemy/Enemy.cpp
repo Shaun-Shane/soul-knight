@@ -16,6 +16,11 @@ BattleRoom* Enemy::getAtBattleRoom() const { return this->atBattleRoom; }
 
 void Enemy::bindAtBattleRoom(BattleRoom* room) { this->atBattleRoom = room; }
 
+Weapon*& Enemy::getWeapon()
+{
+  return this->weapon;
+}
+
 void Enemy::show() {
   if (getSprite() != nullptr) {
     setVisible(true); //可见
