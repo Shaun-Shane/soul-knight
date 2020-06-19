@@ -51,6 +51,8 @@ class BattleRoom : public Hall {
 
   Boss* getBoss(); //返回Boss指针
 
+  Statue* getStatue();
+
   void playerBulletCollistionCheck();
 
   void checkObstacle(Entity*); //检测障碍物
