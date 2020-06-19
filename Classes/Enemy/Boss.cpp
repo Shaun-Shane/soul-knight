@@ -6,7 +6,19 @@ Boss::Boss() {
 	uniSkiTimeCount = 0;
 }
 
-
+void Boss::spriteChangeDirection() {
+	if (moveSpeedX == 0) {
+		return;
+	}
+	if (moveSpeedX < 0) {
+		this->getSprite()->setFlipX(true);
+		mySword->setPosition(60.0, 125.0);
+	}
+	else {
+		this->getSprite()->setFlipX(false);
+		mySword->setPosition(140.0, 125.0);
+	}
+}
 
 Boss::~Boss() { }
 
@@ -74,6 +86,15 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 	}
 }
 
+void Boss::createSword(Sprite* swordSprite){
+	mySword = swordSprite;
+	swordSprite->setPosition(140.0, 125.0);
+	swordSprite->setGlobalZOrder(LayerPlayer);
+	swordSprite->setAnchorPoint(Point(0.5, 1));//方便挥剑
+	this->addChild(swordSprite);
+
+}
+
 void Boss::uniqueSkill(Knight* knight, BattleRoom* battleRoom){
 	srand(static_cast<unsigned>(time(nullptr)));
 	int choice = rand() % 3;
@@ -124,6 +145,7 @@ void Boss::heavilyAttackTheKnight(Knight* knight){
 		knight->deductHP(harmToKnight);
 	}//在距离内就扣血
 
+	/*扣血范围圈*/
 	auto skillCircle = DrawNode::create();
 	skillCircle->drawSolidCircle(this->getSprite()->getPosition(), HEAVYATTACKRANGE,
 		CC_DEGREES_TO_RADIANS(360), 100, Color4F(1.0f, 0.2f, 0.2f, 0.2f));
@@ -140,6 +162,20 @@ void Boss::heavilyAttackTheKnight(Knight* knight){
 	this->addChild(skillCircle);
 
 	skillCircle->runAction(sequence);  //执行动画
+
+	/*挥剑动作*/
+	if (this->getSprite()->isFlipX()) {
+		auto rotateBy = RotateBy::create(0.5f, 150.0f);
+		auto rotateBy2 = RotateBy::create(0.1f, -150.0f);
+		auto seq = Sequence::create(rotateBy, rotateBy2, nullptr);
+		mySword->runAction(seq);
+	}
+	else {
+		auto rotateBy = RotateBy::create(0.5f, -150.0f);
+		auto rotateBy2 = RotateBy::create(0.1f, 150.0f);
+		auto seq = Sequence::create(rotateBy, rotateBy2, nullptr);
+		mySword->runAction(seq);
+	}
 }
 
 void Boss::flashMove(Knight* knight, BattleRoom* battleRoom) {
