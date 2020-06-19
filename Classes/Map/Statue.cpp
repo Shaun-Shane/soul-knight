@@ -17,7 +17,6 @@ bool Statue::init() {
 
   srand(static_cast<unsigned int>(time(nullptr)));
   this->statueType = rand() % CNT_TYPE;
-
 #ifndef DEBUG
   INT32 sceneNumber = BattleScene::getSceneNumber();
   this->goldCost = 15.0f * std::pow(1.08f, sceneNumber - 1) + rand() % 4;
@@ -27,38 +26,47 @@ bool Statue::init() {
     case RESUME_HP:
       textLabel->setString("Resume HP--" + Value(this->goldCost).asString() +
                            "Gold");
+      this->bindSprite(Sprite::create("Statue//resume_hp.png"), TOP);
       break;
     case ADD_HP:
       textLabel->setString("Add max HP--" + Value(this->goldCost).asString() +
                            "G");
+      this->bindSprite(Sprite::create("Statue//add_hp.png"), TOP);
       break;
     case DOUBLE_HP:
       textLabel->setString("Double HP--" + Value(this->goldCost).asString() +
                            "Gold");
+      this->bindSprite(Sprite::create("Statue//double_hp.png"), TOP);
       break;
     case ADD_ARMOR:
       textLabel->setString("Add max Armor--" + Value(this->goldCost).asString() +
                            "Gold");
+      this->bindSprite(Sprite::create("Statue//add_armor.png"), TOP);
       break;
     case DOUBLE_ARMOR:
       textLabel->setString("Double max Armor--" + Value(this->goldCost).asString() +
                            "Gold");
+      this->bindSprite(Sprite::create("Statue//double_armor.png"), TOP);
       break;
     case DOUBLE_DAMAGE:
       textLabel->setString("Double damage--" +
                            Value(this->goldCost).asString() + "Gold");
+      this->bindSprite(Sprite::create("Statue//double_damage.png"), TOP);
       break;
     case ADD_MOVE_SPEED:
       textLabel->setString("Add move speed--" +
                            Value(this->goldCost).asString() + "Gold");
+      this->bindSprite(Sprite::create("Statue//add_move_speed.png"), TOP);
       break;
     case RESUME_MP:
       textLabel->setString("Resume MP--" +
                            Value(this->goldCost).asString() + "Gold");
+      this->bindSprite(Sprite::create("Statue//resume_mp.png"), TOP);
       break;
     case ADD_MP:
       textLabel->setString("Add max MP--" + Value(this->goldCost).asString() +
                            "Gold");
+      this->bindSprite(Sprite::create("Statue//add_mp.png"), TOP);
       break;
   }
   return true;
@@ -124,7 +132,7 @@ void Statue::giveBuff(Knight* knight) { //人物获得增益
   }
   //增加金币消耗提示
   auto textLabel =
-      Label::create("-" + Value(goldCost).asString(), "fonts/Marker Felt.ttf", 20);
+      Label::create("-" + Value(goldCost).asString() + "Gold", "fonts/Marker Felt.ttf", 20);
   textLabel->setColor(ccc3(255, 255, 255));
   textLabel->setGlobalZOrder(TOP);
   textLabel->setPosition(Point(20, 70));
