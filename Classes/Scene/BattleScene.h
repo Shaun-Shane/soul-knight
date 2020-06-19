@@ -55,6 +55,9 @@ class BattleScene : public Scene {
   void setHallWithHeight(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
   void connectRoom(BattleRoom*);
 
+  void updateGold();
+  void updateLevel();
+
  private:
   static INT32 battleSceneNumber;
   static vector<string> vecSceneType; //场景类型
@@ -89,6 +92,9 @@ class BattleScene : public Scene {
 
   Sprite* BOSSBloodBg = nullptr;
   ui::LoadingBar* BOSSLoadingBar = nullptr;
+
+  Label* goldLabel;
+  Label* gameLevelLabel;
 };
 
 #endif
