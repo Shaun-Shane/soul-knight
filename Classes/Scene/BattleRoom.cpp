@@ -224,7 +224,9 @@ void BattleRoom::createBoss() {
   boss = Boss::create();
   boss->bindAtBattleRoom(this);
 
-  boss->bindSprite(Sprite::create("Enemy//boss.png"), LayerPlayer);
+  boss->bindSprite(Sprite::create("Enemy//bossWithoutSword.png"), LayerPlayer - 1);
+	auto swordSprite = Sprite::create("Enemy//swordOfBoss.png");
+    boss->createSword(swordSprite);
   boss->addShadow(Point(boss->getContentSize().width / 2,
                         boss->getContentSize().height / 4.5f),
                   LayerPlayer);  //添加阴影
