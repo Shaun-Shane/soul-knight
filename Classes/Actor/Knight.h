@@ -58,6 +58,8 @@ class Knight : public Entity {
 
   void resumeArmor();             //恢复护甲
 
+  bool checkStatue(); //检测雕像
+
   BattleRoom* getAtBattleRoom();
 
   Hall* getAtHall();
@@ -71,7 +73,7 @@ class Knight : public Entity {
  private:
   INT32 armor = 5, maxArmor = 5;
   INT32 MP = 200, maxMP = 200;
-  INT32 damageBuff = 0, moveSpeedBuff = 0;
+  INT32 damageBuff = 1, moveSpeedBuff = 0;
   INT32 gold = 0;
 
   time_t preAttackedTime = 0, curTime = 0;
