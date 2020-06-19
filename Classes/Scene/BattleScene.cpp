@@ -156,8 +156,14 @@ void BattleScene::update(float delta) {
 }
 
 void BattleScene::updatePlayerPos() {
-  float ispeedX = knight->moveSpeedX + knight->getMoveSpeedBuff();
-  float ispeedY = knight->moveSpeedY + knight->getMoveSpeedBuff();
+  float ispeedX = knight->moveSpeedX;
+  float ispeedY = knight->moveSpeedY;
+
+  if (ispeedX > 0) ispeedX += knight->getMoveSpeedBuff();
+  else if (ispeedX < 0) ispeedX -= knight->getMoveSpeedBuff();
+  if (ispeedY > 0) ispeedY += knight->getMoveSpeedBuff();
+  else if (ispeedY < 0) ispeedY -= knight->getMoveSpeedBuff();
+
   if (abs(ispeedX) > 0 && abs(ispeedY) > 0 && abs(abs(ispeedX) - abs(ispeedY)) < 0.0001f)  
     //确保任意方向速度相同
     ispeedX /= sqrt(2.0f), ispeedY /= sqrt(2.0f);  

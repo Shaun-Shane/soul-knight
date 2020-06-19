@@ -1,9 +1,10 @@
 ﻿#include "Knight.h"
 #define DEBUG
 #include "Attack/Weapon.h"
-#include "Scene\BattleRoom.h"
-#include "Scene\Hall.h"
-#include"FlowWord.h"
+#include "Scene/BattleRoom.h"
+#include "Scene/Hall.h"
+#include "FlowWord.h"
+#include "Map/Statue.h"
 
 Knight::~Knight() {}
 
@@ -43,6 +44,7 @@ bool Knight::init() {
   this->MP = this->maxMP = 200;
   this->gold = 0;
   this->moveSpeedX = 0, this->moveSpeedY = 0;
+  this->damageBuff = 1, this->moveSpeedBuff = 0;
 
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
@@ -123,6 +125,9 @@ void Knight::registerKeyboardEvent() {
 
       case EventKeyboard::KeyCode::KEY_J:
         if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
+
+        if (checkStatue()) break;
+
         if (this->atBattleRoom != nullptr) {
           Weapon* weaponCheck = this->collisionWithWeaponCheck();
           Prop* prop = this->collisionWithCropCheck();
@@ -218,7 +223,7 @@ void Knight::useUltimateSkill() {
 
       if (sqrt(pow(getPositionX() - enemyX, 2) +
           pow(getPositionY() - enemyY, 2)) <= 220.0f) {
-        e->deductHP(999); //在技能圆内 扣血
+        e->deductHP(999 * damageBuff); //在技能圆内 扣血
       }
     }
 
@@ -228,7 +233,7 @@ void Knight::useUltimateSkill() {
               bossY = boss->getPositionY();
         if (sqrt(pow(getPositionX() - bossX, 2) +
             pow(getPositionY() - bossY, 2)) <= 220.0f) {
-          boss->deductHP(100); //在技能圆内 扣血
+          boss->deductHP(100 * damageBuff); //在技能圆内 扣血
         }
     }
 
@@ -251,7 +256,7 @@ bool Knight::getNeedCreateBox() { return this->needCreateBox; }
 
 INT32 Knight::getMP() const { return this->MP; }
 
-void Knight::setMP(INT32 mp) { this->MP = std::max(0, mp); }
+void Knight::setMP(INT32 mp) { this->MP = std::min(maxMP, std::max(0, mp)); }
 
 INT32 Knight::getMaxMP() const { return this->maxMP; }
 
@@ -259,7 +264,7 @@ void Knight::setMaxMP(INT32 maxMP) { this->maxMP = maxMP; }
 
 INT32 Knight::getArmor() const { return this->armor; }
 
-void Knight::setArmor(INT32 armor) { this->armor = armor; }
+void Knight::setArmor(INT32 armor) { this->armor = std::min(maxArmor, armor); }
 
 INT32 Knight::getMaxArmor() const { return this->maxArmor; }
 
@@ -271,7 +276,7 @@ void Knight::setDamageBuff(INT32 damageBuff) { this->damageBuff = damageBuff; }
 
 INT32 Knight::getMoveSpeedBuff() const { return this->moveSpeedBuff; }
 
-void Knight::setMoveSpeedBuff(INT32 msBuff) { this->moveSpeedBuff = msBuff; } 
+void Knight::setMoveSpeedBuff(INT32 msBuff) { this->moveSpeedBuff = std::min(3, msBuff); } 
 
 void Knight::deductHP(INT32 delta) {
   preAttackedTime = curTime; //被攻击的时间 用于护甲的恢复判断
@@ -291,22 +296,48 @@ void Knight::deductHP(INT32 delta) {
 
 void Knight::resumeArmor() { //恢复护甲
   curTime++;
-  if (armor == 5) return;
-  //2秒未被攻击 则每隔一秒恢复一护甲
-  if (curTime - preAttackedTime >= 120 && (curTime - preAttackedTime) % 55 == 0) {
+  if (armor == maxArmor) return;
+  //3秒未被攻击 则每隔一秒恢复一护甲
+  if (curTime - preAttackedTime >= 180 && (curTime - preAttackedTime) % 55 == 0) {
     armor++;
   }
 }
 
-BattleRoom* Knight::getAtBattleRoom()
-{
-  return this->atBattleRoom;
+bool Knight::checkStatue() {
+  if (this->atBattleRoom == nullptr) return false;
+
+  auto statue = this->atBattleRoom->getStatue();
+
+  if (statue == nullptr) return false; //没有雕像直接false
+
+  if (statue->isVisible()) {
+    if (statue->getPlayerVisited() == false) {
+      if (this->gold >= statue->getGoldCost()) {
+        this->gold -= statue->getGoldCost();
+        statue->giveBuff(this);
+        statue->setPlayerVisited(true);
+      } else {
+        auto textLabel = Label::create("Gold is not Enough!", "fonts/Marker Felt.ttf", 20);
+        textLabel->setColor(ccc3(255, 255, 255));
+        textLabel->setGlobalZOrder(TOP);
+        textLabel->setPosition(Point(20, 70));
+        this->addChild(textLabel);
+
+        /*创建一个延时动作*/
+        auto fadeOut = FadeOut::create(1.2f);
+
+        auto actions = Sequence::create(fadeOut, RemoveSelf::create(), NULL);
+        textLabel->runAction(actions);
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
-Hall* Knight::getAtHall()
-{
-  return atHall;
-}
+BattleRoom* Knight::getAtBattleRoom() {return this->atBattleRoom; }
+
+Hall* Knight::getAtHall() { return atHall; }
 
 void Knight::weaponAttack(
     Vec2 last) {  //写得有点啰嗦，有空再精简，不过感觉不好精简了

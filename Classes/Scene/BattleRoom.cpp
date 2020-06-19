@@ -269,8 +269,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
       else {
         if (knight->getNeedCreateBox() == true) {
           INT32 curMP = this->knight->getMP() + 20;
-          if (curMP >= 200) curMP = 200;
-          this->knight->setMP(curMP);
+          this->knight->setMP(curMP); //setMp会判断是否超限
 
           createTreasureBox();
           knight->setNeedCreateBox(false);
@@ -316,11 +315,13 @@ Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
 
 Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
 
-Vector<Prop*>& BattleRoom::getVecProps() { return this->vecProps; }
+Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
 
 Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
 
 Boss* BattleRoom::getBoss() { return boss; }
+
+Statue* BattleRoom::getStatue() { return statue; }
 
 void BattleRoom::playerBulletCollistionCheck() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
@@ -341,7 +342,7 @@ void BattleRoom::playerBulletCollistionCheck() {
     if (getBoss() != nullptr && getBoss()->getIsKilled() == false) {
       Rect bossRect = getBoss()->getBoundingBox();
       if (bulletRect.intersectsRect(bossRect)) {
-        getBoss()->deductHP(bullet->getAttack());
+        getBoss()->deductHP(bullet->getAttack() * knight->getDamageBuff());
         bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
         bullet->removeFromParent();
         vecPlayerBullet.eraseObject(bullet);
@@ -355,7 +356,7 @@ void BattleRoom::playerBulletCollistionCheck() {
         Rect enemyRect = enemy->getBoundingBox();
         if (bulletRect.intersectsRect(enemyRect)) {
           INT32 hp = knight->getHP();
-          enemy->deductHP(bullet->getAttack());
+          enemy->deductHP(bullet->getAttack() * knight->getDamageBuff());
 
           bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
           bullet->removeFromParent();
@@ -372,7 +373,7 @@ void BattleRoom::checkObstacle(Entity* entity) { //玩家 敌人检测障碍物
     //普通障碍物
 }
 
-void BattleRoom::checkStatue() { //玩家 检测雕像
+void BattleRoom::checkStatue() { //检测雕像障碍物
   if (this->roomType != PROP) return;
   float knightX = knight->getPositionX();
   float knightY = knight->getPositionY();
@@ -393,6 +394,15 @@ void BattleRoom::checkStatue() { //玩家 检测雕像
       else if (knightY > centerY && knightY <= centerY + 80 &&
                knight->getMoveSpeedY() < 0)
         knight->setMoveSpeedY(.0f);
+      //根据人物位置 访问信息显示雕像标签
+      if (centerX - 40 < knightX && knightX < centerX + 40) {
+        if (knightY < centerY && knightY >= centerY - 70 && !statue->getPlayerVisited())
+          statue->getTextLabel()->setVisible(true);
+        else
+          statue->getTextLabel()->setVisible(false);
+      } else {
+        statue->getTextLabel()->setVisible(false);
+      }
     }
   }
 }

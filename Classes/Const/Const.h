@@ -37,6 +37,8 @@ enum StatueType {
   ADD_ARMOR, //增加最大护甲
   DOUBLE_ARMOR, //护甲翻倍
   DOUBLE_DAMAGE, //双倍伤害
-  ADD_MOVE_SPEED //增加移动速度
+  ADD_MOVE_SPEED, //增加移动速度
+  RESUME_MP,  //恢复法力值
+  ADD_MP //增加最大法力值
 };
 #endif  // !_CONST_H_

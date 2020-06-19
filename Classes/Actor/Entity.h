@@ -16,7 +16,9 @@ public :
   INT32 getHP() const; // return HP of this entity
   virtual void deductHP(INT32); //扣血
   void setHP(INT32 HP);
+
   INT32 getMaxHP() const;
+  void setMaxHP(INT32);
 
   bool getIsKilled() const;
   void setIsKilled(bool);
