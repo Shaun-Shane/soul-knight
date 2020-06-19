@@ -2,6 +2,7 @@
 
 #include "Scene/BattleScene.h"
 
+#define DEBUG
 bool Statue::init() {
   playerVisited = false;
   //雕像标签
@@ -9,6 +10,7 @@ bool Statue::init() {
   textLabel->setColor(ccc3(255, 255, 255));
   textLabel->setGlobalZOrder(TOP);
   textLabel->setPosition(Point(60, 210));
+  textLabel->setVisible(false);
 
   this->textLabel = textLabel;
   this->addChild(textLabel);
@@ -16,37 +18,47 @@ bool Statue::init() {
   srand(static_cast<unsigned int>(time(nullptr)));
   this->statueType = rand() % CNT_TYPE;
 
+#ifndef DEBUG
   INT32 sceneNumber = BattleScene::getSceneNumber();
   this->goldCost = 15.0f * std::pow(1.08f, sceneNumber - 1) + rand() % 4;
+#endif  // ! DEBUG
 
   switch (this->statueType) {
     case RESUME_HP:
-      textLabel->setString("Add HP--" + Value(this->goldCost).asString() +
-                           "G");
+      textLabel->setString("Resume HP--" + Value(this->goldCost).asString() +
+                           "Gold");
       break;
     case ADD_HP:
-      textLabel->setString("Add max HP--" +
-                           Value(this->goldCost).asString() + "G");
+      textLabel->setString("Add max HP--" + Value(this->goldCost).asString() +
+                           "G");
       break;
     case DOUBLE_HP:
       textLabel->setString("Double HP--" + Value(this->goldCost).asString() +
-                           "G");
+                           "Gold");
       break;
     case ADD_ARMOR:
-      textLabel->setString("Add Armor--" + Value(this->goldCost).asString() +
-                           "G");
+      textLabel->setString("Add max Armor--" + Value(this->goldCost).asString() +
+                           "Gold");
       break;
     case DOUBLE_ARMOR:
-      textLabel->setString("Double Armor--" + Value(this->goldCost).asString() +
-                           "G");
+      textLabel->setString("Double max Armor--" + Value(this->goldCost).asString() +
+                           "Gold");
       break;
     case DOUBLE_DAMAGE:
-      textLabel->setString("Double damage--" + Value(this->goldCost).asString() +
-                           "G");
+      textLabel->setString("Double damage--" +
+                           Value(this->goldCost).asString() + "Gold");
       break;
     case ADD_MOVE_SPEED:
-      textLabel->setString("Add move speed--" + Value(this->goldCost).asString() +
-                           "G");
+      textLabel->setString("Add move speed--" +
+                           Value(this->goldCost).asString() + "Gold");
+      break;
+    case RESUME_MP:
+      textLabel->setString("Resume MP--" +
+                           Value(this->goldCost).asString() + "Gold");
+      break;
+    case ADD_MP:
+      textLabel->setString("Add max MP--" + Value(this->goldCost).asString() +
+                           "Gold");
       break;
   }
   return true;
@@ -72,6 +84,59 @@ void Statue::bindSprite(Sprite* sprite, INT32 layer) {
   this->addChild(tmpSprite);
 }
 
+void Statue::giveBuff(Knight* knight) { //人物获得增益
+  srand(static_cast<unsigned int>(time(nullptr)));
+  INT32 addNum = 3 + rand() % 3;
+
+  switch (this->statueType) {  
+    case RESUME_HP:
+      knight->setHP(knight->getHP() + 2 + rand() % 4);
+      break;
+    case ADD_HP:
+      knight->setMaxHP(knight->getMaxHP() + addNum);
+      knight->setHP(knight->getHP() + addNum);
+      break;
+    case DOUBLE_HP:
+      knight->setMaxHP(knight->getMaxHP() << 1);
+      knight->setHP(knight->getHP() << 1);
+      break;
+    case ADD_ARMOR:
+      knight->setMaxArmor(knight->getMaxArmor() + addNum);
+      knight->setArmor(knight->getArmor() + addNum);
+      break;
+    case DOUBLE_ARMOR:
+      knight->setMaxArmor(knight->getMaxArmor() << 1);
+      knight->setArmor(knight->getArmor() << 1); 
+      break;
+    case DOUBLE_DAMAGE:
+      knight->setDamageBuff(knight->getDamageBuff() << 1);
+      break;
+    case ADD_MOVE_SPEED:
+      knight->setMoveSpeedBuff(knight->getMoveSpeedBuff() + 1);
+      break;
+    case RESUME_MP:
+      knight->setMP(knight->getMP() + 100);
+      break;
+    case ADD_MP:
+      knight->setMaxMP(knight->getMaxMP() + addNum * 30);
+      knight->setMP(knight->getMP() + addNum * 30);
+      break;
+  }
+  //增加金币消耗提示
+  auto textLabel =
+      Label::create("-" + Value(goldCost).asString(), "fonts/Marker Felt.ttf", 20);
+  textLabel->setColor(ccc3(255, 255, 255));
+  textLabel->setGlobalZOrder(TOP);
+  textLabel->setPosition(Point(20, 70));
+  knight->addChild(textLabel);
+
+  /*创建一个延时动作*/
+  auto fadeOut = FadeOut::create(1.2f);
+
+  auto actions = Sequence::create(fadeOut, RemoveSelf::create(), NULL);
+  textLabel->runAction(actions);
+}
+
 Label* Statue::getTextLabel() const { return this->textLabel; }
 
 void Statue::setGoldCost(INT32 cost) { this->goldCost = cost; }
@@ -79,3 +144,7 @@ void Statue::setGoldCost(INT32 cost) { this->goldCost = cost; }
 INT32 Statue::getGoldCost() const { return this->goldCost; }
 
 INT32 Statue::getStatueType() const { return this->statueType; }
+
+void Statue::setPlayerVisited(bool status) { this->playerVisited = status; }
+
+bool Statue::getPlayerVisited() const { return this->playerVisited; }
