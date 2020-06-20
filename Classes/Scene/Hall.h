@@ -27,6 +27,8 @@ class Hall : public Node{
 
   void generateFloor(float, float, INT32);
 
+  Vector<Bullet*>& getVecEnemyBullet();
+
   void generateWall(float, float, INT32, bool);
 
   Vector<Bullet*>& getVecPlayerBullet(); 
@@ -38,8 +40,6 @@ class Hall : public Node{
   Point getUpleftVertex() const;  //获得房间内左上角顶点坐标
 
   Point getDownRightVertex() const;  //获得房间内右下角顶点坐标
-
-  Vector<Bullet*>& getVecEnemyBullet(); 
 
  private:
   INT32 dir; //direction of this hall
