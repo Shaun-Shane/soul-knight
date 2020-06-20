@@ -61,9 +61,6 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 			myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
 			knight->deductHP(4);
 		}//近战
-		else {
-			/*后期在此处加上武器*/
-		}
 
 		uniSkiTimeCount++;
 	}
