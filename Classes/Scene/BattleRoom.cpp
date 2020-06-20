@@ -461,7 +461,6 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(1);
       weapon->bindSprite(Sprite::create("Weapon//weapon2.png"), LayerPlayer);
       weapon->setWeaponState(true);
-      weapon->setBulletType(12);
       break;
     case 1:
       weapon->setFireSpeed(23.0f);
@@ -469,7 +468,6 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(3);
       weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), LayerPlayer);
       weapon->setWeaponState(true);
-      weapon->setBulletType(13);
       break;
     case 2:
       weapon->setFireSpeed(24.0f);
@@ -477,7 +475,6 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(4);
       weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
       weapon->setWeaponState(true);
-      weapon->setBulletType(14);
       break;
     case 3:
       weapon->setFireSpeed(0.0f);
@@ -485,7 +482,6 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(0);
       weapon->bindSprite(Sprite::create("Weapon//weapon5.png"), LayerPlayer);
       weapon->setWeaponState(false);
-      weapon->setBulletType(15);
       break;
   }
   weapon->setPosition(

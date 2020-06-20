@@ -32,8 +32,6 @@ public:
   void setWeaponState(bool state);
   void knifeAttack(Knight* knight);
 
-  void setBulletType(INT32);
-
 
   
 protected:
@@ -41,7 +39,6 @@ protected:
   INT32 attack;
   INT32 mpConsumption;
   bool weaponState;
-  INT32 bulletType;
 
 };
 
