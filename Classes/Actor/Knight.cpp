@@ -58,6 +58,7 @@ bool Knight::init() {
   this->weapon->setPosition(Vec2(40, 20));
 
   this->weapon->setMPConsumption(0);
+  this->weapon->setBulletType(11);
   this->addChild(weapon);
 
   isInvincible = false;

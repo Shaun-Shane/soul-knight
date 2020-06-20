@@ -51,11 +51,17 @@ void Weapon::knifeAttack(Knight* knight)
   }
 }
 
+void Weapon::setBulletType(INT32 type)
+{
+  this->bulletType = type;
+}
+
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
   Bullet* bullet = Bullet::create();
   bullet->setBulletSpeed(speed);
-  bullet->bindSprite(Sprite::create("Bullet//pistol.png"), 12);
+  char fileName[30]; sprintf(fileName, "Bullet//bullet_%d.png",this->bulletType);
+  bullet->bindSprite(Sprite::create(fileName), 12);
 
   if (speed.x == 0 && speed.y > 0)
   {
