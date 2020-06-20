@@ -166,11 +166,12 @@ void BattleRoom::addMapElement() {
 //#define YYZ_DEBUG
 void BattleRoom::createEnemy() {
   srand(static_cast<unsigned int>(time(nullptr)));
-  INT32 enemyNumber = 13 + rand() % 4; //敌人数量
 
   INT32 sceneTypeIndex = BattleScene::getSceneNumber();
   sceneTypeIndex =
       sceneTypeIndex % 5 == 0 ? sceneTypeIndex / 5 : sceneTypeIndex / 5 + 1;
+  INT32 enemyNumber = 13 + rand() % 4 + (sceneTypeIndex - 1) * 2;  //敌人数量
+
   (sceneTypeIndex -= 1) %= BattleScene::getVecSceneType().size();
   Value sceneName = Value(BattleScene::getVecSceneType().at(sceneTypeIndex));
   //选取场景类型
