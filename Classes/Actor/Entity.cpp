@@ -69,9 +69,11 @@ void Entity::deductHP(INT32 delta) { //minus HP of this entity
                          Vec2(0, this->getContentSize().height / 2.2f));
 }
 
-void Entity::setHP(INT32 HP) { this->HP = HP; }
+void Entity::setHP(INT32 HP) { this->HP = std::min(HP, maxHP); }
 
 INT32 Entity::getMaxHP() const { return this->maxHP; }
+
+void Entity::setMaxHP(INT32 maxHP) { this->maxHP = maxHP; }
 
 bool Entity::getIsKilled() const { return isKilled; }
 

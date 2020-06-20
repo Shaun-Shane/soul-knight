@@ -1,41 +1,24 @@
 ﻿#include "Enemy.h"
 #include "Scene/BattleRoom.h"
 
-Enemy::Enemy() { enemyIsAlive = false; }
-
 Enemy::~Enemy() {}
 
 bool Enemy::init() { 
   HP = 5;
   lastHP = HP;
-  isKilled = false;
+  isKilled = isAdded = false;
   return true; 
 }
+//返回所在房间指针
+BattleRoom* Enemy::getAtBattleRoom() const { return this->atBattleRoom; }
 
-void Enemy::show() {
-  if (getSprite() != nullptr) {
-    setVisible(true); //可见
-    enemyIsAlive = true;
-  } 
-}
+void Enemy::bindAtBattleRoom(BattleRoom* room) { this->atBattleRoom = room; }
 
-void Enemy::hide() {
-  if (getSprite() != nullptr) {
-    setVisible(false); //不可见
-    reset(); //重置敌人数据
-    enemyIsAlive = false;
-  }
-}
+Weapon*& Enemy::getWeapon() { return this->weapon; }
 
-void Enemy::reset() {
-  if (getSprite() != nullptr) {
-    // randomly reset positon
-    // need update
-    setPosition(Point(800 + CCRANDOM_0_1() * 2000, 200 - CCRANDOM_0_1() * 100));
-  }
-}
+bool Enemy::getIsAdded() const { return this->isAdded; }
 
-bool Enemy::isAlive() { return enemyIsAlive;}
+void Enemy::setIsAdded(bool status) { this->isAdded = status; }
 
 //碰撞检查 可能没用
 bool Enemy::isCollideWithKnight(Knight * knight) {
@@ -98,13 +81,13 @@ void Enemy::spriteChangeDirection() {
 void Enemy::shake(const BattleRoom* battleRoom){
     auto enemyPos = this->getPosition();
     if (shakeTimeCount++ % 2) {
-        if (inRoom(battleRoom, Point(enemyPos.x + 25, enemyPos.y))) {
-            this->setPosition(Point(enemyPos.x + 25, enemyPos.y));
+        if (inRoom(battleRoom, Point(enemyPos.x + 15, enemyPos.y))) {
+            this->setPosition(Point(enemyPos.x + 15, enemyPos.y));
         }
     }
     else {
-		if (inRoom(battleRoom, Point(enemyPos.x - 25, enemyPos.y))) {
-			this->setPosition(Point(enemyPos.x - 25, enemyPos.y));
+		if (inRoom(battleRoom, Point(enemyPos.x - 15, enemyPos.y))) {
+			this->setPosition(Point(enemyPos.x - 15, enemyPos.y));
 		}
     }
     if (shakeTimeCount >= 4) {

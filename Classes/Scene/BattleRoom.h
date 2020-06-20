@@ -9,9 +9,10 @@
 #include "Const/Const.h"
 #include "Attack/Weapon.h"
 #include "Props/prop.h"
-#include "Map/Statue.h"
 
 USING_NS_CC;
+
+class Statue;
 
 class BattleRoom : public Hall {
   friend class BattleScene;
@@ -49,6 +50,8 @@ class BattleRoom : public Hall {
   Vector<Weapon*>& getVecWeapon();
 
   Boss* getBoss(); //返回Boss指针
+
+  Statue* getStatue();
 
   void playerBulletCollistionCheck();
 

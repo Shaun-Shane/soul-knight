@@ -1,6 +1,7 @@
 ﻿#include "BattleRoom.h"
 #include "BattleScene.h"
 #include "Props/prop.h"
+#include "Map/Statue.h"
 
 bool BattleRoom::init() {
   centerX = .0f, centerY = .0f;
@@ -78,7 +79,6 @@ void BattleRoom::generateDoor(float X, float Y, INT32 layer) {
 
 void BattleRoom::generateStatue() {
   auto statue = Statue::create(); 
-  statue->bindSprite(Sprite::create("Statue//statue1.png"), TOP);
 
   statue->setPosition(Point(centerX, centerY + 50));
   this->addChild(statue);
@@ -166,7 +166,7 @@ void BattleRoom::addMapElement() {
 //#define YYZ_DEBUG
 void BattleRoom::createEnemy() {
   srand(static_cast<unsigned int>(time(nullptr)));
-  INT32 enemyNumber = 4 + rand() % 4; //敌人数量 再后续修改
+  INT32 enemyNumber = 13 + rand() % 4; //敌人数量
 
   INT32 sceneTypeIndex = BattleScene::getSceneNumber();
   sceneTypeIndex =
@@ -180,6 +180,8 @@ void BattleRoom::createEnemy() {
 
   for (INT32 i = 1; i <= enemyNumber; i++) {
     Enemy* enemy = Enemy::create();
+    enemy->bindAtBattleRoom(this); //绑定所在房间
+
     enemy->startCount = i * 2;
     if (i < 3) {
       enemy->bindSprite(
@@ -208,18 +210,25 @@ void BattleRoom::createEnemy() {
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
                      LayerPlayer - 1);  //添加阴影
-
-    float enemyX = upLeftX + rand() % static_cast<INT32>(downRightX - upLeftX);
-    float enemyY =
-        downRightY + rand() % static_cast<INT32>(upLeftY - downRightY);
-    this->addChild(enemy);
-    enemy->setPosition(Point(enemyX, enemyY));
     vecEnemy.pushBack(enemy);
   }
+
+  INT32 addChildNum =
+      std::min(static_cast<INT32>(vecEnemy.size()), 4 + rand() % 3);
+  for (auto it = vecEnemy.rbegin(); it != vecEnemy.rbegin() + addChildNum;
+       it++) {
+    float enemyX = centerX + (rand() * 2 - RAND_MAX) % 300;
+    float enemyY = centerY + (rand() * 2 - RAND_MAX) % 300;
+
+    (*it)->setPosition(Point(enemyX, enemyY));
+    (*it)->setIsAdded(true);
+    this->addChild(*it);  //分批次添加到场景
+  }  
 }
 
 void BattleRoom::createBoss() {
   boss = Boss::create();
+  boss->bindAtBattleRoom(this);
 
   boss->bindSprite(Sprite::create("Enemy//boss.png"), LayerPlayer);
   boss->addShadow(Point(boss->getContentSize().width / 2,
@@ -265,8 +274,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
       else {
         if (knight->getNeedCreateBox() == true) {
           INT32 curMP = this->knight->getMP() + 20;
-          if (curMP >= 200) curMP = 200;
-          this->knight->setMP(curMP);
+          this->knight->setMP(curMP); //setMp会判断是否超限
 
           createTreasureBox();
           knight->setNeedCreateBox(false);
@@ -312,11 +320,13 @@ Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
 
 Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
 
-Vector<Prop*>& BattleRoom::getVecProps() { return this->vecProps; }
+Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
 
 Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
 
 Boss* BattleRoom::getBoss() { return boss; }
+
+Statue* BattleRoom::getStatue() { return statue; }
 
 void BattleRoom::playerBulletCollistionCheck() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
@@ -337,7 +347,7 @@ void BattleRoom::playerBulletCollistionCheck() {
     if (getBoss() != nullptr && getBoss()->getIsKilled() == false) {
       Rect bossRect = getBoss()->getBoundingBox();
       if (bulletRect.intersectsRect(bossRect)) {
-        getBoss()->deductHP(bullet->getAttack());
+        getBoss()->deductHP(bullet->getAttack() * knight->getDamageBuff());
         bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
         bullet->removeFromParent();
         vecPlayerBullet.eraseObject(bullet);
@@ -351,7 +361,7 @@ void BattleRoom::playerBulletCollistionCheck() {
         Rect enemyRect = enemy->getBoundingBox();
         if (bulletRect.intersectsRect(enemyRect)) {
           INT32 hp = knight->getHP();
-          enemy->deductHP(bullet->getAttack());
+          enemy->deductHP(bullet->getAttack() * knight->getDamageBuff());
 
           bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
           bullet->removeFromParent();
@@ -368,7 +378,7 @@ void BattleRoom::checkObstacle(Entity* entity) { //玩家 敌人检测障碍物
     //普通障碍物
 }
 
-void BattleRoom::checkStatue() { //玩家 检测雕像
+void BattleRoom::checkStatue() { //检测雕像障碍物
   if (this->roomType != PROP) return;
   float knightX = knight->getPositionX();
   float knightY = knight->getPositionY();
@@ -389,6 +399,15 @@ void BattleRoom::checkStatue() { //玩家 检测雕像
       else if (knightY > centerY && knightY <= centerY + 80 &&
                knight->getMoveSpeedY() < 0)
         knight->setMoveSpeedY(.0f);
+      //根据人物位置 访问信息显示雕像标签
+      if (centerX - 40 < knightX && knightX < centerX + 40) {
+        if (knightY < centerY && knightY >= centerY - 70 && !statue->getPlayerVisited())
+          statue->getTextLabel()->setVisible(true);
+        else
+          statue->getTextLabel()->setVisible(false);
+      } else {
+        statue->getTextLabel()->setVisible(false);
+      }
     }
   }
 }
@@ -413,7 +432,7 @@ void BattleRoom::removeKilledEnemy() {
 bool BattleRoom::allKilled() {
   bool allKilled = true;
   for (auto e : vecEnemy) {
-    if (e->getIsKilled() == false) allKilled = false;
+    if (e->getIsKilled() == false || e->getParent() != nullptr) allKilled = false;
   }
 
   if (boss != nullptr && boss->getIsKilled() == false) allKilled = false;

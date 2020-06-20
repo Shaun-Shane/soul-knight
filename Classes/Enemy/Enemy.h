@@ -11,21 +11,25 @@ class Enemy : public Entity {
   INT32 ATTACKRANGE = 150;//将ATTACKRANGE修改为可自行设置，方便创造不同怪物，默认为150
 
  public:
-  Enemy();
+  Enemy() = default;
   ~Enemy();
   CREATE_FUNC(Enemy);
   virtual bool init();
 
  public:
-  void show();
-  void hide();
-  void reset();
-  bool isAlive();
+  bool getIsAdded() const; //获取是否添加到Vector 用于怪物波数的实现
+  void setIsAdded(bool); //设置是否添加到Vector 用于怪物波数的实现
+
   bool isCollideWithKnight(Knight* knight);
 
   void setType(int type);
 
   void aiOfEnemy(Knight* knight, const BattleRoom* battleRoom);  
+
+  BattleRoom* getAtBattleRoom() const; //获取所在房间
+  void bindAtBattleRoom(BattleRoom*); //绑定所在房间
+  Weapon*& getWeapon();
+
 
   INT32 startCount;
 
@@ -47,8 +51,6 @@ private:
     int restCount = 0;//持矛者攻击后的计时
 
  private:
-  bool enemyIsAlive;
-
   INT32 enemyType = 0;
 
   INT32 paceCount = 0;  //用于保证至少20步都在走同一方向
@@ -57,7 +59,7 @@ private:
   std::vector<INT32> wayCanBeSelected;  //可供选择的行走方向
   float shiftSeed=0.0f;
   INT32 followCount = 0;
-
+  bool isAdded;  //是否添加到Vector 用于怪物波数的实现
 
 protected:
 
@@ -70,6 +72,9 @@ protected:
   INT32 shakeTimeCount = 0;
   void shake(const BattleRoom* battleRoom);
 
+  BattleRoom* atBattleRoom = nullptr; //敌人对应房间
+
+  Weapon* weapon = nullptr;
 
 };
 
