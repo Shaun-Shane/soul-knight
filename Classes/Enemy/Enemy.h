@@ -66,7 +66,7 @@ protected:
   float moveSpeedX = 0;
   float moveSpeedY = 0;
   bool inRoom(const BattleRoom* battleRoom, Point myPos);
-  void spriteChangeDirection();
+  virtual void spriteChangeDirection();
   INT32 lastHP;
   bool beAttacked = false;
   INT32 shakeTimeCount = 0;

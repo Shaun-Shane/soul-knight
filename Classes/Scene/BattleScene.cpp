@@ -100,6 +100,19 @@ bool BattleScene::init() {
   armorLabel->setGlobalZOrder(TOP);
   MPLabel->setGlobalZOrder(TOP);
 
+/*金币数,关卡数*/
+  goldLabel = Label::createWithTTF("gold : 0", "fonts/Marker Felt.ttf", 30);
+  gameLevelLabel=Label::createWithTTF("", "fonts/Marker Felt.ttf", 30);
+
+  goldLabel->setPosition(890, 680);
+  gameLevelLabel->setPosition(1130, 400);
+
+  this->addChild(goldLabel);
+  this->addChild(gameLevelLabel);
+
+  goldLabel->setGlobalZOrder(TOP);
+  gameLevelLabel->setGlobalZOrder(TOP);
+
   // add knight to scene remove it from prev scene
 
   this->addChild(knight);
@@ -143,6 +156,10 @@ bool BattleScene::init() {
 }
 
 void BattleScene::update(float delta) {
+	updateGold();//更新金币
+
+	updateLevel();//更新关卡数
+
   knight->resumeArmor(); //更新护甲
 
   updatePlayerPos(); //画面位置更新
@@ -317,6 +334,16 @@ void BattleScene::updateBossInfoBar() {
     BOSSBloodBg->setVisible(false);
     BOSSLoadingBar->setVisible(false);
   }
+}
+
+void BattleScene::updateGold() {
+	goldLabel->setString("gold : " + Value(knight->gold).asString());
+}
+
+void BattleScene::updateLevel() {
+	INT32 frontLevel = (battleSceneNumber+4) / 5;
+	INT32 afterLevel = battleSceneNumber - (frontLevel - 1) * 5;
+	gameLevelLabel->setString(Value(frontLevel).asString() + "-" + Value(afterLevel).asString());
 }
 
 void BattleScene::checkEndRoom() { //检查房间终点

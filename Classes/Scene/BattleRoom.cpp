@@ -188,24 +188,31 @@ void BattleRoom::createEnemy() {
           Sprite::create("Enemy//" + sceneName.asString() + "enemy002.png"),
           LayerPlayer - 1);
       enemy->setType(0);
+
+      enemy->getWeapon() = Weapon::create();
+      enemy->getWeapon()->initWeapon(1, 1, 15);
     }
     else if (i < 5) {
       enemy->bindSprite(
           Sprite::create("Enemy//" + sceneName.asString() + "enemy007.png"),
           LayerPlayer - 1);
       enemy->setType(1);
+      enemy->getWeapon() = nullptr;
     }
     else if (i < 6) {
       enemy->bindSprite(
           Sprite::create("Enemy//" + sceneName.asString() + "enemy001.png"),
           LayerPlayer - 1);
       enemy->setType(2);
+      enemy->getWeapon() = nullptr;
     }
     else {
       enemy->bindSprite(
           Sprite::create("Enemy//" + sceneName.asString() + "enemy003.png"),
           LayerPlayer - 1);
       enemy->setType(3);
+      enemy->getWeapon() = Weapon::create();
+      enemy->getWeapon()->initWeapon(11, 1, 18);
     }
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
@@ -230,7 +237,9 @@ void BattleRoom::createBoss() {
   boss = Boss::create();
   boss->bindAtBattleRoom(this);
 
-  boss->bindSprite(Sprite::create("Enemy//boss.png"), LayerPlayer);
+  boss->bindSprite(Sprite::create("Enemy//bossWithoutSword.png"), LayerPlayer - 1);
+	auto swordSprite = Sprite::create("Enemy//swordOfBoss.png");
+    boss->createSword(swordSprite);
   boss->addShadow(Point(boss->getContentSize().width / 2,
                         boss->getContentSize().height / 4.5f),
                   LayerPlayer);  //添加阴影
@@ -458,6 +467,7 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(1);
       weapon->bindSprite(Sprite::create("Weapon//weapon2.png"), LayerPlayer);
       weapon->setWeaponState(true);
+      weapon->setBulletType(12);
       break;
     case 1:
       weapon->setFireSpeed(23.0f);
@@ -465,6 +475,7 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(3);
       weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), LayerPlayer);
       weapon->setWeaponState(true);
+      weapon->setBulletType(13);
       break;
     case 2:
       weapon->setFireSpeed(24.0f);
@@ -472,6 +483,7 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(4);
       weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
       weapon->setWeaponState(true);
+      weapon->setBulletType(14);
       break;
     case 3:
       weapon->setFireSpeed(0.0f);
@@ -479,6 +491,7 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->setMPConsumption(0);
       weapon->bindSprite(Sprite::create("Weapon//weapon5.png"), LayerPlayer);
       weapon->setWeaponState(false);
+      weapon->setBulletType(15);
       break;
   }
   weapon->setPosition(

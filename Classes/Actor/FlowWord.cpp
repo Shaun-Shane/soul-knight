@@ -14,7 +14,12 @@ bool FlowWord::init()
 
 void FlowWord::showWord(int num, CCPoint pos)
 {
-	m_textLab->setString(Value(num).asString());
+	if (num > 0) {
+		m_textLab->setString("+"+Value(num).asString());
+	}
+	else {
+		m_textLab->setString(Value(num).asString());
+	}
 	m_textLab->setPosition(pos);
 	m_textLab->setVisible(true);
 

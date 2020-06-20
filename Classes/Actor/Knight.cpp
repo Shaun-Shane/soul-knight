@@ -6,6 +6,8 @@
 #include "FlowWord.h"
 #include "Map/Statue.h"
 
+#include "SimpleAudioEngine.h"
+
 Knight::~Knight() {}
 
 Animate* Knight::getAnimate() {
@@ -56,6 +58,7 @@ bool Knight::init() {
   this->weapon->setPosition(Vec2(40, 20));
 
   this->weapon->setMPConsumption(0);
+  this->weapon->setBulletType(11);
   this->addChild(weapon);
 
   isInvincible = false;
@@ -191,6 +194,12 @@ void Knight::useUltimateSkill() {
    #ifndef DEBUG
     this->setMP(this->getMP() - 120);
    #endif  //
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->preloadEffect("audioEffect//explosion.wav");
+	static INT32 temUS = 0;
+
+	audio->stopEffect(temUS);//暂停之前的音效
+	audio->playEffect("audioEffect//explosion.wav", false);
 
     auto skillCircle = DrawNode::create();
     skillCircle->drawSolidCircle(Point(this->getContentSize().width / 2,
@@ -384,8 +393,14 @@ void Knight::weaponAttack(
     
   }
 
+  auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+  audio->preloadEffect("audioEffect//bulletEffect.mp3");
+  static INT32 temBullet = 0;
+
   Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
   bullet->setPosition(curPos);
+  audio->stopEffect(temBullet);//暂停之前的音效
+  temBullet=audio->playEffect("audioEffect//bulletEffect.mp3", false);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)
       ->getVecPlayerBullet().pushBack(bullet);
