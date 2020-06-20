@@ -53,7 +53,7 @@ class BattleRoom : public Hall {
 
   Statue* getStatue();
 
-  void playerBulletCollistionCheck();
+  void bulletCollistionCheck();
 
   void checkObstacle(Entity*); //检测障碍物
 

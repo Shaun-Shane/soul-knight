@@ -24,7 +24,7 @@ bool BattleRoom::init() {
 void BattleRoom::update(float delta) {
   this->checkStatue(); //雕像碰撞检测
   this->bulletMove();
-  this->playerBulletCollistionCheck();
+  this->bulletCollistionCheck();
   this->removeKilledEnemy(); //移除血量<=0的敌人
 }
 
@@ -339,7 +339,7 @@ Boss* BattleRoom::getBoss() { return boss; }
 
 Statue* BattleRoom::getStatue() { return statue; }
 
-void BattleRoom::playerBulletCollistionCheck() {
+void BattleRoom::bulletCollistionCheck() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
     auto bullet = vecPlayerBullet.at(i);
     Rect bulletRect = bullet->getBoundingBox();
@@ -381,6 +381,18 @@ void BattleRoom::playerBulletCollistionCheck() {
           break;
         }
       }
+    }
+  }
+  for (INT32 i = 0; i < vecEnemyBullet.size(); ++i) {
+    auto bullet = vecEnemyBullet.at(i);
+    Rect bulletRect = bullet->getBoundingBox();
+    Rect knightRect = knight->getBoundingBox();
+    if (bulletRect.intersectsRect(knightRect)) {
+      knight->deductHP(bullet->getAttack());
+      bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
+      bullet->removeFromParent();
+      vecEnemyBullet.eraseObject(bullet);
+      --i;
     }
   }
 }
