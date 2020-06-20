@@ -319,13 +319,12 @@ bool Knight::checkStatue() {
 
   if (statue == nullptr) return false; //没有雕像直接false
 
-  if (statue->getTextLabel()->isVisible()) {
+  if (statue->isVisible()) {
     if (statue->getPlayerVisited() == false) {
       if (this->gold >= statue->getGoldCost()) {
         this->gold -= statue->getGoldCost();
         statue->giveBuff(this);
         statue->setPlayerVisited(true);
-        return true;
       } else {
         auto textLabel = Label::create("Gold is not Enough!", "fonts/Marker Felt.ttf", 20);
         textLabel->setColor(ccc3(255, 255, 255));
@@ -340,6 +339,7 @@ bool Knight::checkStatue() {
         textLabel->runAction(actions);
       }
     }
+    return true;
   }
   return false;
 }
