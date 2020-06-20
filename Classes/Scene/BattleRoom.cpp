@@ -166,7 +166,7 @@ void BattleRoom::addMapElement() {
 //#define YYZ_DEBUG
 void BattleRoom::createEnemy() {
   srand(static_cast<unsigned int>(time(nullptr)));
-  INT32 enemyNumber = 4 + rand() % 4; //敌人数量 再后续修改
+  INT32 enemyNumber = 13 + rand() % 4; //敌人数量
 
   INT32 sceneTypeIndex = BattleScene::getSceneNumber();
   sceneTypeIndex =
@@ -210,14 +210,20 @@ void BattleRoom::createEnemy() {
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
                      LayerPlayer - 1);  //添加阴影
-
-    float enemyX = upLeftX + rand() % static_cast<INT32>(downRightX - upLeftX);
-    float enemyY =
-        downRightY + rand() % static_cast<INT32>(upLeftY - downRightY);
-    this->addChild(enemy);
-    enemy->setPosition(Point(enemyX, enemyY));
     vecEnemy.pushBack(enemy);
   }
+
+  INT32 addChildNum =
+      std::min(static_cast<INT32>(vecEnemy.size()), 4 + rand() % 3);
+  for (auto it = vecEnemy.rbegin(); it != vecEnemy.rbegin() + addChildNum;
+       it++) {
+    float enemyX = centerX + (rand() * 2 - RAND_MAX) % 300;
+    float enemyY = centerY + (rand() * 2 - RAND_MAX) % 300;
+
+    (*it)->setPosition(Point(enemyX, enemyY));
+    (*it)->setIsAdded(true);
+    this->addChild(*it);  //分批次添加到场景
+  }  
 }
 
 void BattleRoom::createBoss() {
@@ -428,7 +434,7 @@ void BattleRoom::removeKilledEnemy() {
 bool BattleRoom::allKilled() {
   bool allKilled = true;
   for (auto e : vecEnemy) {
-    if (e->getIsKilled() == false) allKilled = false;
+    if (e->getIsKilled() == false || e->getParent() != nullptr) allKilled = false;
   }
 
   if (boss != nullptr && boss->getIsKilled() == false) allKilled = false;

@@ -250,7 +250,43 @@ void BattleScene::updateEnemy() { //更新敌人
     return;
   }
 
-  for (auto enemy : knight->atBattleRoom->getVecEnemy()) {  //敌人AI
+  auto& vecEnemy = knight->atBattleRoom->getVecEnemy();
+  while (!vecEnemy.empty() && vecEnemy.back()->getParent() == nullptr &&
+         vecEnemy.back()->getIsKilled()) {
+    vecEnemy.popBack();
+  }
+
+  if (!vecEnemy.empty() && !vecEnemy.back()->getIsAdded()) {  //生成下一波怪物
+    INT32 addChildNum =
+        std::min(static_cast<INT32>(vecEnemy.size()), 4 + rand() % 3);
+    for (auto it = vecEnemy.rbegin();
+         it != vecEnemy.rbegin() + addChildNum && it != vecEnemy.rend(); it++) {
+      float enemyX =
+          knight->atBattleRoom->centerX + (rand() * 2 - RAND_MAX) % 300;
+      float enemyY =
+          knight->atBattleRoom->centerY + (rand() * 2 - RAND_MAX) % 300;
+
+      (*it)->setPosition(Point(enemyX, enemyY));
+      (*it)->setIsAdded(true);
+      (*it)->setIsKilled(true);  //暂时设为死亡 防止立刻生成攻击玩家
+      (*it)->getSprite()->setOpacity(80);
+      knight->atBattleRoom->addChild(*it);  //分批次添加到场景
+    }
+
+    for (auto& enemy : vecEnemy) { //添加进场动画
+      if (enemy->getParent() != nullptr && enemy->getIsKilled()) {
+        auto FadeIn = FadeTo::create(0.4f, 255);
+        auto callFunc = CallFunc::create([&]() {
+          /*设为存活 可以行动*/
+          enemy->setIsKilled(false);
+        });
+
+        enemy->getSprite()->runAction(Sequence::create(FadeIn, callFunc, NULL));
+      }
+    }
+  }
+
+  for (auto enemy : vecEnemy) {  //敌人AI
     if (enemy->getParent() == nullptr || enemy->getIsKilled()) continue;  
     //防止死亡的敌人继续攻击
     enemy->aiOfEnemy(knight, knight->atBattleRoom);
