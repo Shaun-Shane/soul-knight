@@ -403,13 +403,13 @@ void Knight::weaponAttack(
   }
 
   auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-  audio->preloadEffect("audioEffect//bulletEffect.mp3");
+  audio->preloadEffect("audioEffect//bulletEffect.wav");
   static INT32 temBullet = 0;
 
   Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
   bullet->setPosition(curPos);
   audio->stopEffect(temBullet);//暂停之前的音效
-  temBullet=audio->playEffect("audioEffect//bulletEffect.mp3", false);
+  temBullet=audio->playEffect("audioEffect//bulletEffect.wav", false);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)
       ->getVecPlayerBullet().pushBack(bullet);
