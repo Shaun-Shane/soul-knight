@@ -182,36 +182,37 @@ void BattleRoom::createEnemy() {
   for (INT32 i = 1; i <= enemyNumber; i++) {
     Enemy* enemy = Enemy::create();
     enemy->bindAtBattleRoom(this); //绑定所在房间
-
     enemy->startCount = i * 2;
-    if (i < 3) {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy002.png"),
-          LayerPlayer - 1);
-      enemy->setType(0);
+    
+    INT32 enemyType = rand() % 4;
+
+    switch (enemyType) {
+      case 0:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy002.png"),
+            LayerPlayer - 1);
+        break;
+      case 1:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy007.png"),
+            LayerPlayer - 1);
+        break;
+      case 2:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy001.png"),
+            LayerPlayer - 1);
+        break;
+      case 3:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy003.png"),
+            LayerPlayer - 1);
+        break;
     }
-    else if (i < 5) {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy007.png"),
-          LayerPlayer - 1);
-      enemy->setType(1);
-    }
-    else if (i < 6) {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy001.png"),
-          LayerPlayer - 1);
-      enemy->setType(2);
-    }
-    else {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy003.png"),
-          LayerPlayer - 1);
-      enemy->setType(3);
-    }
+
+    enemy->setType(enemyType);
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
                      LayerPlayer - 1);  //添加阴影
-    enemy->retain();
     vecEnemy.pushBack(enemy);
   }
 
