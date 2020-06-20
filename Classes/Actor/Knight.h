@@ -65,6 +65,8 @@ class Knight : public Entity {
   Hall* getAtHall();
 
   Animate* getAnimate();
+  
+  Sprite* collisionWithBoxCheck();
 
   Weapon* collisionWithWeaponCheck();
 

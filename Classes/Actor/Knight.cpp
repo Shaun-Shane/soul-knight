@@ -40,6 +40,8 @@ Animate* Knight::getAnimate() {
   return animate;
 }
 
+
+
 bool Knight::init() {
   this->HP = this->maxHP = 5;
   this->armor = this->maxArmor = 5;
@@ -134,6 +136,7 @@ void Knight::registerKeyboardEvent() {
         if (this->atBattleRoom != nullptr) {
           Weapon* weaponCheck = this->collisionWithWeaponCheck();
           Prop* prop = this->collisionWithCropCheck();
+          Sprite* box = this->collisionWithBoxCheck();
           if (weaponCheck != nullptr) {
             this->bindWeapon(weaponCheck);
             if (isRight == false) weapon->getSprite()->setFlippedX(true);
@@ -142,6 +145,12 @@ void Knight::registerKeyboardEvent() {
             prop->useProps(this);
             prop->removeFromParent();
             this->atBattleRoom->getVecProps().eraseObject(prop);
+            break;
+          }
+          else if (box != nullptr) {
+            this->getAtBattleRoom()->openTreasureBox();
+            box->removeFromParent();
+            this->atBattleRoom->getVecBox().eraseObject(box);
             break;
           }
         }
@@ -406,6 +415,8 @@ void Knight::weaponAttack(
       ->getVecPlayerBullet().pushBack(bullet);
 }
 
+
+
 Weapon* Knight::collisionWithWeaponCheck() {
   for (INT32 i = 0; i < this->atBattleRoom->getVecWeapon().size(); ++i) {
     auto weaponPick = this->atBattleRoom->getVecWeapon().at(i);
@@ -425,8 +436,6 @@ Prop* Knight::collisionWithCropCheck() {
   }
   return nullptr;
 }
-<<<<<<< Updated upstream
-=======
 void Knight::addGold(INT32 deta) { (this->gold) += deta; }
 Sprite* Knight::collisionWithBoxCheck()
 {
@@ -439,7 +448,6 @@ Sprite* Knight::collisionWithBoxCheck()
   return nullptr;
   
 }
->>>>>>> Stashed changes
 
 void Knight::bindWeapon(Weapon* weapon) {
   this->atBattleRoom->getVecWeapon().eraseObject(weapon);

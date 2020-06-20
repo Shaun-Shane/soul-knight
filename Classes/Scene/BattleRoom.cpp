@@ -211,6 +211,7 @@ void BattleRoom::createEnemy() {
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
                      LayerPlayer - 1);  //添加阴影
+    enemy->retain();
     vecEnemy.pushBack(enemy);
   }
 
@@ -278,8 +279,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
         if (knight->getNeedCreateBox() == true) {
           INT32 curMP = this->knight->getMP() + 20;
           this->knight->setMP(curMP); //setMp会判断是否超限
-
-          createTreasureBox();
+          createBox();
           knight->setNeedCreateBox(false);
         }
       }
@@ -321,11 +321,19 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
 
 Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
 
-Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
-
 Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
 
 Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
+
+void BattleRoom::createBox()
+{
+  Sprite* box = Sprite::create("Props//box.png");
+  box->setPosition(
+    Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
+  box->setGlobalZOrder(LayerPlayer - 2);
+  this->addChild(box, TOP);
+  this->getVecBox().pushBack(box);
+}
 
 Boss* BattleRoom::getBoss() { return boss; }
 
@@ -445,7 +453,7 @@ bool BattleRoom::allKilled() {
   return allKilled;
 }
 
-void BattleRoom::createTreasureBox() {
+void BattleRoom::openTreasureBox() {
   srand(time(NULL));
   int randomDigit = rand() % 7;
   if (randomDigit <= 3)
@@ -516,4 +524,9 @@ void BattleRoom::createProps(int randomDigit) {
       Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
   this->addChild(props, TOP);
   this->getVecProps().pushBack(props);
+}
+
+Vector<Sprite*>& BattleRoom::getVecBox()
+{
+  return this->vecBox;
 }

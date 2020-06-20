@@ -27,6 +27,8 @@ class Hall : public Node{
 
   void generateFloor(float, float, INT32);
 
+  Vector<Bullet*>& getVecEnemyBullet();
+
   void generateWall(float, float, INT32, bool);
 
   Vector<Bullet*>& getVecPlayerBullet(); 
@@ -55,6 +57,8 @@ class Hall : public Node{
   Vector<Sprite*> vecFloor;
 
   Vector<Sprite*> vecWall;
+
+  Vector<Bullet*> vecEnemyBullet;
 
 };
 

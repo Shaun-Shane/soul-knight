@@ -27,7 +27,11 @@ class Enemy : public Entity {
   void aiOfEnemy(Knight* knight, const BattleRoom* battleRoom);  
 
   BattleRoom* getAtBattleRoom() const; //获取所在房间
+
   void bindAtBattleRoom(BattleRoom*); //绑定所在房间
+
+  void attackKnight(Knight* knight);
+
   Weapon*& getWeapon();
 
 

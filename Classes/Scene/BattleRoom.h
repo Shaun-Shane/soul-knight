@@ -43,11 +43,11 @@ class BattleRoom : public Hall {
 
   Vector<Enemy*>& getVecEnemy();
 
-  Vector<Sprite*>& getVecEnemyBullet(); //Sprite改为子弹类名
-
   Vector<Prop*>& getVecProps();
 
   Vector<Weapon*>& getVecWeapon();
+
+  void createBox();
 
   Boss* getBoss(); //返回Boss指针
 
@@ -56,17 +56,21 @@ class BattleRoom : public Hall {
   void playerBulletCollistionCheck();
 
   void checkObstacle(Entity*); //检测障碍物
+
   void checkStatue(); //检测雕像
 
   void removeKilledEnemy(); //将死亡的敌人removeFromParent 有死亡效果
 
   bool allKilled();
   
-  void createTreasureBox();
+  void openTreasureBox();
 
   void crearteWeapon(int randomDigit);
 
   void createProps(int randomDigit);
+
+  Vector<Sprite*>& getVecBox();
+
 
  private:
   void createEnemy();  //生成敌人
@@ -92,12 +96,11 @@ protected:
 
   Vector<Enemy*> vecEnemy;
 
-  Vector<Sprite*> vecEnemyBullet;
-  // 储存场景敌人子弹 基类中Hall有玩家的子弹Vector Sprite改为子弹类名
-
   Vector<Prop*> vecProps;
 
   Vector<Weapon*> vecWeapon;
+
+  Vector<Sprite*> vecBox;
 
 };
 
