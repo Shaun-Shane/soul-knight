@@ -70,6 +70,8 @@ class Knight : public Entity {
 
   Prop* collisionWithCropCheck();
 
+  void addGold(INT32);
+
  private:
   INT32 armor = 5, maxArmor = 5;
   INT32 MP = 200, maxMP = 200;

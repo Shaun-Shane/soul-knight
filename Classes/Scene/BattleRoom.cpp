@@ -421,6 +421,7 @@ void BattleRoom::removeKilledEnemy() {
     if (e->getHP() <= 0) { //血量小于零 移除
       e->setIsKilled(true);
       e->showDeathEffect(); //死亡特效
+      this->knight->addGold(1);
     }
   }
 
@@ -428,6 +429,7 @@ void BattleRoom::removeKilledEnemy() {
     if (boss->getHP() <= 0) { // 血量小于零 移除
       boss->setIsKilled(true);
       boss->showDeathEffect(); //死亡特效
+      this->knight->addGold(5);
     }
   }
 }

@@ -170,6 +170,18 @@ void Hall::bulletMove() {
       --i;
     }
   }
+  for (INT32 i = 0; i < vecEnemyBullet.size(); ++i) {
+    auto bullet = vecEnemyBullet.at(i);
+    Vec2 pos = bullet->getPosition();
+    pos = pos + bullet->getBulletSpeed();
+    bullet->setPosition(pos);
+    if (this->isInRange(pos) == false) {
+      bullet->showEffect(pos, this);
+      bullet->removeFromParent();
+      vecEnemyBullet.eraseObject(bullet);
+      --i;
+    }
+  }
 }
 
 Point Hall::getUpleftVertex() const { return Point(upLeftX, upLeftY); }

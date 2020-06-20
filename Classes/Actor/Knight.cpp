@@ -425,6 +425,21 @@ Prop* Knight::collisionWithCropCheck() {
   }
   return nullptr;
 }
+<<<<<<< Updated upstream
+=======
+void Knight::addGold(INT32 deta) { (this->gold) += deta; }
+Sprite* Knight::collisionWithBoxCheck()
+{
+  for (int i = 0; i < this->atBattleRoom->getVecBox().size(); ++i) {
+    auto box = this->atBattleRoom->getVecBox().at(i);
+    Rect boxRect = box->getBoundingBox();
+    Rect kightRect = this->getBoundingBox();
+    if (boxRect.intersectsRect(kightRect)) return box;
+  }
+  return nullptr;
+  
+}
+>>>>>>> Stashed changes
 
 void Knight::bindWeapon(Weapon* weapon) {
   this->atBattleRoom->getVecWeapon().eraseObject(weapon);

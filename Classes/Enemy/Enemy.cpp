@@ -51,6 +51,7 @@ void Enemy::setAttackRange(){
         break;
     case 3:
         ATTACKRANGE = 400;//枪手
+        break;
     default://暂时还没想出别的
         break;
     }
@@ -189,8 +190,10 @@ void Enemy::attackTheKnight(Knight* knight,
             break;
         case 2:
             spearAttack(knight, disBetweenEnemyAndKnight);
+            break;
         case 3:
             gunnerAttack(knight, disBetweenEnemyAndKnight);
+            break;
         default:
             break;
         }
@@ -203,9 +206,15 @@ void Enemy::archerAttack(Knight* knight, float disBetweenEnemyAndKnight){
 	auto knightPos = knight->getPosition();
 
     if (attackTimeCount >= 120) {
+<<<<<<< Updated upstream
         knight->deductHP(3);
         log("%d", knight->getHP());
         attackTimeCount = 0;
+=======
+      CCLOG("arch attack");
+      this->attackKnight(knight);
+      attackTimeCount = 0;
+>>>>>>> Stashed changes
     }
     else {
         attackTimeCount++;
