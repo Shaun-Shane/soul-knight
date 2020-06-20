@@ -175,3 +175,8 @@ void Hall::bulletMove() {
 Point Hall::getUpleftVertex() const { return Point(upLeftX, upLeftY); }
 
 Point Hall::getDownRightVertex() const { return Point(downRightX, downRightY); }
+
+Vector<Bullet*>& Hall::getVecEnemyBullet()
+{
+  return vecEnemyBullet;
+}

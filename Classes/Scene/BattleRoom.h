@@ -43,8 +43,6 @@ class BattleRoom : public Hall {
 
   Vector<Enemy*>& getVecEnemy();
 
-  Vector<Sprite*>& getVecEnemyBullet(); //Sprite改为子弹类名
-
   Vector<Prop*>& getVecProps();
 
   Vector<Weapon*>& getVecWeapon();
@@ -91,9 +89,6 @@ protected:
   Vector<Sprite*> vecDoorOpen, vecDoorClose; 
 
   Vector<Enemy*> vecEnemy;
-
-  Vector<Sprite*> vecEnemyBullet;
-  // 储存场景敌人子弹 基类中Hall有玩家的子弹Vector Sprite改为子弹类名
 
   Vector<Prop*> vecProps;
 

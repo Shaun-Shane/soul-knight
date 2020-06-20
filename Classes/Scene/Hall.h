@@ -39,6 +39,8 @@ class Hall : public Node{
 
   Point getDownRightVertex() const;  //获得房间内右下角顶点坐标
 
+  Vector<Bullet*>& getVecEnemyBullet(); 
+
  private:
   INT32 dir; //direction of this hall
  protected:
@@ -55,6 +57,8 @@ class Hall : public Node{
   Vector<Sprite*> vecFloor;
 
   Vector<Sprite*> vecWall;
+
+  Vector<Bullet*> vecEnemyBullet;
 
 };
 

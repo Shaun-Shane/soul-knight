@@ -327,8 +327,6 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
 
 Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
 
-Vector<Sprite*>& BattleRoom::getVecEnemyBullet() { return vecEnemyBullet; }
-
 Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
 
 Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
