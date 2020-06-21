@@ -7,7 +7,7 @@
 #include "Const/Const.h"
 
 class Enemy : public Entity {
-	static constexpr INT32 SIGHTRANGE = 260;
+    static constexpr INT32 SIGHTRANGE = 340;
 	INT32 ATTACKRANGE = 150;//将ATTACKRANGE修改为可自行设置，方便创造不同怪物，默认为150
 
 public:

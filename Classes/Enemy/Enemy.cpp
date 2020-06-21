@@ -73,7 +73,7 @@ void Enemy::setAttackRange() {
 	switch (enemyType)
 	{
 	case 0:
-		ATTACKRANGE = 200;//弓箭手
+		ATTACKRANGE = 280;//弓箭手
 		break;
 	case 1:
 		ATTACKRANGE = SIGHTRANGE;//野猪
@@ -82,7 +82,7 @@ void Enemy::setAttackRange() {
 		ATTACKRANGE = 50;//持矛怪物
 		break;
 	case 3:
-		ATTACKRANGE = 400;//枪手
+		ATTACKRANGE = 420;//枪手
 		break;
 	default://暂时还没想出别的
 		break;
