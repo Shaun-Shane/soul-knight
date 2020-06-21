@@ -2,17 +2,6 @@
 #include "Attack/Bullet.h"
 #include "BattleScene.h"
 
-void Hall::update(float delta) { this->bulletMove(); }
-
-Vector<Bullet*>& Hall::getVecPlayerBullet() { return vecPlayerBullet; }
-
-Point Hall::getUpleftVertex() const { return Point(upLeftX, upLeftY); }
-
-Point Hall::getDownRightVertex() const { return Point(downRightX, downRightY); }
-
-Vector<Bullet*>& Hall::getVecEnemyBullet() { return vecEnemyBullet; }
-
-
 bool Hall::init() {
   upLeftX = .0f, upLeftY = .0f;
   downRightX = .0f, downRightY = .0f;
@@ -22,6 +11,8 @@ bool Hall::init() {
   this->scheduleUpdate();
   return true;
 }
+
+void Hall::update(float delta) { this->bulletMove(); }
 
 void Hall::generateFloor(float X, float Y, INT32 layer) {
   INT32 randomNum = rand();
@@ -157,6 +148,8 @@ bool Hall::checkPlayerPosition(Knight* knight, float& ispeedX, float& ispeedY) {
   return false;
 }
 
+Vector<Bullet*>& Hall::getVecPlayerBullet() { return vecPlayerBullet; }
+
 bool Hall::isInRange(Vec2 pos) {
   return (upLeftX - FLOORWIDTH / 4 <= pos.x &&
           pos.x <= downRightX + FLOORWIDTH / 4 &&
@@ -194,4 +187,13 @@ void Hall::bulletMove() {
       --i;
     }
   }
+}
+
+Point Hall::getUpleftVertex() const { return Point(upLeftX, upLeftY); }
+
+Point Hall::getDownRightVertex() const { return Point(downRightX, downRightY); }
+
+Vector<Bullet*>& Hall::getVecEnemyBullet()
+{
+  return vecEnemyBullet;
 }

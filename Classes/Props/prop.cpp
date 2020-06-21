@@ -4,11 +4,20 @@ Prop::Prop(){}
 
 Prop::~Prop(){}
 
-bool Prop::init(){  return true;}
+bool Prop::init()
+{
+  return true;
+}
 
-INT32 Prop::getPropIndex(){  return this->propIndex;}
+INT32 Prop::getPropIndex()
+{
+  return this->propIndex;
+}
 
-void Prop::setPropIndex(INT32 index){  this->propIndex = index;}
+void Prop::setPropIndex(INT32 index)
+{
+  this->propIndex = index;
+}
 
 void Prop::useProps(Knight* knight)
 {

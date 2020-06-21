@@ -13,9 +13,7 @@ public:
 
 	/*三个回调函数*/
 	void menuCloseCallbackEnd(cocos2d::Ref* pSender);
-
 	void menuCloseCallbackStart(cocos2d::Ref* pSender);
-
 	void menuCloseCallbackSet(cocos2d::Ref* pSender);
 
 	CREATE_FUNC(StartScene);

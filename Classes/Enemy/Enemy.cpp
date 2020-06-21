@@ -4,6 +4,17 @@
 
 Enemy::~Enemy() {}
 
+bool Enemy::init() { 
+  isKilled = isAdded = false;
+
+  this->weapon = Weapon::create();
+  this->weapon->bindSprite(Sprite::create(),LayerPlayer + 1);
+  this->weapon->setWeaponState(true);
+  this->weapon->setMPConsumption(0);
+  this->addChild(weapon);
+  this->weapon->setVisible(false);
+  return true; 
+}
 //返回所在房间指针
 BattleRoom* Enemy::getAtBattleRoom() const { return this->atBattleRoom; }
 
@@ -24,18 +35,6 @@ bool Enemy::isCollideWithKnight(Knight * knight) {
 
   //判断bounding box 和 怪物中心点是否有交集
   return entityRec.containsPoint(enemyPos);
-}
-
-bool Enemy::init() {
-  isKilled = isAdded = false;
-
-  this->weapon = Weapon::create();
-  this->weapon->bindSprite(Sprite::create(), LayerPlayer + 1);
-  this->weapon->setWeaponState(true);
-  this->weapon->setMPConsumption(0);
-  this->addChild(weapon);
-  this->weapon->setVisible(false);
-  return true;
 }
 
 void Enemy::setType(int type){
@@ -129,6 +128,8 @@ void Enemy::shake(const BattleRoom* battleRoom){
         beAttacked = false;
     }
 }
+
+
 
 void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   const Point enemyPos = this->getPosition();

@@ -78,28 +78,36 @@ class BattleRoom : public Hall {
 
  private:
   void createEnemy();  //生成敌人
-
   void createBoss(); //生成boss
 
  private:
   float centerX, centerY;
+
   INT32 x, y;  // row and column in SIZEMTX * SIZEMTX BattleRoom matrix
   INT32 roomType = NORMAL;
+
   bool visDir[CNTDIR] = {false}, visDirCpy[CNTDIR];
+
   bool playerVisited = false;
 
  private:
   Sprite* portal = nullptr; //传送门
   Label* portalTextLabel = nullptr; //传送门标签
+
   Boss* boss = nullptr; //Boss
   Statue* statue = nullptr;
 
 protected:
   Vector<Sprite*> vecDoorOpen, vecDoorClose; 
+
   Vector<Enemy*> vecEnemy;
+
   Vector<Prop*> vecProps;
+
   Vector<Weapon*> vecWeapon;
+
   Vector<Sprite*> vecBox;
+
 };
 
 #endif

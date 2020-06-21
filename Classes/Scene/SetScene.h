@@ -11,11 +11,9 @@ public:
 	virtual bool init();
 
 	void menuCloseCallbackEnd(cocos2d::Ref* pSender);//关闭设置面板的回调函数
-
 	void menuCloseCallbackChange(cocos2d::Ref* pSender);//改变音乐播放状态的回调函数
 
 	void menuCloseCallbackVolumeHigher(cocos2d::Ref* pSender);//升高音量
-
 	void menuCloseCallbackVolumeLower(cocos2d::Ref* pSender);//降低音量
 
 	CREATE_FUNC(SetScene);

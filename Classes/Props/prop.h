@@ -8,16 +8,12 @@ USING_NS_CC;
 class Prop : public Entity2 {
 public:
   Prop();
-
   ~Prop();
   CREATE_FUNC(Prop);
-
   virtual bool init();
 
   INT32 getPropIndex();
-
   void setPropIndex(INT32 index);
-
   void useProps(Knight*);
 
 protected:

@@ -14,6 +14,7 @@ attackTheKnight函数的话也会计算敌人跟骑士的距离，如果近到�
 否则就使用武器【因为武器的类还没出来所以那一块就暂时空着了】
 */
 
+
 AIOfEnemy::AIOfEnemy() {
   myEnemy = nullptr;
   paceCount = 0;
@@ -105,5 +106,5 @@ void AIOfEnemy::attackTheKnight(Knight* knight,
             knight->getMoveSpeedX(),
         enemyPos.y + 2 * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight -
             knight->getMoveSpeedY()));
-  } 
+  }  //等武器那一块出来加上武器
 }

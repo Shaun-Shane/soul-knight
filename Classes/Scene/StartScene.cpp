@@ -4,13 +4,10 @@
 
 USING_NS_CC;
 
-Scene* StartScene::createScene(){	return StartScene::create();}
-
-/*退出游戏*/
-void StartScene::menuCloseCallbackEnd(Ref* pSender) { Director::getInstance()->end(); }
-
-/*开始游戏*/
-void StartScene::menuCloseCallbackStart(Ref* pSender) { Director::getInstance()->pushScene(TransitionCrossFade::create(2.0f, SafeScene::createScene())); }
+Scene* StartScene::createScene()
+{
+	return StartScene::create();
+}
 
 
 static void problemLoading(const char* filename)
@@ -81,6 +78,19 @@ bool StartScene::init()
 
 	return true;
 }
+
+/*退出游戏*/
+void StartScene::menuCloseCallbackEnd(Ref* pSender)
+{
+	Director::getInstance()->end();
+}
+
+/*开始游戏*/
+void StartScene::menuCloseCallbackStart(Ref* pSender)
+{
+	Director::getInstance()->pushScene(TransitionCrossFade::create(2.0f,SafeScene::createScene()));
+}
+
 /*进入设置面板*/
 void StartScene::menuCloseCallbackSet(Ref* pSender)
 {

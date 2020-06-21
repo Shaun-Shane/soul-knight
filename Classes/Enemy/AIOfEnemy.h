@@ -11,11 +11,8 @@ class AIOfEnemy {
 
  public:
   AIOfEnemy();
-
   ~AIOfEnemy();
-
   void bindEnemy(Enemy* enemy);
-
   void aiOfEnemy(
       Knight* knight, BattleRoom* battleRoom,
       const std::vector<float>&
@@ -24,7 +21,6 @@ class AIOfEnemy {
  private:
   void patrolRoute(const BattleRoom* battleRoom, Knight* knight,
                    const std::vector<float>& boundaryOfRoom);
-
   void attackTheKnight(Knight* knight, INT32 disBetweenEnemyAndKnight);
 
  private:

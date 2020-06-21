@@ -18,11 +18,9 @@ class Boss :public Enemy {
 	static constexpr INT32 DOWN = 3;
 public:
 	Boss();
-
 	~Boss();
 
 	CREATE_FUNC(Boss);
-
 	virtual bool init();
 
 	void aiOfBoss(Knight* knight, BattleRoom* battleRoom);//boundaryOfRoom是一个封装了边界的vector，按顺序依次应为右边界、上、左、下
@@ -31,13 +29,9 @@ public:
 
 private:
 	void uniqueSkill(Knight* knight,BattleRoom* battleRoom);
-
 	virtual void spriteChangeDirection();
-
 	void addHP();//加血绝招
-
 	void heavilyAttackTheKnight(Knight* knight);//大范围攻击骑士的绝招
-
 	void flashMove(Knight* knight, BattleRoom* battleRoom);//瞬移至骑士坐标或尽力向骑士方向瞬移的绝招
 private:
 	Sprite* mySword;
@@ -46,4 +40,5 @@ private:
 	INT32 wayOfPace;//选择走的方向
 	std::vector<INT32> wayCanBeSelected;//可供选择的行走方向
 };
+
 #endif

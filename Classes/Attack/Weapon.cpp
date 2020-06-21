@@ -1,28 +1,38 @@
 #include "Weapon.h"
 
+
 Weapon::Weapon(){}
 
-bool Weapon::init(){   return true;	}
+bool Weapon::init()
+{ 
+  return true;	
+}
 
 Weapon::~Weapon(){}
 
-void Weapon::setFireSpeed(float fireSpeed){    this->fireSpeed = fireSpeed;}
+void Weapon::setFireSpeed(float fireSpeed)
+{
+  
+  this->fireSpeed = fireSpeed;
+}
 
 float Weapon::getFireSpeed() { return this->fireSpeed; }
-
 void Weapon::setAttack(INT32 attack) { this->attack = attack; }
-
 INT32  Weapon::getAttack() { return this->attack; }
 
 INT32 Weapon::getMPConsumption() {  return mpConsumption;}
 
 void Weapon::setMPConsumption(INT32 deta) { this->mpConsumption = deta;}
 
-bool Weapon::getWeaponState(){  return this->weaponState;}
+bool Weapon::getWeaponState()
+{
+  return this->weaponState;
+}
 
-void Weapon::setWeaponState(bool state){  this->weaponState = state;}
-
-void Weapon::setBulletType(INT32 type) { this->bulletType = type; }
+void Weapon::setWeaponState(bool state)
+{
+  this->weaponState = state;
+}
 
 void Weapon::knifeAttack(Knight* knight)
 {
@@ -40,6 +50,12 @@ void Weapon::knifeAttack(Knight* knight)
     }
   }
 }
+
+void Weapon::setBulletType(INT32 type)
+{
+  this->bulletType = type;
+}
+
 
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower,bool isBig)
 {

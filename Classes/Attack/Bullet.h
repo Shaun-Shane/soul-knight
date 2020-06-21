@@ -8,11 +8,8 @@ USING_NS_CC;
 class Bullet : public Entity2 {
 public:
   Bullet();
-
   ~Bullet();
-
   CREATE_FUNC(Bullet);
-
   virtual bool init();
 
   bool isInScreen();
@@ -20,15 +17,17 @@ public:
   Vec2 getBulletSpeed();
 
   void setBulletSpeed(Vec2 speed);
-
   void setAttack(INT32 attack);
 
   void showEffect(Point, Hall*); //显示击中特效
 
   INT32 getAttack();
 
+
 protected:
   Vec2 bulletSpeed;
   INT32 attack;
+
 };
+
 #endif;

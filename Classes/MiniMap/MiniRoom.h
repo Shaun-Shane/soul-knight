@@ -21,8 +21,11 @@ class MiniRoom : public DrawNode {
  private:
   float downLeftX = .0f, downLeftY = .0f;  // DrawNode的顶点信息
   float upRightX = .0f, upRightY = .0f;
+  
   INT32 color = GREY;
+
   INT32 x = 0, y = 0;  // row and column in SIZEMTX * SIZEMTX MiniMap matrix
+
   DrawNode* miniHall[CNTDIR] = {nullptr};
 };
 
