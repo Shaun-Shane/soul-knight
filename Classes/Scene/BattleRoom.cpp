@@ -476,8 +476,8 @@ void BattleRoom::removeKilledEnemy() {
     if (e->getHP() <= 0) { //血量小于零 移除
       e->setIsKilled(true);
       e->showDeathEffect(); //死亡特效
-      int digit = rand() % 100;
-      if (digit >= 87) this->knight->addGold(1);
+      int digit = rand() % 10;
+      if (digit >=4 ) this->knight->addGold(1);
     }
   }
 
