@@ -46,7 +46,7 @@ void Weapon::knifeAttack(Knight* knight)
 
     if (sqrt(pow(knight->getPositionX() - enemyX, 2) +
       pow(knight->getPositionY() - enemyY, 2)) <= 80.0f) {
-      e->deductHP(this->attack); 
+      e->deductHP(this->attack * knight->getDamageBuff()); 
     }
   }
 }
