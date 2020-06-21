@@ -48,7 +48,7 @@ void Enemy::setType(int type){
     switch (type) {
       case 0: //弓箭手
         lastHP = HP = 8 + addedHp;
-        this->weapon->setAttack(2);
+        this->weapon->setAttack(4);
         this->weapon->setBulletType(1);
         this->weapon->setFireSpeed(8.0f);
         break;
@@ -62,7 +62,7 @@ void Enemy::setType(int type){
         break;
       case 3: //枪手，设置子弹图片和威力
         lastHP = HP = 9 + addedHp;
-        this->weapon->setAttack(1);
+        this->weapon->setAttack(3);
         this->weapon->setFireSpeed(6.0f);
         this->weapon->setBulletType(2);
         break;

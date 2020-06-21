@@ -286,7 +286,13 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
         if (knight->getNeedCreateBox() == true) {
           INT32 curMP = this->knight->getMP() + 20;
           this->knight->setMP(curMP); //setMp会判断是否超限
-          createBox((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2);
+          float x, y;
+          x = (upLeftX + downRightX) / 2;
+          y = (upLeftY + downRightY) / 2;
+          if (roomType == BOSS) {
+            y -= 150;
+          }
+          createBox(x, y);
           knight->setNeedCreateBox(false);
         }
       }
@@ -470,7 +476,8 @@ void BattleRoom::removeKilledEnemy() {
     if (e->getHP() <= 0) { //血量小于零 移除
       e->setIsKilled(true);
       e->showDeathEffect(); //死亡特效
-      this->knight->addGold(1);
+      int digit = rand() % 100;
+      if (digit >= 87) this->knight->addGold(1);
     }
   }
 
