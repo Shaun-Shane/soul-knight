@@ -60,6 +60,8 @@ class Knight : public Entity {
 
   bool checkStatue(); //检测雕像
 
+  bool checkPortal(); //检测传送门
+
   BattleRoom* getAtBattleRoom();
 
   Hall* getAtHall();
@@ -91,6 +93,8 @@ class Knight : public Entity {
   Hall* atHall = nullptr;
 
   bool isInvincible = false; //是否无敌
+
+  bool goIntoPortal = false;
 
   bool isAnimation = false;//是否在执行帧动画动作
 };
