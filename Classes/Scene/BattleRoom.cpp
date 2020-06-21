@@ -547,13 +547,21 @@ void BattleRoom::createProps(int randomDigit) {
   switch (randomDigit) {
     case 4:
       props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
-      props->setPropIndex(3);
+      props->setPropIndex(1);
       break;
     case 5:
       props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+      props->setPropIndex(2);
+      break;
+    case 6: 
+      props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+      props->setPropIndex(3);
+      break;
+    case 7:
+      props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
       props->setPropIndex(4);
       break;
-    case 6:  //不出任何道具
+    case 8:
       return;
   }
   props->setPosition(

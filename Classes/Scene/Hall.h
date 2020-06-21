@@ -35,6 +35,8 @@ class Hall : public Node{
 
   bool isInRange(Vec2 pos);
 
+  Knight* getKnight();
+
   void bulletMove();
 
   Point getUpleftVertex() const;  //获得房间内左上角顶点坐标

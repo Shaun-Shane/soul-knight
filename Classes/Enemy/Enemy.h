@@ -30,7 +30,9 @@ class Enemy : public Entity {
 
   void bindAtBattleRoom(BattleRoom*); //绑定所在房间
 
-  void attackKnight(Knight* knight);
+  void attackKnight(int);
+
+  void fireBullet(Vec2 fireSpeed);
 
   Weapon*& getWeapon();
 
