@@ -1,6 +1,5 @@
 #include "Weapon.h"
 
-#include"SimpleAudioEngine.h"
 
 Weapon::Weapon(){}
 
@@ -39,14 +38,6 @@ void Weapon::knifeAttack(Knight* knight)
 {
   if (knight->getAtBattleRoom() == nullptr) return;
   Vector<Enemy*>& vecEnemy = knight->getAtBattleRoom()->getVecEnemy();
-
-  /*播放音效*/
-  auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-  audio->preloadEffect("audioEffect//knifeEffect.wav");
-  static INT32 temKnife = 0;
-
-  audio->stopEffect(temKnife);//暂停之前的音效
-  temKnife = audio->playEffect("audioEffect//knifeEffect.wav", false);
 
   for (auto& e : vecEnemy) {
     if (e->getParent() == nullptr) continue;
