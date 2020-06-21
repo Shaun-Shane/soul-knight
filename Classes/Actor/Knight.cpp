@@ -52,7 +52,7 @@ bool Knight::init() {
 
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
-  this->weapon->setAttack(2);
+  this->weapon->setAttack(1);
   this->weapon->bindSprite(Sprite::create("Weapon//weapon1.png"),
                            LayerPlayer + 1);
   this->weapon->setWeaponState(true);
@@ -137,11 +137,14 @@ void Knight::registerKeyboardEvent() {
           Weapon* weaponCheck = this->collisionWithWeaponCheck();
           Prop* prop = this->collisionWithCropCheck();
           Sprite* box = this->collisionWithBoxCheck();
+          Enemy* enemy = this->collisionWithEnemyCheck();
+          Boss* boss = this->collisionWithBossCheck();
           if (weaponCheck != nullptr) {
             this->bindWeapon(weaponCheck);
             if (isRight == false) weapon->getSprite()->setFlippedX(true);
             break;
-          } else if (prop != nullptr) {
+          }
+          else if (prop != nullptr) {
             prop->useProps(this);
             prop->removeFromParent();
             this->atBattleRoom->getVecProps().eraseObject(prop);
@@ -153,8 +156,9 @@ void Knight::registerKeyboardEvent() {
             this->atBattleRoom->getVecBox().eraseObject(box);
             break;
           }
+          else if (enemy != nullptr)  enemy->deductHP(5);
+          else if (boss != nullptr)  boss->deductHP(10);
         }
-
         weaponAttack(last);
         break;
 
@@ -357,8 +361,7 @@ BattleRoom* Knight::getAtBattleRoom() {return this->atBattleRoom; }
 
 Hall* Knight::getAtHall() { return atHall; }
 
-void Knight::weaponAttack(
-    Vec2 last) {  //写得有点啰嗦，有空再精简，不过感觉不好精简了
+void Knight::weaponAttack( Vec2 last) { 
   if (this->MP <= 0 && this->weapon->getMPConsumption() > 0) return;
 
   this->setMP(this->getMP() - this->weapon->getMPConsumption());
@@ -436,6 +439,30 @@ Prop* Knight::collisionWithCropCheck() {
   }
   return nullptr;
 }
+
+Enemy* Knight::collisionWithEnemyCheck()
+{
+    for (int i = 0; i < this->atBattleRoom->getVecEnemy().size(); ++i) {
+      auto enemy = this->atBattleRoom->getVecEnemy().at(i);
+      Rect enemyRect = enemy->getBoundingBox();
+      Rect kightRect = this->getBoundingBox();
+      if (enemyRect.intersectsRect(kightRect)) return enemy;
+    }
+    return nullptr;
+}
+
+Boss* Knight::collisionWithBossCheck()
+{
+
+  Boss* boss = this->atBattleRoom->getBoss();
+  if (boss == nullptr) return nullptr;
+  Rect bossRect = boss->getBoundingBox();
+  Rect kightRect = this->getBoundingBox();
+  if (bossRect.intersectsRect(kightRect)) return boss;
+  return nullptr;
+
+}
+
 void Knight::addGold(INT32 deta) { (this->gold) += deta; }
 Sprite* Knight::collisionWithBoxCheck()
 {
