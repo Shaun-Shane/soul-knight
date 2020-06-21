@@ -18,9 +18,11 @@ class Boss :public Enemy {
 	static constexpr INT32 DOWN = 3;
 public:
 	Boss();
+
 	~Boss();
 
 	CREATE_FUNC(Boss);
+
 	virtual bool init();
 
 	void aiOfBoss(Knight* knight, BattleRoom* battleRoom);//boundaryOfRoom是一个封装了边界的vector，按顺序依次应为右边界、上、左、下
@@ -28,7 +30,7 @@ public:
 	void createSword(Sprite* swordSprite);
 
 private:
-	void uniqueSkill(Knight* knight,BattleRoom* battleRoom);
+	void uniqueSkill(Knight* knight, BattleRoom* battleRoom);
 	virtual void spriteChangeDirection();
 	void addHP();//加血绝招
 	void heavilyAttackTheKnight(Knight* knight);//大范围攻击骑士的绝招

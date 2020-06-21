@@ -28,7 +28,7 @@ private:
 	/*音量大小标签*/
 	cocos2d::Label* volumeNumLab;
 
-	int volume=50;//初始音量
+	int volume = 50;//初始音量
 };
 
 #endif 

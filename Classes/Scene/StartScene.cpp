@@ -4,11 +4,7 @@
 
 USING_NS_CC;
 
-Scene* StartScene::createScene()
-{
-	return StartScene::create();
-}
-
+Scene* StartScene::createScene() { return StartScene::create(); }
 
 static void problemLoading(const char* filename)
 {
@@ -30,8 +26,8 @@ bool StartScene::init()
 	/*背景音乐*/
 	audio = CocosDenshion::SimpleAudioEngine::getInstance();
 
-	if(!audio->isBackgroundMusicPlaying())
-	audio->playBackgroundMusic("bkMusic.mp3", true);
+	if (!audio->isBackgroundMusicPlaying())
+		audio->playBackgroundMusic("bkMusic.mp3", true);
 
 	/*开始界面背景图像*/
 	auto startImg = Sprite::create("start.png");
@@ -49,7 +45,7 @@ bool StartScene::init()
 	auto startLab = Label::createWithTTF("START", "fonts/Marker Felt.ttf", 72);
 	auto exitLab = Label::createWithTTF("EXIT", "fonts/Marker Felt.ttf", 72);
 
-	auto startMenu = MenuItemLabel::create(startLab, CC_CALLBACK_1(StartScene::menuCloseCallbackStart,this));
+	auto startMenu = MenuItemLabel::create(startLab, CC_CALLBACK_1(StartScene::menuCloseCallbackStart, this));
 	auto exitMenu = MenuItemLabel::create(exitLab, CC_CALLBACK_1(StartScene::menuCloseCallbackEnd, this));
 
 	auto setImg = MenuItemImage::create(
@@ -88,7 +84,7 @@ void StartScene::menuCloseCallbackEnd(Ref* pSender)
 /*开始游戏*/
 void StartScene::menuCloseCallbackStart(Ref* pSender)
 {
-	Director::getInstance()->pushScene(TransitionCrossFade::create(2.0f,SafeScene::createScene()));
+	Director::getInstance()->pushScene(TransitionCrossFade::create(2.0f, SafeScene::createScene()));
 }
 
 /*进入设置面板*/

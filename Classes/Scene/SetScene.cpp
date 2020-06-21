@@ -4,11 +4,7 @@
 
 USING_NS_CC;
 
-Scene* SetScene::createScene()
-{
-	return SetScene::create();
-}
-
+Scene* SetScene::createScene() { return SetScene::create(); }
 
 static void problemLoading(const char* filename)
 {
@@ -42,13 +38,13 @@ bool SetScene::init()
 	auto changeMenuOn = MenuItemLabel::create(changeLabOn, CC_CALLBACK_1(SetScene::menuCloseCallbackChange, this));
 	auto changeMenuOff = MenuItemLabel::create(changeLabOff, CC_CALLBACK_1(SetScene::menuCloseCallbackChange, this));
 
-	 Menu01 = Menu::create(changeMenuOn, NULL);
-	 Menu02 = Menu::create(changeMenuOff, NULL);
-	 Menu03 = Menu::create(exitImg, NULL);
+	Menu01 = Menu::create(changeMenuOn, NULL);
+	Menu02 = Menu::create(changeMenuOff, NULL);
+	Menu03 = Menu::create(exitImg, NULL);
 
-	 /*设置坐标*/
+	/*设置坐标*/
 	bkMusicLab->setPosition(600, 440);
-	Menu01->setPosition(Point(950,440));
+	Menu01->setPosition(Point(950, 440));
 	Menu02->setPosition(Point(950, 440));
 	Menu03->setPosition(1200, 660);
 
@@ -95,7 +91,8 @@ bool SetScene::init()
 
 	if (volume == 0) {
 		MenuLowerVolume->setOpacity(100);
-	}else if (volume == 100) {
+	}
+	else if (volume == 100) {
 		MenuHigherVolume->setOpacity(100);
 	}
 
@@ -122,8 +119,8 @@ void SetScene::menuCloseCallbackEnd(Ref* pSender)
 void SetScene::menuCloseCallbackChange(Ref* pSender)
 {
 	/*切换On，off菜单的显示状态*/
-	Menu01->setVisible(1-(Menu01->isVisible()));
-	Menu02->setVisible(1-(Menu02->isVisible()));
+	Menu01->setVisible(1 - (Menu01->isVisible()));
+	Menu02->setVisible(1 - (Menu02->isVisible()));
 
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 
@@ -146,7 +143,7 @@ void SetScene::menuCloseCallbackVolumeHigher(Ref* pSender) {
 	/*修改音量*/
 	volume += 10;
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->setBackgroundMusicVolume(volume/100.0f);
+	audio->setBackgroundMusicVolume(volume / 100.0f);
 
 	/*标签变化*/
 	volumeNumLab->setString(Value(volume).asString());
@@ -166,7 +163,7 @@ void SetScene::menuCloseCallbackVolumeLower(Ref* pSender) {
 	/*修改音量*/
 	volume -= 10;
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->setBackgroundMusicVolume(volume/100.0f);
+	audio->setBackgroundMusicVolume(volume / 100.0f);
 
 	/*标签变化*/
 	volumeNumLab->setString(Value(volume).asString());

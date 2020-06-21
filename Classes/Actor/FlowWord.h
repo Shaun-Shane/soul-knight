@@ -7,6 +7,7 @@ USING_NS_CC;
 class FlowWord : public Node {
 public:
 	CREATE_FUNC(FlowWord);
+
 	virtual bool init();
 
 public:

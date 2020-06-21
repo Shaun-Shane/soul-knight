@@ -8,32 +8,37 @@
 USING_NS_CC;
 
 class Statue : public Node {
-  static constexpr INT32 CNT_TYPE = 9;
- public:
-  Statue() = default;
-  CREATE_FUNC(Statue);
+	static constexpr INT32 CNT_TYPE = 9;
+public:
+	Statue() = default;
 
-  virtual bool init();
-  void bindSprite(Sprite*, INT32);
+	CREATE_FUNC(Statue);
 
-  void setGoldCost(INT32);
-  INT32 getGoldCost() const; //金币花费
-  INT32 getStatueType() const; //雕像类型
+	virtual bool init();
 
-  void setPlayerVisited(bool);
-  bool getPlayerVisited() const;
+	void bindSprite(Sprite*, INT32);
 
-  void giveBuff(Knight*);
+	void setGoldCost(INT32);
 
-  Label* getTextLabel() const;
+	INT32 getGoldCost() const; //金币花费
 
- private:
-  Label* textLabel = nullptr;
+	INT32 getStatueType() const; //雕像类型
 
- private:
-  INT32 statueType = 0;
-  INT32 goldCost = 0;
-  bool playerVisited = false;
+	void setPlayerVisited(bool);
+
+	bool getPlayerVisited() const;
+
+	void giveBuff(Knight*);
+
+	Label* getTextLabel() const;
+
+private:
+	Label* textLabel = nullptr;
+
+private:
+	INT32 statueType = 0;
+	INT32 goldCost = 0;
+	bool playerVisited = false;
 };
 
 #endif

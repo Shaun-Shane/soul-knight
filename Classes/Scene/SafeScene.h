@@ -8,34 +8,38 @@
 USING_NS_CC;
 
 class SafeScene : public Scene {
- public:
-  static Scene* createScene();
-  virtual bool init();
-  virtual void update(float delta);
-  CREATE_FUNC(SafeScene);
+public:
+	static Scene* createScene();
 
-  /*回调函数*/
-  void menuCloseCallbackEnd(cocos2d::Ref* pSender);
-  void menuCloseCallbackSet(cocos2d::Ref* pSender);
+	virtual bool init();
 
- private:
-  void initBG();
+	virtual void update(float delta);
 
-  /*判断角色是否进入传送门*/
-  bool isInDoor();
- private:
-	 Sprite* backGround = nullptr;
-	 Sprite* portal = nullptr;
+	CREATE_FUNC(SafeScene);
 
-  Knight* knight = nullptr;
+	/*回调函数*/
+	void menuCloseCallbackEnd(cocos2d::Ref* pSender);
 
-  ui::LoadingBar* BloodLoadingBar = ui::LoadingBar::create();
-  ui::LoadingBar* ArmorLoadingBar = ui::LoadingBar::create();
-  ui::LoadingBar* MPLoadingBar = ui::LoadingBar::create();
+	void menuCloseCallbackSet(cocos2d::Ref* pSender);
 
-  Label* HPLabel;
-  Label* armorLabel;
-  Label* MPLabel;
+private:
+	void initBG();
+
+	/*判断角色是否进入传送门*/
+	bool isInDoor();
+private:
+	Sprite* backGround = nullptr;
+	Sprite* portal = nullptr;
+
+	Knight* knight = nullptr;
+
+	ui::LoadingBar* BloodLoadingBar = ui::LoadingBar::create();
+	ui::LoadingBar* ArmorLoadingBar = ui::LoadingBar::create();
+	ui::LoadingBar* MPLoadingBar = ui::LoadingBar::create();
+
+	Label* HPLabel;
+	Label* armorLabel;
+	Label* MPLabel;
 };
 
 #endif

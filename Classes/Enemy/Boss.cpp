@@ -2,9 +2,9 @@
 #include "Actor/FlowWord.h"
 #include "Scene/BattleRoom.h"
 
-Boss::Boss() {
-	uniSkiTimeCount = 0;
-}
+Boss::Boss() { uniSkiTimeCount = 0; }
+
+Boss::~Boss() { }
 
 void Boss::spriteChangeDirection() {
 	if (moveSpeedX == 0) {
@@ -20,25 +20,23 @@ void Boss::spriteChangeDirection() {
 	}
 }
 
-Boss::~Boss() { }
-
 bool Boss::init()
 {
-    HP = maxHP = 300;
+	HP = maxHP = 300;
 	lastHP = HP;
 	attack = 6;
 	return true;
 }
 
 /*操纵boss行为的函数，会根据帧数计时计算自己是需要普通动作还是调用大招*/
-void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
+void Boss::aiOfBoss(Knight* knight, BattleRoom* battleRoom) {
 	if (knight == nullptr) {
 		return;
 	}
 	const Point myPos = this->getPosition();
 	if (uniSkiTimeCount < UNISKITIMEINTERVAL) {
 		//开始写没发大招的时候的动作
-		
+
 
 		if (!(uniSkiTimeCount % 60)) {
 			wayCanBeSelected.clear();
@@ -66,7 +64,7 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 	}
 	else {
 		uniSkiTimeCount = 0;
-		uniqueSkill(knight,battleRoom);
+		uniqueSkill(knight, battleRoom);
 	}
 	if (lastHP != HP) {
 		if (lastHP > HP) {
@@ -74,7 +72,7 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 		}
 		lastHP = HP;
 	}
-	if (inRoom(battleRoom,Point(myPos.x + moveSpeedX, myPos.y + moveSpeedY))) {
+	if (inRoom(battleRoom, Point(myPos.x + moveSpeedX, myPos.y + moveSpeedY))) {
 		this->setPosition(myPos.x + moveSpeedX, myPos.y + moveSpeedY);
 		spriteChangeDirection();
 	}
@@ -83,7 +81,7 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 	}
 }
 
-void Boss::createSword(Sprite* swordSprite){
+void Boss::createSword(Sprite* swordSprite) {
 	mySword = swordSprite;
 	swordSprite->setPosition(140.0, 125.0);
 	swordSprite->setGlobalZOrder(LayerPlayer);
@@ -92,7 +90,7 @@ void Boss::createSword(Sprite* swordSprite){
 
 }
 
-void Boss::uniqueSkill(Knight* knight, BattleRoom* battleRoom){
+void Boss::uniqueSkill(Knight* knight, BattleRoom* battleRoom) {
 	srand(static_cast<unsigned>(time(nullptr)));
 	int choice = rand() % 3;
 	switch (choice)
@@ -104,16 +102,16 @@ void Boss::uniqueSkill(Knight* knight, BattleRoom* battleRoom){
 		heavilyAttackTheKnight(knight);
 		break;
 	case 2:
-		flashMove(knight,battleRoom);
+		flashMove(knight, battleRoom);
 		break;
 	default:
 		break;
 	}
 }
 
-void Boss::addHP(){
+void Boss::addHP() {
 	srand(static_cast<unsigned>(time(nullptr)));
-	INT32 hpPlus =40 + (rand() % 30) * 2;
+	INT32 hpPlus = 40 + (rand() % 30) * 2;
 	/*判断是否超过上限*/
 	if (HP + hpPlus <= 500) {
 		HP += hpPlus;
@@ -124,14 +122,14 @@ void Boss::addHP(){
 	}
 
 	/*加血特效*/
-	 FlowWord* flowWord = FlowWord::create();
-	 this->addChild(flowWord);
-	 flowWord->showWord(+hpPlus,
-		 getSprite()->getPosition() +
-		 Vec2(0, this->getContentSize().height / 2.2f));
+	FlowWord* flowWord = FlowWord::create();
+	this->addChild(flowWord);
+	flowWord->showWord(+hpPlus,
+		getSprite()->getPosition() +
+		Vec2(0, this->getContentSize().height / 2.2f));
 }
 
-void Boss::heavilyAttackTheKnight(Knight* knight){
+void Boss::heavilyAttackTheKnight(Knight* knight) {
 	const Point myPos = this->getPosition();
 	const Point knightPos = knight->getPosition();
 	const INT32 distance = myPos.getDistance(knightPos);
@@ -204,8 +202,8 @@ void Boss::flashMove(Knight* knight, BattleRoom* battleRoom) {
 
 	auto tempSprite = Sprite::create("Enemy//boss.png");
 	tempSprite->setGlobalZOrder(LayerPlayer - 1);
-	tempSprite->setPosition(myPos.x+moveSpeedX / 2, myPos.y+moveSpeedY / 2);
-	auto sequence = Sequence::create(Spawn::create(Sequence::create(fadeIn, fadeOut, NULL),NULL), 
+	tempSprite->setPosition(myPos.x + moveSpeedX / 2, myPos.y + moveSpeedY / 2);
+	auto sequence = Sequence::create(Spawn::create(Sequence::create(fadeIn, fadeOut, NULL), NULL),
 		RemoveSelf::create(), NULL);
 
 	battleRoom->addChild(tempSprite);

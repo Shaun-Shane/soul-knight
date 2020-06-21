@@ -9,58 +9,58 @@ USING_NS_CC;
 
 class Bullet;
 
-class Hall : public Node{
-  friend class BattleScene;
+class Hall : public Node {
+	friend class BattleScene;
 
- public:
-  CREATE_FUNC(Hall);
+public:
+	CREATE_FUNC(Hall);
 
-  virtual bool init();
-  
-  virtual void update(float delta);
+	virtual bool init();
 
-  virtual void createMap();  //生成走廊地图
+	virtual void update(float delta);
 
-  virtual void changePositionBy(float, float);
+	virtual void createMap();  //生成走廊地图
 
-  virtual bool checkPlayerPosition(Knight*, float&, float&);
+	virtual void changePositionBy(float, float);
 
-  void generateFloor(float, float, INT32);
+	virtual bool checkPlayerPosition(Knight*, float&, float&);
 
-  Vector<Bullet*>& getVecEnemyBullet();
+	void generateFloor(float, float, INT32);
 
-  void generateWall(float, float, INT32, bool);
+	Vector<Bullet*>& getVecEnemyBullet();
 
-  Vector<Bullet*>& getVecPlayerBullet(); 
+	void generateWall(float, float, INT32, bool);
 
-  bool isInRange(Vec2 pos);
+	Vector<Bullet*>& getVecPlayerBullet();
 
-  Knight* getKnight();
+	bool isInRange(Vec2 pos);
 
-  void bulletMove();
+	Knight* getKnight();
 
-  Point getUpleftVertex() const;  //获得房间内左上角顶点坐标
+	void bulletMove();
 
-  Point getDownRightVertex() const;  //获得房间内右下角顶点坐标
+	Point getUpleftVertex() const;  //获得房间内左上角顶点坐标
 
- private:
-  INT32 dir; //direction of this hall
- protected:
-  float upLeftX, upLeftY;
+	Point getDownRightVertex() const;  //获得房间内右下角顶点坐标
 
-  float downRightX, downRightY;
+private:
+	INT32 dir; //direction of this hall
+protected:
+	float upLeftX, upLeftY;
 
-  Knight* knight = nullptr;
+	float downRightX, downRightY;
 
-  INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
-  
-  Vector<Bullet*> vecPlayerBullet; 
+	Knight* knight = nullptr;
 
-  Vector<Sprite*> vecFloor;
+	INT32 sizeHeight, sizeWidth;  // cnt of sprites in Height and Width
 
-  Vector<Sprite*> vecWall;
+	Vector<Bullet*> vecPlayerBullet;
 
-  Vector<Bullet*> vecEnemyBullet;
+	Vector<Sprite*> vecFloor;
+
+	Vector<Sprite*> vecWall;
+
+	Vector<Bullet*> vecEnemyBullet;
 
 };
 

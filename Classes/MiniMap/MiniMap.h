@@ -6,18 +6,18 @@
 USING_NS_CC;
 
 class MiniMap : public Node {
-  friend class BattleScene;
-  static constexpr INT32 SIZEMTX = 5;
-  static constexpr INT32 NIMIMPAWIDTH = 160; 
-  static constexpr INT32 ROOMWIDTH = 20;
+	friend class BattleScene;
+	static constexpr INT32 SIZEMTX = 5;
+	static constexpr INT32 NIMIMPAWIDTH = 160;
+	static constexpr INT32 ROOMWIDTH = 20;
 
- public:
-  CREATE_FUNC(MiniMap);
+public:
+	CREATE_FUNC(MiniMap);
 
-  virtual bool init();
+	virtual bool init();
 
 private:
- MiniRoom* miniRoom[SIZEMTX][SIZEMTX] = {nullptr};
+	MiniRoom* miniRoom[SIZEMTX][SIZEMTX] = { nullptr };
 
 };
 

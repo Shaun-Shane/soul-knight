@@ -13,100 +13,101 @@ class Boss;
 class Enemy;
 
 class Knight : public Entity {
-  friend class BattleScene;
-  friend class SafeScene;
-  static constexpr float moveSpeed = 5.8f;
-  static constexpr INT32 ultimateSkillGap = 720;
+	friend class BattleScene;
+	friend class SafeScene;
+	static constexpr float moveSpeed = 5.8f;
+	static constexpr INT32 ultimateSkillGap = 720;
 
- public:
-  Knight() = default;
-  ~Knight();
-  CREATE_FUNC(Knight);
-  virtual bool init();
+public:
+	Knight() = default;
 
-  void registerKeyboardEvent();
+	~Knight();
 
-  void weaponAttack(Vec2 last);
-  void useUltimateSkill();
+	CREATE_FUNC(Knight);
 
-  void bindBattleRoom(BattleRoom*);
+	virtual bool init();
 
-  void bindHall(Hall*);
+	void registerKeyboardEvent();
 
-  void bindWeapon(Weapon*);
+	void weaponAttack(Vec2 last);
 
-  void setNeedCreateBox(bool);
+	void useUltimateSkill();
 
-  bool getNeedCreateBox();
-  
-  INT32 getMP() const; //法力值
-  void setMP(INT32);
+	void bindBattleRoom(BattleRoom*);
 
-  INT32 getMaxMP() const; //最大生命值
-  void setMaxMP(INT32);
+	void bindHall(Hall*);
 
-  INT32 getArmor() const; //护甲
-  void setArmor(INT32);
+	void bindWeapon(Weapon*);
 
-  INT32 getMaxArmor() const; //最大护甲
-  void setMaxArmor(INT32);
+	void setNeedCreateBox(bool);
 
-  INT32 getDamageBuff() const; //伤害buff
-  void setDamageBuff(INT32);
+	bool getNeedCreateBox();
 
-  INT32 getMoveSpeedBuff() const; //移速buff
-  void setMoveSpeedBuff(INT32);
+	INT32 getMP() const; //法力值
 
-  void deductHP(INT32) override;  //扣血
+	void setMP(INT32);
 
-  void resumeArmor();             //恢复护甲
+	INT32 getMaxMP() const; //最大生命值
 
-  bool checkStatue(); //检测雕像
+	void setMaxMP(INT32);
 
-  bool checkPortal(); //检测传送门
+	INT32 getArmor() const; //护甲
 
-  BattleRoom* getAtBattleRoom();
+	void setArmor(INT32);
 
-  Hall* getAtHall();
+	INT32 getMaxArmor() const; //最大护甲
 
-  Animate* getAnimate();
-  
-  Sprite* collisionWithBoxCheck();
+	void setMaxArmor(INT32);
 
-  Weapon* collisionWithWeaponCheck();
+	INT32 getDamageBuff() const; //伤害buff
 
-  Prop* collisionWithCropCheck();
+	void setDamageBuff(INT32);
 
-  Enemy* collisionWithEnemyCheck();
+	INT32 getMoveSpeedBuff() const; //移速buff
 
-  Boss* collisionWithBossCheck();
+	void setMoveSpeedBuff(INT32);
 
-  void addGold(INT32);
+	void deductHP(INT32) override;  //扣血
 
- private:
-  INT32 armor = 5, maxArmor = 5;
-  INT32 MP = 200, maxMP = 200;
-  INT32 damageBuff = 1, moveSpeedBuff = 0;
-  INT32 gold = 0;
+	void resumeArmor();             //恢复护甲
 
-  time_t preAttackedTime = 0, curTime = 0;
-  time_t ultimateSkillTime = ultimateSkillGap;
+	bool checkStatue(); //检测雕像
 
-  Weapon* weapon = nullptr;
+	bool checkPortal(); //检测传送门
 
-  bool needCreateBox;
-  
-  BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
+	BattleRoom* getAtBattleRoom();
 
-  Hall* atHall = nullptr;
+	Hall* getAtHall();
 
-  bool isInvincible = false; //是否无敌
+	Animate* getAnimate();
 
-  bool goIntoPortal = false;
+	Sprite* collisionWithBoxCheck();
 
-  bool isAnimation = false;//是否在执行帧动画动作
+	Weapon* collisionWithWeaponCheck();
 
-  int attackCount;
+	Prop* collisionWithCropCheck();
+
+	Enemy* collisionWithEnemyCheck();
+
+	Boss* collisionWithBossCheck();
+
+	void addGold(INT32);
+
+private:
+	INT32 armor = 5, maxArmor = 5;
+	INT32 MP = 200, maxMP = 200;
+	INT32 damageBuff = 1, moveSpeedBuff = 0;
+	INT32 gold = 0;
+	time_t preAttackedTime = 0, curTime = 0;
+	time_t ultimateSkillTime = ultimateSkillGap;
+	Weapon* weapon = nullptr;
+	bool needCreateBox;
+	BattleRoom* atBattleRoom = nullptr; //目前在哪个房间
+	Hall* atHall = nullptr;
+	bool isInvincible = false; //是否无敌
+	bool goIntoPortal = false;
+	bool isAnimation = false;//是否在执行帧动画动作
+	int attackCount;
 };
 
 #endif

@@ -15,7 +15,7 @@ bool FlowWord::init()
 void FlowWord::showWord(int num, CCPoint pos)
 {
 	if (num > 0) {
-		m_textLab->setString("+"+Value(num).asString());
+		m_textLab->setString("+" + Value(num).asString());
 	}
 	else {
 		m_textLab->setString(Value(num).asString());
@@ -24,12 +24,12 @@ void FlowWord::showWord(int num, CCPoint pos)
 	m_textLab->setVisible(true);
 
 	/*创建一个延时动作*/
-    auto delayTime = DelayTime::create(0.18f);
+	auto delayTime = DelayTime::create(0.18f);
 
 	auto callFunc = CallFunc::create([&]() {
 		/* 动作结束，从父节点中删除自身 */
 		m_textLab->removeFromParentAndCleanup(true);
-	});
+		});
 
 	auto actions = Sequence::create(delayTime, callFunc, NULL);
 

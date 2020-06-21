@@ -19,82 +19,95 @@ using std::vector;
 using std::string;
 
 class BattleScene : public Scene {
-  friend class SafeScene;
-  static constexpr INT32 SIZEMTX = 5;
-  static constexpr INT32 MAXROOM = 6; // temporarily make it 6
+	friend class SafeScene;
+	static constexpr INT32 SIZEMTX = 5;
+	static constexpr INT32 MAXROOM = 6; // temporarily make it 6
 
- public:
-  static Scene* createScene();
-  static INT32 getSceneNumber(); //获取场景编号
-  static const vector<string>& getVecSceneType(); //获取场景类型容器
+public:
+	static Scene* createScene();
 
-  virtual bool init();
-  virtual void update(float delta);
-  CREATE_FUNC(BattleScene);
+	static INT32 getSceneNumber(); //获取场景编号
 
-  /*回调函数*/
-  void menuCloseCallbackEnd(cocos2d::Ref* pSender);
-  void menuCloseCallbackSet(cocos2d::Ref* pSender);
+	static const vector<string>& getVecSceneType(); //获取场景类型容器
 
- private:
-  void updatePlayerPos();
-  void updatePlayerInfoBar();
-  void updateEnemy();
-  void updateBoss();
-  void updateBossInfoBar();
-  void checkEndRoom();
+	virtual bool init();
 
-  void initRoom(); //generate room randomly
-  void initMiniMap();
+	virtual void update(float delta);
 
-  void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
-  void randomGenerate(INT32, INT32);
-  void setRoomType();
+	CREATE_FUNC(BattleScene);
 
-  void setHallWithWidth(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
-  void setHallWithHeight(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
-  void connectRoom(BattleRoom*);
+	/*回调函数*/
+	void menuCloseCallbackEnd(cocos2d::Ref* pSender);
 
-  void updateGold();
-  void updateLevel();
+	void menuCloseCallbackSet(cocos2d::Ref* pSender);
 
- private:
-  static INT32 battleSceneNumber;
-  static vector<string> vecSceneType; //场景类型
+private:
+	void updatePlayerPos();
 
-  INT32 cntRoom = 0;
+	void updatePlayerInfoBar();
 
- private:
-  static Knight* knight;
+	void updateEnemy();
 
-  MiniMap* miniMap = nullptr;
-  
- // temporarily just one kind of map floor and wall
- private:
-  Vector<Sprite*> vecFloor;
-  Vector<Sprite*> vecWall;
-  Vector<Sprite*> vecDoor;
+	void updateBoss();
 
-  Vector<Enemy*> vecEnemy;
-  Vector<Hall*> vecHall;
+	void updateBossInfoBar();
 
-  BattleRoom* beginRoom = nullptr;
-  BattleRoom* endRoom = nullptr;
-  BattleRoom* battleRoom[SIZEMTX][SIZEMTX] = {nullptr};  // room
+	void checkEndRoom();
 
-  ui::LoadingBar* BloodLoadingBar;
-  ui::LoadingBar* ArmorLoadingBar;
-  ui::LoadingBar* MPLoadingBar;
+	void initRoom(); //generate room randomly
 
-  Label* HPLabel;
-  Label* armorLabel;
-  Label* MPLabel;
+	void initMiniMap();
 
-  Sprite* BOSSBloodBg = nullptr;
-  ui::LoadingBar* BOSSLoadingBar = nullptr;
+	void getToRoom(INT32, INT32, BattleRoom*, queue<BattleRoom*>&);
 
-  Label* goldLabel;
-  Label* gameLevelLabel;
+	void randomGenerate(INT32, INT32);
+
+	void setRoomType();
+
+	void setHallWithWidth(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
+
+	void setHallWithHeight(Hall*, DrawNode*, const BattleRoom*, const BattleRoom*);
+
+	void connectRoom(BattleRoom*);
+
+	void updateGold();
+
+	void updateLevel();
+
+private:
+	static INT32 battleSceneNumber;
+	static vector<string> vecSceneType; //场景类型
+	INT32 cntRoom = 0;
+
+private:
+	static Knight* knight;
+	MiniMap* miniMap = nullptr;
+
+	// temporarily just one kind of map floor and wall
+private:
+	Vector<Sprite*> vecFloor;
+	Vector<Sprite*> vecWall;
+	Vector<Sprite*> vecDoor;
+	Vector<Enemy*> vecEnemy;
+	Vector<Hall*> vecHall;
+
+	BattleRoom* beginRoom = nullptr;
+	BattleRoom* endRoom = nullptr;
+	BattleRoom* battleRoom[SIZEMTX][SIZEMTX] = { nullptr };  // room
+
+	ui::LoadingBar* BloodLoadingBar;
+	ui::LoadingBar* ArmorLoadingBar;
+	ui::LoadingBar* MPLoadingBar;
+
+	Label* HPLabel;
+	Label* armorLabel;
+	Label* MPLabel;
+
+	Sprite* BOSSBloodBg = nullptr;
+	ui::LoadingBar* BOSSLoadingBar = nullptr;
+
+	Label* goldLabel;
+	Label* gameLevelLabel;
 };
 
 #endif
