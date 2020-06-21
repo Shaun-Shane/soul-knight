@@ -1,7 +1,4 @@
 ﻿#include "MiniRoom.h"
-#ifndef DEBUG
-#define DEBUG  // DEBUG模式，直接进入有BOSS地图
-#endif
 
 void MiniRoom::createRoom(float _x, float _y, Color4F color) { //5 * 5矩阵中的位置
   this->color = GREY;

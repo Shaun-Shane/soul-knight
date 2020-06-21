@@ -4,10 +4,6 @@
 #include "SetScene.h"
 #include "StartScene.h"
 
-#ifndef DEBUG
-#define DEBUG  // DEBUG模式，直接进入有BOSS地图
-#endif
-
 Knight* BattleScene::knight = nullptr;
 
 INT32 BattleScene::battleSceneNumber = 0;
@@ -57,10 +53,6 @@ void SafeScene::update(float delta) {
     srand(static_cast<unsigned int>(time(nullptr)));
     std::random_shuffle(BattleScene::vecSceneType.begin(),
                         BattleScene::vecSceneType.end()); //打乱场景类型
-
-#ifdef DEBUG
-    BattleScene::battleSceneNumber = 5;
-#endif
 
     assert(BattleScene::knight->getParent() == nullptr);
 

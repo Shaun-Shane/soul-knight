@@ -155,7 +155,6 @@ bool BattleScene::init() {
   return true;
 }
 
-#define DEBUG
 void BattleScene::update(float delta) {
 #ifndef DEBUG
   if (knight->HP <= 0) { //人物死亡 回到安全地图
@@ -663,7 +662,7 @@ void BattleScene::connectRoom(BattleRoom* curRoom) {
     
     auto miniHall = DrawNode::create(); //生成小地图走廊
     miniHall->setGlobalZOrder(TOP);
-#define DEBUG
+
 #ifndef DEBUG
     miniHall->setVisible(false);
 #endif  // ! 
