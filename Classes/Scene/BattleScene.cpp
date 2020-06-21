@@ -158,13 +158,14 @@ bool BattleScene::init() {
 void BattleScene::update(float delta) {
 #ifndef DEBUG
   if (knight->HP <= 0) { //人物死亡 回到安全地图
+    this->cleanup();
     auto textLabel = Label::create("You are dead! Returning to SafeScene...",
                                    "fonts/Marker Felt.ttf", 40);
     textLabel->setPosition(Point(640, 360));
     textLabel->setGlobalZOrder(TOP);
     this->addChild(textLabel);
 
-    auto blink = Blink::create(2.0f, 5);
+    auto blink = Blink::create(2.0f, 3);
     auto fadeOut = FadeOut::create(2.0f);
 
     auto callFunc = CallFunc::create([&]() {
