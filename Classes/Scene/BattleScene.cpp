@@ -393,7 +393,7 @@ void BattleScene::checkEndRoom() { //检查房间终点
 
       INT32 num = BattleScene::battleSceneNumber;
       num = num % 5 == 0 ? num / 5 : num / 5 + 1;
-      if (num % vecSceneType.size() == 1) { //每过size关再随机打乱一次
+      if (num % vecSceneType.size() == 1 && num != 1) { //每过size关再随机打乱一次
         srand(static_cast<unsigned int>(time(nullptr)));
         std::random_shuffle(BattleScene::vecSceneType.begin(),
                             BattleScene::vecSceneType.end());
