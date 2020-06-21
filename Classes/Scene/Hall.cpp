@@ -157,6 +157,11 @@ bool Hall::isInRange(Vec2 pos) {
           pos.y <= upLeftY + FLOORHEIGHT / 4);
 }
 
+Knight* Hall::getKnight()
+{
+    return knight;
+}
+
 void Hall::bulletMove() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
     auto bullet = vecPlayerBullet.at(i);
