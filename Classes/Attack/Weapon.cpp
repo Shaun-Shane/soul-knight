@@ -45,8 +45,8 @@ void Weapon::knifeAttack(Knight* knight)
     float enemyX = e->getPositionX(), enemyY = e->getPositionY();
 
     if (sqrt(pow(knight->getPositionX() - enemyX, 2) +
-      pow(knight->getPositionY() - enemyY, 2)) <= 75.0f) {
-      e->deductHP(this->attack); //在技能圆内 扣血
+      pow(knight->getPositionY() - enemyY, 2)) <= 80.0f) {
+      e->deductHP(this->attack); 
     }
   }
 }
