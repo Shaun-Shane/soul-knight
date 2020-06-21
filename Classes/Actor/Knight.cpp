@@ -50,7 +50,7 @@ bool Knight::init() {
   //float speed, INT32 weaponAttack, INT32 decMP, int weaponType, bool state, int bulletType
   this->weapon->weaponInit(24.0f, 2, 0, 1, true, 11);
   this->weapon->setPosition(Vec2(40, 20));
-  this->addChild(weapon);
+  this->addChild(weapon,TOP);
 
   this->attackCount = 0;
 
