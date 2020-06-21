@@ -105,6 +105,8 @@ class Knight : public Entity {
   bool goIntoPortal = false;
 
   bool isAnimation = false;//是否在执行帧动画动作
+
+  int attackCount;
 };
 
 #endif

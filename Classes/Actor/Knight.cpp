@@ -47,17 +47,12 @@ bool Knight::init() {
   this->ultimateSkillTime = ultimateSkillGap;
 
   this->weapon = Weapon::create();
-  this->weapon->setFireSpeed(24.0f);
-  this->weapon->setAttack(1);
-  this->weapon->bindSprite(Sprite::create("Weapon//weapon1.png"),
-                           LayerPlayer + 1);
-  this->weapon->setWeaponState(true);
-
+  //float speed, INT32 weaponAttack, INT32 decMP, int weaponType, bool state, int bulletType
+  this->weapon->weaponInit(24.0f, 2, 0, 1, true, 11);
   this->weapon->setPosition(Vec2(40, 20));
-
-  this->weapon->setMPConsumption(0);
-  this->weapon->setBulletType(11);
   this->addChild(weapon);
+
+  this->attackCount = 0;
 
   isInvincible = false, goIntoPortal = false;
 
@@ -435,7 +430,13 @@ void Knight::weaponAttack(Vec2 last) {
   audio->preloadEffect("audioEffect//bulletEffect.mp3");
   static INT32 temBullet = 0;
 
-  Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
+  attackCount++;
+  Bullet* bullet;
+  if (attackCount <= 10)  bullet = this->weapon->createBullet(fireSpeed, firePower, false);
+  else {
+    bullet = this->weapon->createBullet(fireSpeed, firePower, true);
+    attackCount = 0;
+  }
   bullet->setPosition(curPos);
   audio->stopEffect(temBullet);  //暂停之前的音效
   temBullet = audio->playEffect("audioEffect//bulletEffect.mp3", false);

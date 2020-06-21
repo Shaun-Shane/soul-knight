@@ -368,7 +368,7 @@ void Enemy::attackKnight(int type) {
 void Enemy::fireBullet(Vec2 fireSpeed)
 {
 
-  Bullet* bullet = this->weapon->createBullet(fireSpeed, this->getWeapon()->getAttack());
+  Bullet* bullet = this->weapon->createBullet(fireSpeed, this->getWeapon()->getAttack(),false);
   bullet->setPosition(this->getPosition());
   this->getAtBattleRoom()->addChild(bullet);
   this->getAtBattleRoom()->getVecEnemyBullet().pushBack(bullet);

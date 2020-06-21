@@ -57,11 +57,20 @@ void Weapon::setBulletType(INT32 type)
 }
 
 
-Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
+Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower,bool isBig)
 {
   Bullet* bullet = Bullet::create();
   bullet->setBulletSpeed(speed);
-  char fileName[30]; sprintf(fileName, "Bullet//bullet_%d.png",this->bulletType);
+
+  char fileName[30];
+  if (isBig == false) {
+    bullet->setAttack(firePower);
+    sprintf(fileName, "Bullet//bullet_%d.png", this->bulletType);
+  }
+  else {
+    bullet->setAttack(firePower * 3);
+    sprintf(fileName, "Bullet//bigBullet.png");
+  }
   bullet->bindSprite(Sprite::create(fileName), 12);
 
   if (speed.x == 0 && speed.y > 0)
