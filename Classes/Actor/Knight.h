@@ -9,6 +9,8 @@ class Hall;
 class BattleRoom;
 class Weapon;
 class Prop;
+class Boss;
+class Enemy;
 
 class Knight : public Entity {
   friend class BattleScene;
@@ -73,6 +75,10 @@ class Knight : public Entity {
   Weapon* collisionWithWeaponCheck();
 
   Prop* collisionWithCropCheck();
+
+  Enemy* collisionWithEnemyCheck();
+
+  Boss* collisionWithBossCheck();
 
   void addGold(INT32);
 

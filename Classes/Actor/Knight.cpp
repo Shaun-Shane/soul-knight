@@ -468,7 +468,6 @@ Enemy* Knight::collisionWithEnemyCheck()
 
 Boss* Knight::collisionWithBossCheck()
 {
-
   Boss* boss = this->atBattleRoom->getBoss();
   if (boss == nullptr) return nullptr;
   Rect bossRect = boss->getBoundingBox();
@@ -477,6 +476,7 @@ Boss* Knight::collisionWithBossCheck()
   return nullptr;
 
 }
+
 
 void Knight::addGold(INT32 deta) { (this->gold) += deta; }
 Sprite* Knight::collisionWithBoxCheck()
