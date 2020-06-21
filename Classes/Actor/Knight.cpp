@@ -63,7 +63,7 @@ bool Knight::init() {
   this->weapon->setBulletType(11);
   this->addChild(weapon);
 
-  isInvincible = false;
+  isInvincible = false, goIntoPortal = false;
 
   registerKeyboardEvent();
 
@@ -131,6 +131,7 @@ void Knight::registerKeyboardEvent() {
       case EventKeyboard::KeyCode::KEY_J:
         if (this->atHall == nullptr && this->atBattleRoom == nullptr) break;
 
+        if (checkPortal()) break;
         if (checkStatue()) break;
 
         if (this->atBattleRoom != nullptr) {
@@ -353,6 +354,20 @@ bool Knight::checkStatue() {
         textLabel->runAction(actions);
       }
     }
+  }
+  return false;
+}
+
+bool Knight::checkPortal() { //检测传送门 按j进入下一关卡
+  if (this->atBattleRoom == nullptr) return false;
+
+  auto portal = this->atBattleRoom->getPortal();
+
+  if (portal == nullptr) return false;
+
+  if (portal->getPosition().getDistance(this->getPosition()) < 30.0f) {
+    this->goIntoPortal = true;
+    return true;
   }
   return false;
 }

@@ -16,6 +16,7 @@ bool BattleRoom::init() {
 
   portal = nullptr, knight = nullptr;
   boss = nullptr, statue = nullptr;
+  portalTextLabel = nullptr;
 
   this->scheduleUpdate();
   return true;
@@ -23,6 +24,7 @@ bool BattleRoom::init() {
 
 void BattleRoom::update(float delta) {
   this->checkStatue(); //雕像碰撞检测
+  this->checkPortal(); //检测传送门
   this->bulletMove();
   this->bulletCollistionCheck();
   this->removeKilledEnemy(); //移除血量<=0的敌人
@@ -340,6 +342,8 @@ Boss* BattleRoom::getBoss() { return boss; }
 
 Statue* BattleRoom::getStatue() { return statue; }
 
+Sprite* BattleRoom::getPortal() { return portal; }
+
 void BattleRoom::bulletCollistionCheck() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
     auto bullet = vecPlayerBullet.at(i);
@@ -433,6 +437,25 @@ void BattleRoom::checkStatue() { //检测雕像障碍物
         statue->getTextLabel()->setVisible(false);
       }
     }
+  }
+}
+
+void BattleRoom::checkPortal() {
+  if (portal == nullptr) return;
+  
+  if (portalTextLabel == nullptr) {
+    portalTextLabel =
+        Label::create("Portal--Press J", "fonts/Marker Felt.ttf", 22);
+    this->addChild(portalTextLabel);
+    portalTextLabel->setPosition(Point(centerX, centerY + 100));
+    portalTextLabel->setGlobalZOrder(TOP);
+    portalTextLabel->setVisible(false);
+  }
+  //根据骑士位置选择是否隐藏标签
+  if (portal->getPosition().getDistance(knight->getPosition()) < 30.0f) {
+    portalTextLabel->setVisible(true);
+  } else {
+    portalTextLabel->setVisible(false);
   }
 }
 

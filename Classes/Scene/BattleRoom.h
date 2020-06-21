@@ -53,11 +53,15 @@ class BattleRoom : public Hall {
 
   Statue* getStatue();
 
+  Sprite* getPortal();
+
   void bulletCollistionCheck();
 
   void checkObstacle(Entity*); //检测障碍物
 
   void checkStatue(); //检测雕像
+
+  void checkPortal(); //检测传送门
 
   void removeKilledEnemy(); //将死亡的敌人removeFromParent 有死亡效果
 
@@ -88,6 +92,8 @@ class BattleRoom : public Hall {
 
  private:
   Sprite* portal = nullptr; //传送门
+  Label* portalTextLabel = nullptr; //传送门标签
+
   Boss* boss = nullptr; //Boss
   Statue* statue = nullptr;
 

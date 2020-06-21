@@ -156,9 +156,9 @@ bool BattleScene::init() {
 }
 
 void BattleScene::update(float delta) {
-	updateGold();//更新金币
+  updateGold();//更新金币
 
-	updateLevel();//更新关卡数
+  updateLevel();//更新关卡数
 
   knight->resumeArmor(); //更新护甲
 
@@ -363,8 +363,8 @@ void BattleScene::checkEndRoom() { //检查房间终点
       return;
     }
 
-    if (knight->getPosition().distance(endRoom->portal->getPosition()) <
-        10.0f) {
+    if (knight->goIntoPortal) {
+      knight->goIntoPortal = false;
       BattleScene::knight->retain();
       BattleScene::knight->removeFromParent();  //从该场景移除
       BattleScene::battleSceneNumber++;         //关卡编号+1
