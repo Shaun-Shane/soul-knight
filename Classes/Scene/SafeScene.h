@@ -10,12 +10,16 @@ USING_NS_CC;
 class SafeScene : public Scene {
  public:
   static Scene* createScene();
+
   virtual bool init();
+
   virtual void update(float delta);
+
   CREATE_FUNC(SafeScene);
 
   /*回调函数*/
   void menuCloseCallbackEnd(cocos2d::Ref* pSender);
+
   void menuCloseCallbackSet(cocos2d::Ref* pSender);
 
  private:

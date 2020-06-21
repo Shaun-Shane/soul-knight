@@ -2,9 +2,9 @@
 #include "Actor/FlowWord.h"
 #include "Scene/BattleRoom.h"
 
-Boss::Boss() {
-	uniSkiTimeCount = 0;
-}
+Boss::Boss() {	uniSkiTimeCount = 0;}
+
+Boss::~Boss() { }
 
 void Boss::spriteChangeDirection() {
 	if (moveSpeedX == 0) {
@@ -19,8 +19,6 @@ void Boss::spriteChangeDirection() {
 		mySword->setPosition(140.0, 125.0);
 	}
 }
-
-Boss::~Boss() { }
 
 bool Boss::init()
 {
@@ -89,7 +87,6 @@ void Boss::createSword(Sprite* swordSprite){
 	swordSprite->setGlobalZOrder(LayerPlayer);
 	swordSprite->setAnchorPoint(Point(0.5, 1));//方便挥剑
 	this->addChild(swordSprite);
-
 }
 
 void Boss::uniqueSkill(Knight* knight, BattleRoom* battleRoom){

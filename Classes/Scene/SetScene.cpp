@@ -4,11 +4,10 @@
 
 USING_NS_CC;
 
-Scene* SetScene::createScene()
-{
-	return SetScene::create();
-}
+/*关闭设置面板的回调*/
+void SetScene::menuCloseCallbackEnd(Ref* pSender) { Director::getInstance()->popScene(); }
 
+Scene* SetScene::createScene(){	return SetScene::create();}
 
 static void problemLoading(const char* filename)
 {
@@ -110,12 +109,6 @@ bool SetScene::init()
 	}
 
 	return true;
-}
-
-/*关闭设置面板的回调*/
-void SetScene::menuCloseCallbackEnd(Ref* pSender)
-{
-	Director::getInstance()->popScene();
 }
 
 /*改变背景音乐播放状态的回调*/

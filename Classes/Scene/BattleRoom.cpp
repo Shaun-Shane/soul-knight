@@ -3,6 +3,24 @@
 #include "Props/prop.h"
 #include "Map/Statue.h"
 
+
+Vector<Sprite*>& BattleRoom::getVecBox() { return this->vecBox; }
+
+void BattleRoom::checkObstacle(Entity* entity) { }
+
+Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
+
+Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
+
+Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
+
+Boss* BattleRoom::getBoss() { return boss; }
+
+Statue* BattleRoom::getStatue() { return statue; }
+
+Sprite* BattleRoom::getPortal() { return portal; }
+
+
 bool BattleRoom::init() {
   centerX = .0f, centerY = .0f;
   upLeftX = .0f, upLeftY = .0f;
@@ -332,12 +350,6 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
   return false;
 }
 
-Vector<Enemy*>& BattleRoom::getVecEnemy() { return vecEnemy; }
-
-Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
-
-Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
-
 void BattleRoom::createBox(float x, float y)
 {
   Sprite* box;
@@ -348,12 +360,6 @@ void BattleRoom::createBox(float x, float y)
   this->addChild(box, TOP);
   this->getVecBox().pushBack(box);
 }
-
-Boss* BattleRoom::getBoss() { return boss; }
-
-Statue* BattleRoom::getStatue() { return statue; }
-
-Sprite* BattleRoom::getPortal() { return portal; }
 
 void BattleRoom::bulletCollistionCheck() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
@@ -411,10 +417,6 @@ void BattleRoom::bulletCollistionCheck() {
       --i;
     }
   }
-}
-
-void BattleRoom::checkObstacle(Entity* entity) { //玩家 敌人检测障碍物
-    //普通障碍物
 }
 
 void BattleRoom::checkStatue() { //检测雕像障碍物
@@ -573,9 +575,4 @@ void BattleRoom::createProps(int randomDigit) {
       Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
   this->addChild(props, TOP);
   this->getVecProps().pushBack(props);
-}
-
-Vector<Sprite*>& BattleRoom::getVecBox()
-{
-  return this->vecBox;
 }

@@ -11,16 +11,21 @@ class Statue : public Node {
   static constexpr INT32 CNT_TYPE = 9;
  public:
   Statue() = default;
+
   CREATE_FUNC(Statue);
 
   virtual bool init();
+
   void bindSprite(Sprite*, INT32);
 
   void setGoldCost(INT32);
+
   INT32 getGoldCost() const; //金币花费
+
   INT32 getStatueType() const; //雕像类型
 
   void setPlayerVisited(bool);
+
   bool getPlayerVisited() const;
 
   void giveBuff(Knight*);

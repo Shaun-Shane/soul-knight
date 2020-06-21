@@ -8,6 +8,70 @@
 
 Knight::~Knight() {}
 
+void Knight::bindBattleRoom(BattleRoom* battleRoom) { atBattleRoom = battleRoom; }
+
+void Knight::bindHall(Hall* hall) { atHall = hall; }
+
+void Knight::setNeedCreateBox(bool need) { this->needCreateBox = need; }
+
+bool Knight::getNeedCreateBox() { return this->needCreateBox; }
+
+INT32 Knight::getMP() const { return this->MP; }
+
+void Knight::setMP(INT32 mp) { this->MP = std::min(maxMP, std::max(0, mp)); }
+
+INT32 Knight::getMaxMP() const { return this->maxMP; }
+
+void Knight::setMaxMP(INT32 maxMP) { this->maxMP = maxMP; }
+
+INT32 Knight::getArmor() const { return this->armor; }
+
+void Knight::setArmor(INT32 armor) { this->armor = std::min(maxArmor, armor); }
+
+INT32 Knight::getMaxArmor() const { return this->maxArmor; }
+
+void Knight::setMaxArmor(INT32 maxArmor) { this->maxArmor = maxArmor; }
+
+INT32 Knight::getDamageBuff() const { return this->damageBuff; }
+
+void Knight::setDamageBuff(INT32 damageBuff) { this->damageBuff = damageBuff; }
+
+INT32 Knight::getMoveSpeedBuff() const { return this->moveSpeedBuff; }
+
+void Knight::setMoveSpeedBuff(INT32 msBuff) { this->moveSpeedBuff = std::min(3, msBuff); }
+
+void Knight::bindBattleRoom(BattleRoom* battleRoom) { atBattleRoom = battleRoom; }
+
+void Knight::bindHall(Hall* hall) { atHall = hall; }
+
+void Knight::setNeedCreateBox(bool need) { this->needCreateBox = need; }
+
+bool Knight::getNeedCreateBox() { return this->needCreateBox; }
+
+INT32 Knight::getMP() const { return this->MP; }
+
+void Knight::setMP(INT32 mp) { this->MP = std::min(maxMP, std::max(0, mp)); }
+
+INT32 Knight::getMaxMP() const { return this->maxMP; }
+
+void Knight::setMaxMP(INT32 maxMP) { this->maxMP = maxMP; }
+
+INT32 Knight::getArmor() const { return this->armor; }
+
+void Knight::setArmor(INT32 armor) { this->armor = std::min(maxArmor, armor); }
+
+INT32 Knight::getMaxArmor() const { return this->maxArmor; }
+
+void Knight::setMaxArmor(INT32 maxArmor) { this->maxArmor = maxArmor; }
+
+INT32 Knight::getDamageBuff() const { return this->damageBuff; }
+
+void Knight::setDamageBuff(INT32 damageBuff) { this->damageBuff = damageBuff; }
+
+INT32 Knight::getMoveSpeedBuff() const { return this->moveSpeedBuff; }
+
+void Knight::setMoveSpeedBuff(INT32 msBuff) { this->moveSpeedBuff = std::min(3, msBuff); }
+
 Animate* Knight::getAnimate() {
   //创建序列帧动画
   auto animation = Animation::create();
@@ -268,42 +332,6 @@ void Knight::useUltimateSkill() {
   }
 }
 
-void Knight::bindBattleRoom(BattleRoom* battleRoom) {
-  atBattleRoom = battleRoom;
-}
-
-void Knight::bindHall(Hall* hall) { atHall = hall; }
-
-void Knight::setNeedCreateBox(bool need) { this->needCreateBox = need; }
-
-bool Knight::getNeedCreateBox() { return this->needCreateBox; }
-
-INT32 Knight::getMP() const { return this->MP; }
-
-void Knight::setMP(INT32 mp) { this->MP = std::min(maxMP, std::max(0, mp)); }
-
-INT32 Knight::getMaxMP() const { return this->maxMP; }
-
-void Knight::setMaxMP(INT32 maxMP) { this->maxMP = maxMP; }
-
-INT32 Knight::getArmor() const { return this->armor; }
-
-void Knight::setArmor(INT32 armor) { this->armor = std::min(maxArmor, armor); }
-
-INT32 Knight::getMaxArmor() const { return this->maxArmor; }
-
-void Knight::setMaxArmor(INT32 maxArmor) { this->maxArmor = maxArmor; }
-
-INT32 Knight::getDamageBuff() const { return this->damageBuff; }
-
-void Knight::setDamageBuff(INT32 damageBuff) { this->damageBuff = damageBuff; }
-
-INT32 Knight::getMoveSpeedBuff() const { return this->moveSpeedBuff; }
-
-void Knight::setMoveSpeedBuff(INT32 msBuff) {
-  this->moveSpeedBuff = std::min(3, msBuff);
-}
-
 void Knight::deductHP(INT32 delta) {
   preAttackedTime = curTime;  //被攻击的时间 用于护甲的恢复判断
 
@@ -490,8 +518,6 @@ Boss* Knight::collisionWithBossCheck() {
   if (bossRect.intersectsRect(kightRect)) return boss;
   return nullptr;
 }
-
-void Knight::addGold(INT32 deta) { (this->gold) += deta; }
 
 Sprite* Knight::collisionWithBoxCheck() {
   for (INT32 i = 0; i < this->atBattleRoom->getVecBox().size(); ++i) {
