@@ -16,6 +16,7 @@ class Knight : public Entity {
   friend class BattleScene;
   friend class SafeScene;
   static constexpr float moveSpeed = 5.8f;
+  static constexpr INT32 ultimateSkillGap = 720;
 
  public:
   Knight() = default;
@@ -89,6 +90,7 @@ class Knight : public Entity {
   INT32 gold = 0;
 
   time_t preAttackedTime = 0, curTime = 0;
+  time_t ultimateSkillTime = ultimateSkillGap;
 
   Weapon* weapon = nullptr;
 

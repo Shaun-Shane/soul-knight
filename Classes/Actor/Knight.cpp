@@ -40,8 +40,6 @@ Animate* Knight::getAnimate() {
   return animate;
 }
 
-
-
 bool Knight::init() {
   this->HP = this->maxHP = 5;
   this->armor = this->maxArmor = 5;
@@ -49,6 +47,7 @@ bool Knight::init() {
   this->gold = 0;
   this->moveSpeedX = 0, this->moveSpeedY = 0;
   this->damageBuff = 1, this->moveSpeedBuff = 0;
+  this->ultimateSkillTime = ultimateSkillGap;
 
   this->weapon = Weapon::create();
   this->weapon->setFireSpeed(24.0f);
@@ -202,68 +201,80 @@ void Knight::registerKeyboardEvent() {
 }
 
 void Knight::useUltimateSkill() {
-  if (this->MP >= 120) {
-    log("using ultimate skill!");
+  if (ultimateSkillTime < ultimateSkillGap) {
+    INT32 cdTime = ceil((ultimateSkillGap - ultimateSkillTime) / 60.0f);
+    auto textLabel =
+        Label::create("Ultimate Skill in " + Value(cdTime).asString() + " seconds CD!",
+                      "fonts/Marker Felt.ttf", 20);
+    textLabel->setColor(ccc3(255, 255, 255));
+    textLabel->setGlobalZOrder(TOP);
+    textLabel->setPosition(Point(20, 70));
+    this->addChild(textLabel);
 
-   #ifndef DEBUG
-    this->setMP(this->getMP() - 120);
-   #endif  //
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->preloadEffect("audioEffect//explosion.wav");
-	static INT32 temUS = 0;
+    /*创建一个延时动作*/
+    auto fadeOut = FadeOut::create(1.6f);
 
-	audio->stopEffect(temUS);//暂停之前的音效
-	audio->playEffect("audioEffect//explosion.wav", false);
+    auto actions = Sequence::create(fadeOut, RemoveSelf::create(), NULL);
+    textLabel->runAction(actions);
+    return;
+  } 
+  ultimateSkillTime = 0;
 
-    auto skillCircle = DrawNode::create();
-    skillCircle->drawSolidCircle(Point(this->getContentSize().width / 2,
-                                       this->getContentSize().height / 2),
-                                 220.0f, CC_DEGREES_TO_RADIANS(360), 100,
-                                 Color4F(1.0f, 0.8f, .0f, 0.3f));
+  log("using ultimate skill!");
+  auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+  audio->preloadEffect("audioEffect//explosion.wav");
+  static INT32 temUS = 0;
 
-    skillCircle->setGlobalZOrder(LayerPlayer);
+  audio->stopEffect(temUS);  //暂停之前的音效
+  audio->playEffect("audioEffect//explosion.wav", false);
 
-    auto fadeIn = FadeIn::create(0.2f);
-    auto fadeOut = FadeOut::create(0.3f);
-    auto blink = Blink::create(0.5f, 2);
+  auto skillCircle = DrawNode::create();
+  skillCircle->drawSolidCircle(Point(this->getContentSize().width / 2,
+                                     this->getContentSize().height / 2),
+                               280.0f, CC_DEGREES_TO_RADIANS(360), 100,
+                               Color4F(1.0f, 0.8f, .0f, 0.3f));
 
-    auto sequence = Sequence::create(
-        Spawn::create(Sequence::create(fadeIn, fadeOut, NULL), blink, NULL),
-        RemoveSelf::create(), NULL);  //生成动作序列
+  skillCircle->setGlobalZOrder(LayerPlayer);
 
-    this->addChild(skillCircle);
+  auto fadeIn = FadeIn::create(0.1f);
+  auto fadeOut = FadeOut::create(0.2f);
+  auto blink = Blink::create(0.3f, 2);
 
-    skillCircle->runAction(sequence);  //执行动画
+  auto sequence = Sequence::create(
+      Spawn::create(Sequence::create(fadeIn, fadeOut, NULL), blink, NULL),
+      RemoveSelf::create(), NULL);  //生成动作序列
 
-    if (this->atBattleRoom == nullptr) return;
+  this->addChild(skillCircle);
 
-    Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
+  skillCircle->runAction(sequence);  //执行动画
 
-    for (auto& e : vecEnemy) {
-      if (e ->getParent() == nullptr) continue;
+  if (this->atBattleRoom == nullptr) return;
 
-      float enemyX = e->getPositionX(), enemyY = e->getPositionY();
+  Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
 
-      if (sqrt(pow(getPositionX() - enemyX, 2) +
-          pow(getPositionY() - enemyY, 2)) <= 220.0f) {
-        e->deductHP(999 * damageBuff); //在技能圆内 扣血
-      }
+  for (auto& e : vecEnemy) {
+    if (e->getParent() == nullptr) continue;
+
+    float enemyX = e->getPositionX(), enemyY = e->getPositionY();
+
+    if (sqrt(pow(getPositionX() - enemyX, 2) +
+             pow(getPositionY() - enemyY, 2)) <= 280.0f) {
+      e->deductHP(20 * damageBuff);  //在技能圆内 扣血
     }
+  }
 
-    auto boss = atBattleRoom->getBoss();
-    if (boss != nullptr && boss->getParent() != nullptr) {
-        float bossX = boss->getPositionX(),
-              bossY = boss->getPositionY();
-        if (sqrt(pow(getPositionX() - bossX, 2) +
-            pow(getPositionY() - bossY, 2)) <= 220.0f) {
-          boss->deductHP(100 * damageBuff); //在技能圆内 扣血
-        }
+  auto boss = atBattleRoom->getBoss();
+  if (boss != nullptr && boss->getParent() != nullptr) {
+    float bossX = boss->getPositionX(), bossY = boss->getPositionY();
+    if (sqrt(pow(getPositionX() - bossX, 2) + pow(getPositionY() - bossY, 2)) <=
+        280.0f) {
+      boss->deductHP(20 * damageBuff);  //在技能圆内 扣血
     }
+  }
 
-    if (this->atBattleRoom != nullptr) {
-      assert(atHall == nullptr);
-      if (this->atBattleRoom->allKilled() == true) vecEnemy.clear();
-    }
+  if (this->atBattleRoom != nullptr) {
+    assert(atHall == nullptr);
+    if (this->atBattleRoom->allKilled() == true) vecEnemy.clear();
   }
 }
 
@@ -319,6 +330,10 @@ void Knight::deductHP(INT32 delta) {
 
 void Knight::resumeArmor() { //恢复护甲
   curTime++;
+  if (ultimateSkillTime < ultimateSkillGap) {
+    ultimateSkillTime++;
+  }
+
   if (armor == maxArmor) return;
   //3秒未被攻击 则每隔一秒恢复一护甲
   if (curTime - preAttackedTime >= 180 && (curTime - preAttackedTime) % 55 == 0) {
