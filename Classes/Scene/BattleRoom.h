@@ -47,7 +47,7 @@ class BattleRoom : public Hall {
 
   Vector<Weapon*>& getVecWeapon();
 
-  void createBox();
+  void createBox(float x,float y);
 
   Boss* getBoss(); //返回Boss指针
 

@@ -56,6 +56,7 @@ void Weapon::setBulletType(INT32 type)
   this->bulletType = type;
 }
 
+
 Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
 {
   Bullet* bullet = Bullet::create();
@@ -86,4 +87,14 @@ Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower)
   bullet->setAttack(firePower);
 
   return bullet;
+}
+
+void Weapon::weaponInit(float speed, INT32 weaponAttack, INT32 decMP, int weaponType, bool state, int bulletType){
+  setFireSpeed(speed);
+  setAttack(weaponAttack);
+  setMPConsumption(decMP);
+  char fileName[30]; sprintf(fileName, "Weapon//weapon%d.png", weaponType);
+  bindSprite(Sprite::create(fileName), LayerPlayer);
+  setWeaponState(state);
+  setBulletType(bulletType);
 }
