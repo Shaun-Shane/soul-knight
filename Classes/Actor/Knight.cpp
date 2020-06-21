@@ -391,7 +391,14 @@ void Knight::weaponAttack(Vec2 last) {
 
   this->setMP(this->getMP() - this->weapon->getMPConsumption());
   if (this->weapon->getWeaponState() == false) {
-    //在这里添加砍刀落下动画
+    //添加音效
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->preloadEffect("audioEffect//bulletEffect.wav");
+	static INT32 temKnife = 0;
+
+	audio->stopEffect(temKnife);//暂停之前的音效
+	temKnife=audio->playEffect("audioEffect//bulletEffect.wav", false);
+
     this->weapon->knifeAttack(this);
     return;
   }
@@ -427,7 +434,7 @@ void Knight::weaponAttack(Vec2 last) {
   }
 
   auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-  audio->preloadEffect("audioEffect//bulletEffect.mp3");
+  audio->preloadEffect("audioEffect//bulletEffect.wav");
   static INT32 temBullet = 0;
 
   attackCount++;
@@ -439,7 +446,7 @@ void Knight::weaponAttack(Vec2 last) {
   }
   bullet->setPosition(curPos);
   audio->stopEffect(temBullet);  //暂停之前的音效
-  temBullet = audio->playEffect("audioEffect//bulletEffect.mp3", false);
+  temBullet = audio->playEffect("audioEffect//bulletEffect.wav", false);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)
       ->getVecPlayerBullet()
