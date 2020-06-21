@@ -1,11 +1,10 @@
 ﻿#include "Enemy.h"
 #include "Scene/BattleRoom.h"
+#include "Scene/BattleScene.h"
 
 Enemy::~Enemy() {}
 
 bool Enemy::init() { 
-  HP = 5;
-  lastHP = HP;
   isKilled = isAdded = false;
 
   this->weapon = Weapon::create();
@@ -42,17 +41,31 @@ void Enemy::setType(int type){
     enemyType = type;
     boarRushCount = 0;
     setAttackRange();
-    if (type == 0) { //若为弓箭手，设置子弹图片和威力
-      this->weapon->setAttack(2);
-      this->weapon->setBulletType(1);
-      this->weapon->setFireSpeed(8.0f);
-    }
-    //猪和茅手则将武器设为空
-    else if (type == 1 || type == 2) this->weapon = nullptr;
-    else if(type == 3) {         //若为枪手，设置子弹图片和威力
-      this->weapon->setAttack(1);
-      this->weapon->setFireSpeed(6.0f);
-      this->weapon->setBulletType(2);
+
+    INT32 addedHp = BattleScene::getSceneNumber();
+    addedHp = addedHp % 5 == 0 ? addedHp / 5 - 1 : addedHp / 5;
+
+    switch (type) {
+      case 0: //弓箭手
+        lastHP = HP = 8 + addedHp;
+        this->weapon->setAttack(2);
+        this->weapon->setBulletType(1);
+        this->weapon->setFireSpeed(8.0f);
+        break;
+      case 1: //猪和茅手则将武器设为空
+        lastHP = HP = 10 + addedHp;
+        this->weapon = nullptr;
+        break;
+      case 2: //猪和茅手则将武器设为空
+        lastHP = HP = 10 + addedHp;
+        this->weapon = nullptr;
+        break;
+      case 3: //枪手，设置子弹图片和威力
+        lastHP = HP = 9 + addedHp;
+        this->weapon->setAttack(1);
+        this->weapon->setFireSpeed(6.0f);
+        this->weapon->setBulletType(2);
+        break;
     }
 }
 
