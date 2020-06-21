@@ -61,9 +61,6 @@ void Boss::aiOfBoss(Knight* knight,BattleRoom* battleRoom) {
 			myPos.getDistance(knight->getPosition()) <= CLOSECOMBATRANGE) {
 			knight->deductHP(4);
 		}//近战
-		else {
-			/*后期在此处加上武器*/
-		}
 
 		uniSkiTimeCount++;
 	}
@@ -182,6 +179,7 @@ void Boss::flashMove(Knight* knight, BattleRoom* battleRoom) {
 	const Point myPos = this->getPosition();
 	const Point knightPos = knight->getPosition();
 	const float distance = myPos.getDistance(knightPos);
+
 	if (distance <= MAXFLASHRANGE) {
 		moveSpeedX = knightPos.x - myPos.x;
 		moveSpeedY = knightPos.y - myPos.y;
@@ -191,6 +189,12 @@ void Boss::flashMove(Knight* knight, BattleRoom* battleRoom) {
 		moveSpeedY = (knightPos.y - myPos.y) * (static_cast<float>(MAXFLASHRANGE) / distance);
 		log("%d,%d", moveSpeedX, moveSpeedY);
 	}//在最大瞬移距离外就往该方向瞬移最大距离
+
+	while (!inRoom(battleRoom, Point(myPos.x + moveSpeedX, myPos.y + moveSpeedY))) {
+		moveSpeedX *= 0.95;
+		moveSpeedY *= 0.95;
+	}//防止出现因为目标点出墙了而完全没有瞬移的情况
+
 	if (distance <= 10) {
 		srand(static_cast<unsigned>(time(nullptr)));
 		knight->deductHP(rand() % 6);
