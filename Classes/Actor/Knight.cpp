@@ -1,5 +1,4 @@
 ﻿#include "Knight.h"
-#define DEBUG
 #include "Attack/Weapon.h"
 #include "FlowWord.h"
 #include "Map/Statue.h"
