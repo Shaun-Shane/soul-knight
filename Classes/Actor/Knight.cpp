@@ -1,11 +1,10 @@
 ﻿#include "Knight.h"
 #define DEBUG
 #include "Attack/Weapon.h"
-#include "Scene/BattleRoom.h"
-#include "Scene/Hall.h"
 #include "FlowWord.h"
 #include "Map/Statue.h"
-
+#include "Scene/BattleRoom.h"
+#include "Scene/Hall.h"
 #include "SimpleAudioEngine.h"
 
 Knight::~Knight() {}
@@ -18,9 +17,7 @@ Animate* Knight::getAnimate() {
   char nameSize[30] = {0};
 
   //动画的循环4张图片
-  for (int i = 1; i < 5; i++)
-
-  {
+  for (INT32 i = 1; i < 5; i++) {
     sprintf(nameSize, "Character//Knight%d.png", i);
 
     //添加到序列帧动画
@@ -143,21 +140,20 @@ void Knight::registerKeyboardEvent() {
             this->bindWeapon(weaponCheck);
             if (isRight == false) weapon->getSprite()->setFlippedX(true);
             break;
-          }
-          else if (prop != nullptr) {
+          } else if (prop != nullptr) {
             prop->useProps(this);
             prop->removeFromParent();
             this->atBattleRoom->getVecProps().eraseObject(prop);
             break;
-          }
-          else if (box != nullptr) {
+          } else if (box != nullptr) {
             this->getAtBattleRoom()->openTreasureBox();
             box->removeFromParent();
             this->atBattleRoom->getVecBox().eraseObject(box);
             break;
-          }
-          else if (enemy != nullptr)  enemy->deductHP(5);
-          else if (boss != nullptr)  boss->deductHP(10);
+          } else if (enemy != nullptr)
+            enemy->deductHP(5);
+          else if (boss != nullptr)
+            boss->deductHP(10);
         }
         weaponAttack(last);
         break;
@@ -203,9 +199,9 @@ void Knight::registerKeyboardEvent() {
 void Knight::useUltimateSkill() {
   if (ultimateSkillTime < ultimateSkillGap) {
     INT32 cdTime = ceil((ultimateSkillGap - ultimateSkillTime) / 60.0f);
-    auto textLabel =
-        Label::create("Ultimate Skill in " + Value(cdTime).asString() + " seconds CD!",
-                      "fonts/Marker Felt.ttf", 20);
+    auto textLabel = Label::create(
+        "Ultimate Skill in " + Value(cdTime).asString() + " seconds CD!",
+        "fonts/Marker Felt.ttf", 20);
     textLabel->setColor(ccc3(255, 255, 255));
     textLabel->setGlobalZOrder(TOP);
     textLabel->setPosition(Point(20, 70));
@@ -217,7 +213,7 @@ void Knight::useUltimateSkill() {
     auto actions = Sequence::create(fadeOut, RemoveSelf::create(), NULL);
     textLabel->runAction(actions);
     return;
-  } 
+  }
   ultimateSkillTime = 0;
 
   log("using ultimate skill!");
@@ -310,13 +306,15 @@ void Knight::setDamageBuff(INT32 damageBuff) { this->damageBuff = damageBuff; }
 
 INT32 Knight::getMoveSpeedBuff() const { return this->moveSpeedBuff; }
 
-void Knight::setMoveSpeedBuff(INT32 msBuff) { this->moveSpeedBuff = std::min(3, msBuff); } 
+void Knight::setMoveSpeedBuff(INT32 msBuff) {
+  this->moveSpeedBuff = std::min(3, msBuff);
+}
 
 void Knight::deductHP(INT32 delta) {
-  preAttackedTime = curTime; //被攻击的时间 用于护甲的恢复判断
+  preAttackedTime = curTime;  //被攻击的时间 用于护甲的恢复判断
 
-  armor -= delta; //护甲先直接减去扣血值
-  if (armor < 0) { //小于零则HP加上护甲抵消后的扣血值
+  armor -= delta;   //护甲先直接减去扣血值
+  if (armor < 0) {  //小于零则HP加上护甲抵消后的扣血值
     HP = std::max(0, HP + armor);
   }
   armor = std::max(0, armor);
@@ -328,15 +326,16 @@ void Knight::deductHP(INT32 delta) {
                                  Vec2(0, this->getContentSize().height / 2.3f));
 }
 
-void Knight::resumeArmor() { //恢复护甲
+void Knight::resumeArmor() {  //恢复护甲
   curTime++;
   if (ultimateSkillTime < ultimateSkillGap) {
     ultimateSkillTime++;
   }
 
   if (armor == maxArmor) return;
-  //3秒未被攻击 则每隔一秒恢复一护甲
-  if (curTime - preAttackedTime >= 180 && (curTime - preAttackedTime) % 55 == 0) {
+  // 3秒未被攻击 则每隔一秒恢复一护甲
+  if (curTime - preAttackedTime >= 180 &&
+      (curTime - preAttackedTime) % 55 == 0) {
     armor++;
   }
 }
@@ -346,7 +345,7 @@ bool Knight::checkStatue() {
 
   auto statue = this->atBattleRoom->getStatue();
 
-  if (statue == nullptr) return false; //没有雕像直接false
+  if (statue == nullptr) return false;  //没有雕像直接false
 
   if (statue->getTextLabel()->isVisible()) {
     if (statue->getPlayerVisited() == false) {
@@ -356,7 +355,8 @@ bool Knight::checkStatue() {
         statue->setPlayerVisited(true);
         return true;
       } else {
-        auto textLabel = Label::create("Gold is not Enough!", "fonts/Marker Felt.ttf", 20);
+        auto textLabel =
+            Label::create("Gold is not Enough!", "fonts/Marker Felt.ttf", 20);
         textLabel->setColor(ccc3(255, 255, 255));
         textLabel->setGlobalZOrder(TOP);
         textLabel->setPosition(Point(20, 70));
@@ -373,7 +373,7 @@ bool Knight::checkStatue() {
   return false;
 }
 
-bool Knight::checkPortal() { //检测传送门 按j进入下一关卡
+bool Knight::checkPortal() {  //检测传送门 按j进入下一关卡
   if (this->atBattleRoom == nullptr) return false;
 
   auto portal = this->atBattleRoom->getPortal();
@@ -387,16 +387,15 @@ bool Knight::checkPortal() { //检测传送门 按j进入下一关卡
   return false;
 }
 
-BattleRoom* Knight::getAtBattleRoom() {return this->atBattleRoom; }
+BattleRoom* Knight::getAtBattleRoom() { return this->atBattleRoom; }
 
 Hall* Knight::getAtHall() { return atHall; }
 
-void Knight::weaponAttack( Vec2 last) { 
+void Knight::weaponAttack(Vec2 last) {
   if (this->MP <= 0 && this->weapon->getMPConsumption() > 0) return;
 
   this->setMP(this->getMP() - this->weapon->getMPConsumption());
-  if (this->weapon->getWeaponState() == false)
-  {
+  if (this->weapon->getWeaponState() == false) {
     //在这里添加砍刀落下动画
     this->weapon->knifeAttack(this);
     return;
@@ -408,11 +407,10 @@ void Knight::weaponAttack( Vec2 last) {
   if (this->atBattleRoom != nullptr) {
     Boss* boss = this->atBattleRoom->getBoss();
     if (boss != nullptr && boss->getIsKilled() == false) {
-        target =boss->getPosition() - curPos;
-        target.set(target.x / target.length(), target.y / target.length());
-        fireSpeed = target * this->weapon->getFireSpeed();
-    }
-    else {
+      target = boss->getPosition() - curPos;
+      target.set(target.x / target.length(), target.y / target.length());
+      fireSpeed = target * this->weapon->getFireSpeed();
+    } else {
       Vector<Enemy*>& vecEnemy = atBattleRoom->getVecEnemy();
       Enemy* nearNeast = nullptr;
       float distance = 99999;
@@ -431,8 +429,6 @@ void Knight::weaponAttack( Vec2 last) {
         fireSpeed = target * this->weapon->getFireSpeed();
       }
     }
-    
-    
   }
 
   auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
@@ -441,14 +437,13 @@ void Knight::weaponAttack( Vec2 last) {
 
   Bullet* bullet = this->weapon->createBullet(fireSpeed, firePower);
   bullet->setPosition(curPos);
-  audio->stopEffect(temBullet);//暂停之前的音效
-  temBullet=audio->playEffect("audioEffect//bulletEffect.mp3", false);
+  audio->stopEffect(temBullet);  //暂停之前的音效
+  temBullet = audio->playEffect("audioEffect//bulletEffect.mp3", false);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)->addChild(bullet);
   (atBattleRoom != nullptr ? atBattleRoom : atHall)
-      ->getVecPlayerBullet().pushBack(bullet);
+      ->getVecPlayerBullet()
+      .pushBack(bullet);
 }
-
-
 
 Weapon* Knight::collisionWithWeaponCheck() {
   for (INT32 i = 0; i < this->atBattleRoom->getVecWeapon().size(); ++i) {
@@ -461,7 +456,7 @@ Weapon* Knight::collisionWithWeaponCheck() {
 }
 
 Prop* Knight::collisionWithCropCheck() {
-  for (int i = 0; i < this->atBattleRoom->getVecProps().size(); ++i) {
+  for (INT32 i = 0; i < this->atBattleRoom->getVecProps().size(); ++i) {
     auto prop = this->atBattleRoom->getVecProps().at(i);
     Rect cropRect = prop->getBoundingBox();
     Rect kightRect = this->getBoundingBox();
@@ -470,40 +465,35 @@ Prop* Knight::collisionWithCropCheck() {
   return nullptr;
 }
 
-Enemy* Knight::collisionWithEnemyCheck()
-{
-    for (int i = 0; i < this->atBattleRoom->getVecEnemy().size(); ++i) {
-      auto enemy = this->atBattleRoom->getVecEnemy().at(i);
-      Rect enemyRect = enemy->getBoundingBox();
-      Rect kightRect = this->getBoundingBox();
-      if (enemyRect.intersectsRect(kightRect)) return enemy;
-    }
-    return nullptr;
+Enemy* Knight::collisionWithEnemyCheck() {
+  for (INT32 i = 0; i < this->atBattleRoom->getVecEnemy().size(); ++i) {
+    auto enemy = this->atBattleRoom->getVecEnemy().at(i);
+    Rect enemyRect = enemy->getBoundingBox();
+    Rect kightRect = this->getBoundingBox();
+    if (enemyRect.intersectsRect(kightRect)) return enemy;
+  }
+  return nullptr;
 }
 
-Boss* Knight::collisionWithBossCheck()
-{
+Boss* Knight::collisionWithBossCheck() {
   Boss* boss = this->atBattleRoom->getBoss();
   if (boss == nullptr) return nullptr;
   Rect bossRect = boss->getBoundingBox();
   Rect kightRect = this->getBoundingBox();
   if (bossRect.intersectsRect(kightRect)) return boss;
   return nullptr;
-
 }
 
-
 void Knight::addGold(INT32 deta) { (this->gold) += deta; }
-Sprite* Knight::collisionWithBoxCheck()
-{
-  for (int i = 0; i < this->atBattleRoom->getVecBox().size(); ++i) {
+
+Sprite* Knight::collisionWithBoxCheck() {
+  for (INT32 i = 0; i < this->atBattleRoom->getVecBox().size(); ++i) {
     auto box = this->atBattleRoom->getVecBox().at(i);
     Rect boxRect = box->getBoundingBox();
     Rect kightRect = this->getBoundingBox();
     if (boxRect.intersectsRect(kightRect)) return box;
   }
   return nullptr;
-  
 }
 
 void Knight::bindWeapon(Weapon* weapon) {
