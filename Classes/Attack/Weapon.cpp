@@ -73,28 +73,10 @@ Bullet* Weapon::createBullet(Vec2 speed,INT32 firePower,bool isBig)
   }
   bullet->bindSprite(Sprite::create(fileName), 12);
 
-  if (speed.x == 0 && speed.y > 0)
-  {
-    //this->getSprite()->setRotation(-90.0f);
-    bullet->getSprite()->setRotation(-90.0f);
-  }
-  else if (speed.x < 0)
-  {
-    //this->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
-    bullet->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
-  }
-  else if (speed.x == 0 && speed.y < 0)   
-  {
-    //this->getSprite()->setRotation(-270.0f);
-    bullet->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
-  }
-  else
-  {
-    //this->getSprite()->setRotation(-(180.0f * atan(speed.y / speed.x) / PI));
-    bullet->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
-  }
-  bullet->setAttack(firePower);
-
+  if (speed.x == 0 && speed.y > 0) bullet->getSprite()->setRotation(-90.0f);
+  else if (speed.x < 0)    bullet->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
+  else if (speed.x == 0 && speed.y < 0)       bullet->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
+  else    bullet->getSprite()->setRotation(-(180.0f + 180.0f * atan(speed.y / speed.x) / PI));
   return bullet;
 }
 
