@@ -432,7 +432,7 @@ void Knight::weaponAttack(Vec2 last) {
 
   attackCount++;
   Bullet* bullet;
-  if (attackCount <= 10)  bullet = this->weapon->createBullet(fireSpeed, firePower, false);
+  if (attackCount <= 5)  bullet = this->weapon->createBullet(fireSpeed, firePower, false);
   else {
     bullet = this->weapon->createBullet(fireSpeed, firePower, true);
     attackCount = 0;

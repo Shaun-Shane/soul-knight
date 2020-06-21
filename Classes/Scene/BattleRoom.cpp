@@ -520,7 +520,7 @@ void BattleRoom::crearteWeapon(int randomDigit) {
   switch (randomDigit) {
     case 0:
       //以下参数含义以此为 speed,  attack,  decMP,  weaponType,  state,  bulletType
-      weapon->weaponInit(25.0f, 1, 1, 2, true, 12);
+      weapon->weaponInit(25.0f, 2, 1, 2, true, 12);
       break;
     case 1:
       weapon->weaponInit(23.0f, 4, 3, 3, true, 13);
@@ -529,7 +529,7 @@ void BattleRoom::crearteWeapon(int randomDigit) {
       weapon->weaponInit(24.0f, 6, 4, 4, true, 14);
       break;
     case 3:
-      weapon->weaponInit(0.0f, 4, 0, 5, false, 15);
+      weapon->weaponInit(0.0f, 7, 0, 5, false, 15);
       break;
   }
   weapon->setPosition(
