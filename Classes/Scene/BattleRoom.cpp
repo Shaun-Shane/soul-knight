@@ -165,7 +165,6 @@ void BattleRoom::addMapElement() {
   }
 }
 
-//#define YYZ_DEBUG
 void BattleRoom::createEnemy() {
   srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -185,8 +184,9 @@ void BattleRoom::createEnemy() {
     Enemy* enemy = Enemy::create();
     enemy->bindAtBattleRoom(this); //绑定所在房间
     enemy->startCount = i * 2;
-    
-    INT32 enemyType = rand() % 4;
+
+    INT32 enemyType = rand();
+    enemyType = (enemyType && enemyType % 4 == 0) ? 3 : enemyType % 4;
 
     switch (enemyType) {
       case 0:

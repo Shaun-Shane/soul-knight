@@ -2,7 +2,6 @@
 
 #include "Scene/BattleScene.h"
 
-#define DEBUG
 bool Statue::init() {
   playerVisited = false;
   //雕像标签
