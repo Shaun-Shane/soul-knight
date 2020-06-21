@@ -7,7 +7,7 @@ bool Statue::init() {
   //雕像标签
   textLabel = Label::create("", "fonts/Marker Felt.ttf", 22);
   textLabel->setColor(ccc3(255, 255, 255));
-  textLabel->setGlobalZOrder(TOP);
+  textLabel->setGlobalZOrder(TOP - 1);
   textLabel->setPosition(Point(60, 210));
   textLabel->setVisible(false);
 
