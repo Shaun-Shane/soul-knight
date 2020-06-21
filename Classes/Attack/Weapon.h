@@ -34,6 +34,8 @@ public:
 
   void setBulletType(INT32);
 
+  void weaponInit(float speed, INT32 attack, INT32 decMP, int weaponType, bool state, int bulletType);
+
 
   
 protected:

@@ -109,6 +109,10 @@ void BattleRoom::createMap() {
   addMapElement();  //添加地图元素: 地板 墙 门
 
   if (roomType == PROP) generateStatue();
+  if (roomType == WEAPON) {
+    createBox((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2);
+
+  }
 }
 
 void BattleRoom::addMapElement() {
@@ -282,7 +286,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
         if (knight->getNeedCreateBox() == true) {
           INT32 curMP = this->knight->getMP() + 20;
           this->knight->setMP(curMP); //setMp会判断是否超限
-          createBox();
+          createBox((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2);
           knight->setNeedCreateBox(false);
         }
       }
@@ -328,11 +332,12 @@ Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
 
 Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
 
-void BattleRoom::createBox()
+void BattleRoom::createBox(float x, float y)
 {
-  Sprite* box = Sprite::create("Props//box.png");
-  box->setPosition(
-    Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
+  Sprite* box;
+  if (roomType == WEAPON) box = Sprite::create("Box//box1.png");
+  else  box = Sprite::create("Box//box2.png");
+  box->setPosition(Vec2(x,y));
   box->setGlobalZOrder(LayerPlayer - 2);
   this->addChild(box, TOP);
   this->getVecBox().pushBack(box);
@@ -491,7 +496,9 @@ bool BattleRoom::allKilled() {
 
 void BattleRoom::openTreasureBox() {
   srand(time(NULL));
-  int randomDigit = rand() % 7;
+  int randomDigit;
+  if (roomType == WEAPON) randomDigit = rand() % 4;
+  else randomDigit = rand() % 9;
   if (randomDigit <= 3)
     crearteWeapon(randomDigit);
   else
@@ -502,36 +509,17 @@ void BattleRoom::crearteWeapon(int randomDigit) {
   Weapon* weapon = Weapon::create();
   switch (randomDigit) {
     case 0:
-      weapon->setFireSpeed(25.0f);
-      weapon->setAttack(1);
-      weapon->setMPConsumption(1);
-      weapon->bindSprite(Sprite::create("Weapon//weapon2.png"), LayerPlayer);
-      weapon->setWeaponState(true);
-      weapon->setBulletType(12);
+      //weaponInit(float speed, INT32 attack, INT32 decMP, int weaponType, bool state, int bulletType);
+      weapon->weaponInit(25.0f, 1, 1, 2, true, 12);
       break;
     case 1:
-      weapon->setFireSpeed(23.0f);
-      weapon->setAttack(4);
-      weapon->setMPConsumption(3);
-      weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), LayerPlayer);
-      weapon->setWeaponState(true);
-      weapon->setBulletType(13);
+      weapon->weaponInit(23.0f, 4, 3, 3, true, 13);
       break;
     case 2:
-      weapon->setFireSpeed(24.0f);
-      weapon->setAttack(6);
-      weapon->setMPConsumption(4);
-      weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
-      weapon->setWeaponState(true);
-      weapon->setBulletType(14);
+      weapon->weaponInit(24.0f, 6, 4, 4, true, 14);
       break;
     case 3:
-      weapon->setFireSpeed(0.0f);
-      weapon->setAttack(4);
-      weapon->setMPConsumption(0);
-      weapon->bindSprite(Sprite::create("Weapon//weapon5.png"), LayerPlayer);
-      weapon->setWeaponState(false);
-      weapon->setBulletType(15);
+      weapon->weaponInit(0.0f, 4, 0, 5, false, 15);
       break;
   }
   weapon->setPosition(
