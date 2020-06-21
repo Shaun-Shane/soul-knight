@@ -9,11 +9,14 @@ class Hall;
 class BattleRoom;
 class Weapon;
 class Prop;
+class Boss;
+class Enemy;
 
 class Knight : public Entity {
   friend class BattleScene;
   friend class SafeScene;
   static constexpr float moveSpeed = 5.8f;
+  static constexpr INT32 ultimateSkillGap = 720;
 
  public:
   Knight() = default;
@@ -60,6 +63,8 @@ class Knight : public Entity {
 
   bool checkStatue(); //检测雕像
 
+  bool checkPortal(); //检测传送门
+
   BattleRoom* getAtBattleRoom();
 
   Hall* getAtHall();
@@ -72,6 +77,10 @@ class Knight : public Entity {
 
   Prop* collisionWithCropCheck();
 
+  Enemy* collisionWithEnemyCheck();
+
+  Boss* collisionWithBossCheck();
+
   void addGold(INT32);
 
  private:
@@ -81,6 +90,7 @@ class Knight : public Entity {
   INT32 gold = 0;
 
   time_t preAttackedTime = 0, curTime = 0;
+  time_t ultimateSkillTime = ultimateSkillGap;
 
   Weapon* weapon = nullptr;
 
@@ -92,7 +102,11 @@ class Knight : public Entity {
 
   bool isInvincible = false; //是否无敌
 
+  bool goIntoPortal = false;
+
   bool isAnimation = false;//是否在执行帧动画动作
+
+  int attackCount;
 };
 
 #endif

@@ -1,15 +1,13 @@
 ﻿#include "Enemy.h"
 #include "Scene/BattleRoom.h"
+#include "Scene/BattleScene.h"
 
 Enemy::~Enemy() {}
 
 bool Enemy::init() { 
-  HP = 5;
-  lastHP = HP;
   isKilled = isAdded = false;
 
   this->weapon = Weapon::create();
-  this->weapon->setFireSpeed(16.0f);
   this->weapon->bindSprite(Sprite::create(),LayerPlayer + 1);
   this->weapon->setWeaponState(true);
   this->weapon->setMPConsumption(0);
@@ -43,15 +41,31 @@ void Enemy::setType(int type){
     enemyType = type;
     boarRushCount = 0;
     setAttackRange();
-    if (type == 0) { //若为弓箭手，设置子弹图片和威力
-      this->weapon->setAttack(2);
-      this->weapon->setBulletType(1);
-    }
-    //猪和茅手则将武器设为空
-    else if (type == 1 || type == 2) this->weapon = nullptr;
-    else if(type == 3) {//若为枪手，设置子弹图片和威力
-      this->weapon->setAttack(1);
-      this->weapon->setBulletType(2);
+
+    INT32 addedHp = BattleScene::getSceneNumber();
+    addedHp = addedHp % 5 == 0 ? addedHp / 5 - 1 : addedHp / 5;
+
+    switch (type) {
+      case 0: //弓箭手
+        lastHP = HP = 8 + addedHp;
+        this->weapon->setAttack(2);
+        this->weapon->setBulletType(1);
+        this->weapon->setFireSpeed(8.0f);
+        break;
+      case 1: //猪和茅手则将武器设为空
+        lastHP = HP = 10 + addedHp;
+        this->weapon = nullptr;
+        break;
+      case 2: //猪和茅手则将武器设为空
+        lastHP = HP = 10 + addedHp;
+        this->weapon = nullptr;
+        break;
+      case 3: //枪手，设置子弹图片和威力
+        lastHP = HP = 9 + addedHp;
+        this->weapon->setAttack(1);
+        this->weapon->setFireSpeed(6.0f);
+        this->weapon->setBulletType(2);
+        break;
     }
 }
 
@@ -114,6 +128,8 @@ void Enemy::shake(const BattleRoom* battleRoom){
         beAttacked = false;
     }
 }
+
+
 
 void Enemy::patrolRoute(const BattleRoom* battleRoom, Knight* knight) {
   const Point enemyPos = this->getPosition();
@@ -223,9 +239,8 @@ void Enemy::archerAttack(Knight* knight, float disBetweenEnemyAndKnight){
 	auto enemyPos = this->getPosition();
 	auto knightPos = knight->getPosition();
 
-    if (attackTimeCount >= 120) {
-      CCLOG("arch attack");
-      this->attackKnight(knight);
+    if (attackTimeCount >=50) {
+      this->attackKnight(0);
       attackTimeCount = 0;
     }
     else {
@@ -279,7 +294,6 @@ void Enemy::boarAttack(Knight* knight, float disBetweenEnemyAndKnight, const Bat
         boarBumpDirection[0] = (knightPos.x - enemyPos.x) / disBetweenEnemyAndKnight;
         boarBumpDirection[1] = (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;//保存最近的方向，给之后冲走使用
         knight->deductHP(2);
-        CCLOG("pig attack");
         attackTimeCount = 0;
         haveAttacked = true;
     }
@@ -302,7 +316,6 @@ void Enemy::spearAttack(Knight* knight, float disBetweenEnemyAndKnight) {
 		}
 		if (disBetweenEnemyAndKnight <= 5) {
 			knight->deductHP(3);
-            CCLOG("spear attack");
 			haveAttacked = true;
 		}
 	}
@@ -323,9 +336,9 @@ void Enemy::gunnerAttack(Knight* knight, float disBetweenEnemyAndKnight){
         moveSpeedY = 2.0f * (knightPos.y - enemyPos.y) / disBetweenEnemyAndKnight;
     }
 
-    if (attackTimeCount >= 90 && knight->getMoveSpeedX() == 0 && knight->getMoveSpeedY() == 0) {
-        this->attackKnight(knight);
-        CCLOG("gun attack");
+    if (attackTimeCount >= 50 && knight->getMoveSpeedX() == 0 && knight->getMoveSpeedY() == 0) {
+      srand(time(NULL));
+      this->attackKnight(1);
         attackTimeCount = 0;
     }
 	else {
@@ -334,12 +347,28 @@ void Enemy::gunnerAttack(Knight* knight, float disBetweenEnemyAndKnight){
 }
 
 //怪物攻击枪手，发射子弹
-void Enemy::attackKnight(Knight* knight) {
+void Enemy::attackKnight(int type) {
+  Knight* knight = this->getAtBattleRoom()->getKnight();
   Vec2 target = knight->getPosition() - this->getPosition();
   target.set(target.x / target.length(), target.y / target.length());
   Vec2 fireSpeed = target * this->weapon->getFireSpeed();
+  if (type == 0) fireBullet(fireSpeed);
+  else {
+    srand(time(NULL));
+    int cnt = rand() % 6 + 1;
+    for (int i = 0; i < cnt; i++) {
+        fireBullet(fireSpeed);
+        float nexX = fireSpeed.x * cos(15*PI/180) - fireSpeed.y * sin(15 * PI / 180);
+        float newY = fireSpeed.x * sin(15 * PI / 180) + fireSpeed.y * cos(15 * PI / 180);
+        fireSpeed.set(nexX, newY);
+      }
+  }
+}
 
-  Bullet* bullet = this->weapon->createBullet(fireSpeed,this->getWeapon()->getAttack());
+void Enemy::fireBullet(Vec2 fireSpeed)
+{
+
+  Bullet* bullet = this->weapon->createBullet(fireSpeed, this->getWeapon()->getAttack(),false);
   bullet->setPosition(this->getPosition());
   this->getAtBattleRoom()->addChild(bullet);
   this->getAtBattleRoom()->getVecEnemyBullet().pushBack(bullet);

@@ -15,7 +15,7 @@ public:
   virtual bool init();
   ~Weapon();
 
-  Bullet* createBullet(Vec2 speed,INT32 firePower); 
+  Bullet* createBullet(Vec2 speed,INT32 firePower,bool); 
   void setFireSpeed(float fireSpeed);
   float getFireSpeed();
 
@@ -33,6 +33,8 @@ public:
   void knifeAttack(Knight* knight);
 
   void setBulletType(INT32);
+
+  void weaponInit(float speed, INT32 attack, INT32 decMP, int weaponType, bool state, int bulletType);
 
 
   

@@ -155,10 +155,32 @@ bool BattleScene::init() {
   return true;
 }
 
+#define DEBUG
 void BattleScene::update(float delta) {
-	updateGold();//更新金币
+#ifndef DEBUG
+  if (knight->HP <= 0) { //人物死亡 回到安全地图
+    auto textLabel = Label::create("You are dead! Returning to SafeScene...",
+                                   "fonts/Marker Felt.ttf", 40);
+    textLabel->setPosition(Point(640, 360));
+    textLabel->setGlobalZOrder(TOP);
+    this->addChild(textLabel);
 
-	updateLevel();//更新关卡数
+    auto blink = Blink::create(2.0f, 5);
+    auto fadeOut = FadeOut::create(2.0f);
+
+    auto callFunc = CallFunc::create([&]() {
+      knight->removeFromParent();
+      Director::getInstance()->replaceScene(  
+          TransitionFade::create(2.0f, SafeScene::createScene()));
+    });
+
+    knight->runAction(Sequence::create(Spawn::create(blink, fadeOut, NULL), callFunc, NULL));
+  }
+#endif 
+
+  updateGold();//更新金币
+
+  updateLevel();//更新关卡数
 
   knight->resumeArmor(); //更新护甲
 
@@ -363,8 +385,8 @@ void BattleScene::checkEndRoom() { //检查房间终点
       return;
     }
 
-    if (knight->getPosition().distance(endRoom->portal->getPosition()) <
-        10.0f) {
+    if (knight->goIntoPortal) {
+      knight->goIntoPortal = false;
       BattleScene::knight->retain();
       BattleScene::knight->removeFromParent();  //从该场景移除
       BattleScene::battleSceneNumber++;         //关卡编号+1

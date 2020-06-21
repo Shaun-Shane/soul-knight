@@ -23,14 +23,20 @@ void Prop::useProps(Knight* knight)
 {
   switch (this->propIndex)
   {
-  case 3:
-    knight->setHP(2 + (knight->getHP()));
+  case 1:
+    INT32 curHP;
+    curHP = knight->getHP() + 2;
+    knight->setHP(curHP);
       break;
-  case 4:
-    INT32 curMP = knight->getMP() + 20;
-    if (curMP >= 200) curMP = 200;
+  case 2:
+    INT32 curMP;
+    curMP = knight->getMP() + 20;
     knight->setMP(curMP);
-    knight->setMP(25 + (knight->getMP()));
     break;
+  case 3:
+    knight->addGold(5);
+    break;
+  case 4:
+    knight->setArmor(knight->getMaxArmor());
   }
 }

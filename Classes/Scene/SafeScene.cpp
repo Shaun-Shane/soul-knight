@@ -52,7 +52,7 @@ void SafeScene::update(float delta) {
     BattleScene::knight = this->knight;
     BattleScene::knight->retain();
     BattleScene::knight->removeFromParent();  //从该场景移除
-    BattleScene::battleSceneNumber++;
+    BattleScene::battleSceneNumber = 1;
 
     srand(static_cast<unsigned int>(time(nullptr)));
     std::random_shuffle(BattleScene::vecSceneType.begin(),

@@ -16,6 +16,7 @@ bool BattleRoom::init() {
 
   portal = nullptr, knight = nullptr;
   boss = nullptr, statue = nullptr;
+  portalTextLabel = nullptr;
 
   this->scheduleUpdate();
   return true;
@@ -23,8 +24,9 @@ bool BattleRoom::init() {
 
 void BattleRoom::update(float delta) {
   this->checkStatue(); //雕像碰撞检测
+  this->checkPortal(); //检测传送门
   this->bulletMove();
-  this->playerBulletCollistionCheck();
+  this->bulletCollistionCheck();
   this->removeKilledEnemy(); //移除血量<=0的敌人
 }
 
@@ -107,6 +109,10 @@ void BattleRoom::createMap() {
   addMapElement();  //添加地图元素: 地板 墙 门
 
   if (roomType == PROP) generateStatue();
+  if (roomType == WEAPON) {
+    createBox((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2);
+
+  }
 }
 
 void BattleRoom::addMapElement() {
@@ -163,7 +169,6 @@ void BattleRoom::addMapElement() {
   }
 }
 
-//#define YYZ_DEBUG
 void BattleRoom::createEnemy() {
   srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -182,36 +187,38 @@ void BattleRoom::createEnemy() {
   for (INT32 i = 1; i <= enemyNumber; i++) {
     Enemy* enemy = Enemy::create();
     enemy->bindAtBattleRoom(this); //绑定所在房间
-
     enemy->startCount = i * 2;
-    if (i < 3) {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy002.png"),
-          LayerPlayer - 1);
-      enemy->setType(0);
+
+    INT32 enemyType = rand();
+    enemyType = (enemyType && enemyType % 4 == 0) ? 3 : enemyType % 4;
+
+    switch (enemyType) {
+      case 0:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy002.png"),
+            LayerPlayer - 1);
+        break;
+      case 1:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy007.png"),
+            LayerPlayer - 1);
+        break;
+      case 2:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy001.png"),
+            LayerPlayer - 1);
+        break;
+      case 3:
+        enemy->bindSprite(
+            Sprite::create("Enemy//" + sceneName.asString() + "enemy003.png"),
+            LayerPlayer - 1);
+        break;
     }
-    else if (i < 5) {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy007.png"),
-          LayerPlayer - 1);
-      enemy->setType(1);
-    }
-    else if (i < 6) {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy001.png"),
-          LayerPlayer - 1);
-      enemy->setType(2);
-    }
-    else {
-      enemy->bindSprite(
-          Sprite::create("Enemy//" + sceneName.asString() + "enemy003.png"),
-          LayerPlayer - 1);
-      enemy->setType(3);
-    }
+
+    enemy->setType(enemyType);
     enemy->addShadow(Point(enemy->getContentSize().width / 2.3f,
                            enemy->getContentSize().height / 9),
                      LayerPlayer - 1);  //添加阴影
-    enemy->retain();
     vecEnemy.pushBack(enemy);
   }
 
@@ -279,7 +286,7 @@ bool BattleRoom::checkPlayerPosition(Knight* knight, float& ispeedX,
         if (knight->getNeedCreateBox() == true) {
           INT32 curMP = this->knight->getMP() + 20;
           this->knight->setMP(curMP); //setMp会判断是否超限
-          createBox();
+          createBox((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2);
           knight->setNeedCreateBox(false);
         }
       }
@@ -325,11 +332,12 @@ Vector<Prop*>& BattleRoom::getVecProps() { return vecProps; }
 
 Vector<Weapon*>& BattleRoom::getVecWeapon() { return vecWeapon; }
 
-void BattleRoom::createBox()
+void BattleRoom::createBox(float x, float y)
 {
-  Sprite* box = Sprite::create("Props//box.png");
-  box->setPosition(
-    Vec2((upLeftX + downRightX) / 2, (upLeftY + downRightY) / 2));
+  Sprite* box;
+  if (roomType == WEAPON) box = Sprite::create("Box//box1.png");
+  else  box = Sprite::create("Box//box2.png");
+  box->setPosition(Vec2(x,y));
   box->setGlobalZOrder(LayerPlayer - 2);
   this->addChild(box, TOP);
   this->getVecBox().pushBack(box);
@@ -339,7 +347,9 @@ Boss* BattleRoom::getBoss() { return boss; }
 
 Statue* BattleRoom::getStatue() { return statue; }
 
-void BattleRoom::playerBulletCollistionCheck() {
+Sprite* BattleRoom::getPortal() { return portal; }
+
+void BattleRoom::bulletCollistionCheck() {
   for (INT32 i = 0; i < vecPlayerBullet.size(); ++i) {
     auto bullet = vecPlayerBullet.at(i);
     Rect bulletRect = bullet->getBoundingBox();
@@ -383,6 +393,18 @@ void BattleRoom::playerBulletCollistionCheck() {
       }
     }
   }
+  for (INT32 i = 0; i < vecEnemyBullet.size(); ++i) {
+    auto bullet = vecEnemyBullet.at(i);
+    Rect bulletRect = bullet->getBoundingBox();
+    Rect knightRect = knight->getBoundingBox();
+    if (bulletRect.intersectsRect(knightRect)) {
+      knight->deductHP(bullet->getAttack());
+      bullet->showEffect(bullet->getPosition(), this); //子弹击中特效
+      bullet->removeFromParent();
+      vecEnemyBullet.eraseObject(bullet);
+      --i;
+    }
+  }
 }
 
 void BattleRoom::checkObstacle(Entity* entity) { //玩家 敌人检测障碍物
@@ -423,6 +445,25 @@ void BattleRoom::checkStatue() { //检测雕像障碍物
   }
 }
 
+void BattleRoom::checkPortal() {
+  if (portal == nullptr) return;
+  
+  if (portalTextLabel == nullptr) {
+    portalTextLabel =
+        Label::create("Portal--Press J", "fonts/Marker Felt.ttf", 22);
+    this->addChild(portalTextLabel);
+    portalTextLabel->setPosition(Point(centerX, centerY + 100));
+    portalTextLabel->setGlobalZOrder(TOP);
+    portalTextLabel->setVisible(false);
+  }
+  //根据骑士位置选择是否隐藏标签
+  if (portal->getPosition().getDistance(knight->getPosition()) < 30.0f) {
+    portalTextLabel->setVisible(true);
+  } else {
+    portalTextLabel->setVisible(false);
+  }
+}
+
 void BattleRoom::removeKilledEnemy() {
   for (auto& e : vecEnemy) {
     if (e->getParent() == nullptr || e->getIsKilled()) continue;
@@ -455,7 +496,19 @@ bool BattleRoom::allKilled() {
 
 void BattleRoom::openTreasureBox() {
   srand(time(NULL));
-  int randomDigit = rand() % 7;
+  int randomDigit;
+  if (roomType == WEAPON) randomDigit = rand() % 4;
+  else  //设置出物品概率   40%啥都没有，10%出枪，10%出加血，10%出加蓝，10出加金币，20出加护具
+  {
+    int randNun = rand() % 10;
+    if (randNun == 0) randomDigit = rand() % 4;
+    else if (randNun == 1)  randomDigit = 4;
+    else if (randNun == 2)  randomDigit = 5;
+    else if (randNun == 3)  randomDigit = 6;
+    else if (randNun == 4 || randNun == 5) randomDigit = 7;
+    else randomDigit = 8;
+
+  }
   if (randomDigit <= 3)
     crearteWeapon(randomDigit);
   else
@@ -466,36 +519,17 @@ void BattleRoom::crearteWeapon(int randomDigit) {
   Weapon* weapon = Weapon::create();
   switch (randomDigit) {
     case 0:
-      weapon->setFireSpeed(25.0f);
-      weapon->setAttack(1);
-      weapon->setMPConsumption(1);
-      weapon->bindSprite(Sprite::create("Weapon//weapon2.png"), LayerPlayer);
-      weapon->setWeaponState(true);
-      weapon->setBulletType(12);
+      //以下参数含义以此为 speed,  attack,  decMP,  weaponType,  state,  bulletType
+      weapon->weaponInit(25.0f, 1, 1, 2, true, 12);
       break;
     case 1:
-      weapon->setFireSpeed(23.0f);
-      weapon->setAttack(4);
-      weapon->setMPConsumption(3);
-      weapon->bindSprite(Sprite::create("Weapon//weapon3.png"), LayerPlayer);
-      weapon->setWeaponState(true);
-      weapon->setBulletType(13);
+      weapon->weaponInit(23.0f, 4, 3, 3, true, 13);
       break;
     case 2:
-      weapon->setFireSpeed(24.0f);
-      weapon->setAttack(6);
-      weapon->setMPConsumption(4);
-      weapon->bindSprite(Sprite::create("Weapon//weapon4.png"), LayerPlayer);
-      weapon->setWeaponState(true);
-      weapon->setBulletType(14);
+      weapon->weaponInit(24.0f, 6, 4, 4, true, 14);
       break;
     case 3:
-      weapon->setFireSpeed(0.0f);
-      weapon->setAttack(4);
-      weapon->setMPConsumption(0);
-      weapon->bindSprite(Sprite::create("Weapon//weapon5.png"), LayerPlayer);
-      weapon->setWeaponState(false);
-      weapon->setBulletType(15);
+      weapon->weaponInit(0.0f, 4, 0, 5, false, 15);
       break;
   }
   weapon->setPosition(
@@ -511,13 +545,21 @@ void BattleRoom::createProps(int randomDigit) {
   switch (randomDigit) {
     case 4:
       props->bindSprite(Sprite::create("Props//add_HP.png"), TOP);
-      props->setPropIndex(3);
+      props->setPropIndex(1);
       break;
     case 5:
       props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+      props->setPropIndex(2);
+      break;
+    case 6: 
+      props->bindSprite(Sprite::create("Props//add_gold.png"), TOP);
+      props->setPropIndex(3);
+      break;
+    case 7:
+      props->bindSprite(Sprite::create("Props//add_protect.png"), TOP);
       props->setPropIndex(4);
       break;
-    case 6:  //不出任何道具
+    case 8:
       return;
   }
   props->setPosition(
