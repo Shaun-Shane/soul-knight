@@ -498,7 +498,17 @@ void BattleRoom::openTreasureBox() {
   srand(time(NULL));
   int randomDigit;
   if (roomType == WEAPON) randomDigit = rand() % 4;
-  else randomDigit = rand() % 9;
+  else  //设置出物品概率   40%啥都没有，10%出枪，10%出加血，10%出加蓝，10出加金币，20出加护具
+  {
+    int randNun = rand() % 10;
+    if (randNun == 0) randomDigit = rand() % 4;
+    else if (randNun == 1)  randomDigit = 4;
+    else if (randNun == 2)  randomDigit = 5;
+    else if (randNun == 3)  randomDigit = 6;
+    else if (randNun == 4 || randNun == 5) randomDigit = 7;
+    else randomDigit = 8;
+
+  }
   if (randomDigit <= 3)
     crearteWeapon(randomDigit);
   else
@@ -509,7 +519,7 @@ void BattleRoom::crearteWeapon(int randomDigit) {
   Weapon* weapon = Weapon::create();
   switch (randomDigit) {
     case 0:
-      //weaponInit(float speed, INT32 attack, INT32 decMP, int weaponType, bool state, int bulletType);
+      //以下参数含义以此为 speed,  attack,  decMP,  weaponType,  state,  bulletType
       weapon->weaponInit(25.0f, 1, 1, 2, true, 12);
       break;
     case 1:
@@ -542,11 +552,11 @@ void BattleRoom::createProps(int randomDigit) {
       props->setPropIndex(2);
       break;
     case 6: 
-      props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+      props->bindSprite(Sprite::create("Props//add_gold.png"), TOP);
       props->setPropIndex(3);
       break;
     case 7:
-      props->bindSprite(Sprite::create("Props//add_MP.png"), TOP);
+      props->bindSprite(Sprite::create("Props//add_protect.png"), TOP);
       props->setPropIndex(4);
       break;
     case 8:
